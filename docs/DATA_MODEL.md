@@ -1,6 +1,6 @@
 # Data Model Reference
 
-All TypeScript types live in `src/types.ts`. This document explains the data model, storage schema, and key algorithms.
+Each type lives in its domain module: `src/child/child.model.ts`, `src/book/book.model.ts`, `src/project/project.model.ts` (`Assignment`, `WeeklySession`, `Project`, `AppData`), `src/auth/auth.model.ts`. This document explains the data model, storage schema, and key algorithms.
 
 ---
 

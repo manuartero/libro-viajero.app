@@ -49,7 +49,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stack, stories, accept
 
 ### Folder layout
 
-- No `utils/`, `types/`, `helpers/` catch-alls. Name folders by domain; types live with their domain (shared ones in `src/types.ts`).
+- No `utils/`, `types/`, `helpers/` catch-alls — and no `types.ts` either. Name folders by domain; every type lives in its domain module (`src/project/project.model.ts` defines `Project`), even if that means more files.
 - Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `data/`.
 
 ### Testing

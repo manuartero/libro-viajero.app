@@ -1,10 +1,18 @@
 {
   "name": "libro-viajero.app",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "blue-ball": "pnpm lint && pnpm test && pnpm build"
   },
   "repository": {
     "type": "git",
@@ -15,5 +23,20 @@
   "bugs": {
     "url": "https://github.com/manuartero/libro-viajero.app/issues"
   },
-  "homepage": "https://github.com/manuartero/libro-viajero.app#readme"
+  "homepage": "https://github.com/manuartero/libro-viajero.app#readme",
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.5",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.4",
+    "jsdom": "29.1.1",
+    "typescript": "7.0.2",
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
+  }
 }
