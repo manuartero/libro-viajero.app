@@ -1,0 +1,50 @@
+:root {
+  --paper: #fbfaf7;
+  --card: #ffffff;
+  --ink: #26333e;
+  --ink-soft: #5c6b78;
+  --line: #e4e4dc;
+  --returned: #2e9e5b;
+  --returned-soft: #e3f4ea;
+  --missing: #e4572e;
+  --missing-soft: #fdeee8;
+  --sun: #ffc53d;
+  --font-display: "Baloo 2", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
