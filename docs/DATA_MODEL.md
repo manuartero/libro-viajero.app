@@ -98,7 +98,7 @@ Everything about one classroom's traveling book initiative.
 ```typescript
 type Project = {
   id: string;                       // UUID
-  name: string;                     // e.g. "Clase Caracoles 2024-25"
+  name: string;                     // classroom name + short school year, e.g. "Clase Caracoles 2026/27"
   children: Child[];
   books: Book[];
   currentAssignments: Assignment[];  // what each child has THIS week
@@ -107,6 +107,22 @@ type Project = {
 ```
 
 **Invariant**: one entry per assigned child. An unreturned book **keeps its current assignment** — the child simply holds it another week; only returned books rotate.
+
+---
+
+### `SchoolYear`
+
+`project/school-year.model.ts` — a transient value, derived on demand and **never persisted** (only the `start` year is kept as wizard state).
+
+```typescript
+type SchoolYear = {
+  start: number;   // calendar year the course starts in, e.g. 2026
+  label: string;   // "2026/2027"
+  short: string;   // "2026/27" — appended to Project.name
+};
+```
+
+Constructed via `schoolYearFrom(start)`; `currentSchoolYear(today?)` applies the July cutoff (teachers set up during the summer, so July onwards counts as the upcoming course).
 
 ---
 
@@ -139,8 +155,10 @@ Value: JSON.stringify(AppData)
 ```
 
 All reads and writes go through `services/storage.service.ts`:
-- `getAppData(googleId)`
-- `saveAppData({ googleId, data })`
+- `getAppData(googleId)` — absent, unparseable, or wrong-shaped entries degrade to the default value; an unreadable entry is preserved under `libro-viajero:{googleId}:backup-{timestamp}` before being abandoned
+- `saveAppData({ googleId, data })` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
+
+**Anonymous namespace (pre-auth)**: until Google auth ships, all data lives under `googleId = "anonymous"` (`ANONYMOUS_USER_ID`). When auth lands, the first login must migrate `libro-viajero:anonymous` into the user's `libro-viajero:{payload.sub}` namespace — otherwise every pre-auth classroom silently disappears.
 
 ---
 

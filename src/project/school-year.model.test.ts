@@ -1,4 +1,7 @@
-import { currentSchoolYear, schoolYearFrom } from "src/project/school-year";
+import {
+  currentSchoolYear,
+  schoolYearFrom,
+} from "src/project/school-year.model";
 import { describe, expect, it } from "vitest";
 
 describe("schoolYearFrom()", () => {

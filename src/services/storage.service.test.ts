@@ -1,6 +1,6 @@
 import type { AppData } from "src/project/project.model";
 import { getAppData, saveAppData } from "src/services/storage.service";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("getAppData()", () => {
   beforeEach(() => {
@@ -15,12 +15,33 @@ describe("getAppData()", () => {
   });
 
   it("returns the empty app data when the stored entry is corrupted", () => {
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
     localStorage.setItem("libro-viajero:g-123", "{not json");
 
     expect(getAppData("g-123")).toEqual({
       projects: [],
       activeProjectId: null,
     });
+    errorLog.mockRestore();
+  });
+
+  it("backs up an unreadable entry before abandoning it", () => {
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
+    localStorage.setItem("libro-viajero:g-123", JSON.stringify({ foo: 1 }));
+
+    expect(getAppData("g-123")).toEqual({
+      projects: [],
+      activeProjectId: null,
+    });
+
+    const backupKey = Object.keys(localStorage).find((key) =>
+      key.startsWith("libro-viajero:g-123:backup-"),
+    );
+    expect(backupKey).toBeDefined();
+    expect(localStorage.getItem(backupKey ?? "")).toBe(
+      JSON.stringify({ foo: 1 }),
+    );
+    errorLog.mockRestore();
   });
 
   it("keeps each user's data in its own namespace", () => {
@@ -45,5 +66,25 @@ describe("getAppData()", () => {
       projects: [],
       activeProjectId: null,
     });
+  });
+});
+
+describe("saveAppData()", () => {
+  it("reports failure instead of throwing when the write fails", () => {
+    const setItem = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const result = saveAppData({
+      googleId: "g-123",
+      data: { projects: [], activeProjectId: null },
+    });
+
+    expect(result).toBe(false);
+    setItem.mockRestore();
+    errorLog.mockRestore();
   });
 });

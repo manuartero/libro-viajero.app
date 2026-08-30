@@ -7,11 +7,30 @@ import {
   saveAppData,
 } from "src/services/storage.service";
 import { SetupWizard } from "src/setup/setup-wizard.component";
+import styles from "./app.module.css";
+
+const loadAppData = (): AppData => {
+  const stored = getAppData(ANONYMOUS_USER_ID);
+  const hasActive = stored.projects.some(
+    (p) => p.id === stored.activeProjectId,
+  );
+  if (stored.projects.length === 0 || hasActive) {
+    return stored;
+  }
+  // Dangling activeProjectId: projects exist but the pointer matches none.
+  // Self-heal to the first project instead of impersonating a fresh install.
+  console.error("libro-viajero: activeProjectId matches no project, healing");
+  const healed: AppData = {
+    ...stored,
+    activeProjectId: stored.projects[0].id,
+  };
+  saveAppData({ googleId: ANONYMOUS_USER_ID, data: healed });
+  return healed;
+};
 
 export function App() {
-  const [appData, setAppData] = useState<AppData>(() =>
-    getAppData(ANONYMOUS_USER_ID),
-  );
+  const [appData, setAppData] = useState<AppData>(loadAppData);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   const activeProject =
     appData.projects.find((p) => p.id === appData.activeProjectId) ?? null;
@@ -21,12 +40,26 @@ export function App() {
       projects: [...appData.projects, project],
       activeProjectId: project.id,
     };
-    saveAppData({ googleId: ANONYMOUS_USER_ID, data: next });
+    if (!saveAppData({ googleId: ANONYMOUS_USER_ID, data: next })) {
+      setSaveFailed(true);
+      return;
+    }
+    setSaveFailed(false);
     setAppData(next);
   };
 
   if (!activeProject) {
-    return <SetupWizard onCreate={createProject} />;
+    return (
+      <>
+        {saveFailed ? (
+          <p role="alert" className={styles.saveError}>
+            No se pudo guardar la clase. Libera espacio o sal del modo privado y
+            vuelve a intentarlo.
+          </p>
+        ) : null}
+        <SetupWizard onCreate={createProject} />
+      </>
+    );
   }
 
   return <Dashboard project={activeProject} />;

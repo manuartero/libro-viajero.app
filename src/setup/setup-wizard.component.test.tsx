@@ -81,4 +81,67 @@ describe("<SetupWizard />", () => {
     expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe("");
     expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
   });
+
+  it("does not accept a whitespace-only classroom name", () => {
+    render(<SetupWizard onCreate={() => {}} />);
+
+    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
+      target: { value: "   " },
+    });
+
+    expect(
+      screen.getByRole<HTMLButtonElement>("button", {
+        name: "Añadir peques →",
+      }).disabled,
+    ).toBe(true);
+  });
+
+  it("steps the course down and clamps at the previous course", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 30));
+    render(<SetupWizard onCreate={() => {}} />);
+
+    const previous = screen.getByRole<HTMLButtonElement>("button", {
+      name: "Curso anterior",
+    });
+    fireEvent.click(previous);
+
+    expect(screen.getByText("Curso 2025/2026")).toBeDefined();
+    expect(previous.disabled).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it("edits a child from the roster", () => {
+    render(<SetupWizard onCreate={() => {}} />);
+
+    nameTheClass("Los Caracoles");
+    addChild("Rana");
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.change(screen.getByLabelText("Apodo"), {
+      target: { value: "Ranita" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
+
+    expect(
+      screen.getByRole("button", { name: "Ranita, editar" }),
+    ).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Rana, editar" })).toBeNull();
+  });
+
+  it("removes a child from the roster", () => {
+    render(<SetupWizard onCreate={() => {}} />);
+
+    nameTheClass("Los Caracoles");
+    addChild("Rana");
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
+
+    expect(screen.queryByRole("button", { name: "Rana, editar" })).toBeNull();
+    expect(
+      screen.getByRole<HTMLButtonElement>("button", { name: "Crear la clase" })
+        .disabled,
+    ).toBe(true);
+  });
 });

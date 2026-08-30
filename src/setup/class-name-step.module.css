@@ -80,6 +80,12 @@
   background: var(--paper-dark);
 }
 
+.yearStep:disabled {
+  border-color: var(--ink-soft);
+  color: var(--ink-soft);
+  cursor: default;
+}
+
 .footer {
   position: sticky;
   bottom: 0;

@@ -4,16 +4,10 @@ import {
   CURATED_EMOJIS,
   type CuratedEmoji,
   nextUnusedColor,
-} from "src/child/avatar-catalog";
-import type { Child } from "src/child/child.model";
+} from "src/child/avatar-catalog.data";
+import type { Child, ChildDraft } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./child-builder.module.css";
-
-export type ChildDraft = {
-  tag: string;
-  emoji: string;
-  color: string;
-};
 
 type ChildBuilderProps = {
   usedEmojis: string[];
@@ -61,7 +55,9 @@ export function ChildBuilder({
         if (emoji === null || !canSubmit) {
           return;
         }
-        const draft = { tag: tag.trim(), emoji, color };
+        // maxLength on the input is advisory only — enforce the Child
+        // invariant (tag ≤ 20 chars) at the boundary too.
+        const draft = { tag: tag.trim().slice(0, 20), emoji, color };
         if (editing) {
           onSave({ ...editing, ...draft });
         } else {

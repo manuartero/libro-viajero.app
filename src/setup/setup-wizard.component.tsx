@@ -1,8 +1,11 @@
 import { useState } from "react";
-import type { Child } from "src/child/child.model";
+import type { Child, ChildDraft } from "src/child/child.model";
+import { newId } from "src/lib/id";
 import type { Project } from "src/project/project.model";
-import { currentSchoolYear, schoolYearFrom } from "src/project/school-year";
-import type { ChildDraft } from "src/setup/child-builder.component";
+import {
+  currentSchoolYear,
+  schoolYearFrom,
+} from "src/project/school-year.model";
 import { ChildrenStep } from "src/setup/children-step.component";
 import { ClassNameStep } from "src/setup/class-name-step.component";
 
@@ -19,7 +22,7 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
   const year = schoolYearFrom(yearStart);
 
   const addChild = (draft: ChildDraft) => {
-    setChildList((prev) => [...prev, { id: crypto.randomUUID(), ...draft }]);
+    setChildList((prev) => [...prev, { id: newId(), ...draft }]);
   };
 
   const saveChild = (child: Child) => {
@@ -32,7 +35,7 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
 
   const createProject = () => {
     onCreate({
-      id: crypto.randomUUID(),
+      id: newId(),
       name: `${classroomName.trim()} ${year.short}`,
       children: childList,
       books: [],

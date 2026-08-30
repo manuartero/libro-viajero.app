@@ -1,13 +1,14 @@
-// Curated avatar building blocks: no faces, no keyboard input.
-// Each emoji ships a Spanish nickname suggestion so adding a child
-// can be pure tapping — the teacher only types if she wants to.
+// Curated avatar catalog (SPEC F3): no human faces — an avatar must never
+// resemble a real child. Consumers render these as a tap-only grid, never
+// free emoji input. Each emoji ships a Spanish nickname suggestion so adding
+// a child can be pure tapping — the teacher only types if she wants to.
 
 export type CuratedEmoji = {
   emoji: string;
   name: string;
 };
 
-export const CURATED_EMOJIS: CuratedEmoji[] = [
+export const CURATED_EMOJIS = [
   { emoji: "🐸", name: "Rana" },
   { emoji: "🦊", name: "Zorro" },
   { emoji: "🐼", name: "Panda" },
@@ -28,14 +29,14 @@ export const CURATED_EMOJIS: CuratedEmoji[] = [
   { emoji: "🌙", name: "Luna" },
   { emoji: "🌞", name: "Sol" },
   { emoji: "🍓", name: "Fresa" },
-];
+] as const satisfies readonly CuratedEmoji[];
 
 export type AvatarColor = {
   color: string;
   name: string;
 };
 
-export const AVATAR_COLORS: AvatarColor[] = [
+export const AVATAR_COLORS = [
   { color: "#8ac926", name: "Verde" },
   { color: "#ffca3a", name: "Amarillo" },
   { color: "#6a4c93", name: "Morado" },
@@ -48,9 +49,9 @@ export const AVATAR_COLORS: AvatarColor[] = [
   { color: "#f3722c", name: "Naranja" },
   { color: "#f49cbb", name: "Rosa" },
   { color: "#8d99ae", name: "Gris" },
-];
+] as const satisfies readonly AvatarColor[];
 
-export function nextUnusedColor(usedColors: string[]) {
+export function nextUnusedColor(usedColors: readonly string[]) {
   const unused = AVATAR_COLORS.find(({ color }) => !usedColors.includes(color));
   return (unused ?? AVATAR_COLORS[usedColors.length % AVATAR_COLORS.length])
     .color;

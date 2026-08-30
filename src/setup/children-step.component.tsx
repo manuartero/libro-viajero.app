@@ -1,9 +1,6 @@
 import { useState } from "react";
-import type { Child } from "src/child/child.model";
-import {
-  ChildBuilder,
-  type ChildDraft,
-} from "src/setup/child-builder.component";
+import type { Child, ChildDraft } from "src/child/child.model";
+import { ChildBuilder } from "src/setup/child-builder.component";
 import { Roster } from "src/setup/roster.component";
 import styles from "./children-step.module.css";
 
@@ -58,6 +55,9 @@ export function ChildrenStep({
       </header>
 
       <main className={styles.main}>
+        {/* The key remounts the builder: ChildBuilder seeds its state from
+            `editing` once, so a fresh form per add / reload per edit depends
+            on this remount. */}
         <ChildBuilder
           key={editing?.id ?? `new-${childList.length}`}
           usedEmojis={usedEmojis}
