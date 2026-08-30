@@ -9,9 +9,19 @@ const createClass = (name: string) => {
   fireEvent.click(screen.getByRole("button", { name: "Añadir peques →" }));
   fireEvent.click(screen.getByRole("button", { name: "Rana" }));
   fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
+  fireEvent.click(screen.getByRole("button", { name: "Añadir libros →" }));
   fireEvent.click(
-    screen.getByRole("button", { name: "Crear la clase (1 peque)" }),
+    screen.getByRole("button", { name: "¿No lo encuentras? Añádelo a mano" }),
   );
+  fireEvent.change(screen.getByLabelText("Título"), {
+    target: { value: "Elmer" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Añadir libro" }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Elegir lector para cada libro →" }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+  fireEvent.click(screen.getByRole("button", { name: "Crear la clase" }));
 };
 
 describe("<App />", () => {
@@ -63,7 +73,7 @@ describe("<App />", () => {
       "No se pudo guardar la clase",
     );
     expect(
-      screen.getByRole("button", { name: "Crear la clase (1 peque)" }),
+      screen.getByRole("button", { name: "Crear la clase" }),
     ).toBeDefined();
 
     setItem.mockRestore();

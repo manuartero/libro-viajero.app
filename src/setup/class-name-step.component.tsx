@@ -36,7 +36,7 @@ export function ClassNameStep({
       }}
     >
       <div className={styles.masthead}>
-        <p className={styles.eyebrow}>Libro viajero · Paso 1 de 2</p>
+        <p className={styles.eyebrow}>Libro viajero · Paso 1 de 4</p>
         <label className={styles.question} htmlFor="classroom-name">
           ¿Cómo se llama tu clase?
         </label>

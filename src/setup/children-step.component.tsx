@@ -12,7 +12,7 @@ type ChildrenStepProps = {
   onAdd: (draft: ChildDraft) => void;
   onSave: (child: Child) => void;
   onRemove: (childId: string) => void;
-  onCreate: () => void;
+  onNext: () => void;
 };
 
 const pluralPeques = (count: number) =>
@@ -26,7 +26,7 @@ export function ChildrenStep({
   onAdd,
   onSave,
   onRemove,
-  onCreate,
+  onNext,
 }: ChildrenStepProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -49,7 +49,7 @@ export function ChildrenStep({
         <div className={styles.mastheadBlock}>
           <p className={styles.masthead}>{classroomName}</p>
           <p className={styles.dateline}>
-            Curso {yearShort} · {pluralPeques(childList.length)}
+            Paso 2 de 4 · Curso {yearShort} · {pluralPeques(childList.length)}
           </p>
         </div>
       </header>
@@ -89,10 +89,9 @@ export function ChildrenStep({
           type="button"
           className={styles.create}
           disabled={childList.length === 0}
-          onClick={onCreate}
+          onClick={onNext}
         >
-          Crear la clase
-          {childList.length > 0 ? ` (${pluralPeques(childList.length)})` : ""}
+          Añadir libros →
         </button>
       </footer>
     </div>

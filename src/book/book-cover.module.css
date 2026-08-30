@@ -1,0 +1,24 @@
+.cover {
+  flex-shrink: 0;
+  aspect-ratio: 2 / 3;
+  border: 1px solid var(--ink);
+  object-fit: cover;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.small {
+  width: 2rem;
+  font-size: 1.125rem;
+}
+
+.medium {
+  width: 3rem;
+  font-size: 1.625rem;
+}
