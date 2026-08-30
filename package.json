@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/manuartero/libro-viajero.app#readme",
   "dependencies": {
+    "@fontsource/besley": "^5.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },

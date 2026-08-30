@@ -1,16 +1,13 @@
 :root {
-  --paper: #fbfaf7;
-  --card: #ffffff;
-  --ink: #26333e;
-  --ink-soft: #5c6b78;
-  --line: #e4e4dc;
-  --returned: #2e9e5b;
-  --returned-soft: #e3f4ea;
-  --missing: #e4572e;
-  --missing-soft: #fdeee8;
-  --sun: #ffc53d;
-  --font-display: "Baloo 2", system-ui, sans-serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --paper: #f5f1e6;
+  --paper-dark: #e9e4d5;
+  --ink: #1a1a1a;
+  --ink-soft: #6b6659;
+  --returned: #27ae60;
+  --returned-dark: #1e8449;
+  --missing: #c0392b;
+  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Besley", Georgia, serif;
 }
 
 * {
@@ -36,15 +33,6 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--sun);
+  outline: 3px solid var(--ink);
   outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-  }
 }
