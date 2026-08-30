@@ -4,3 +4,6 @@ export type Child = {
   emoji: string;
   color: string;
 };
+
+// A child being composed in the setup flow: identity is assigned on creation.
+export type ChildDraft = Omit<Child, "id">;
