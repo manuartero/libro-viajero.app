@@ -1,5 +1,6 @@
 import type { Book } from "src/book/book.model";
 import type { Child } from "src/child/child.model";
+import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./child-card.module.css";
 
 type ChildCardProps = {
@@ -18,14 +19,9 @@ export function ChildCard({ child, book, returned, onToggle }: ChildCardProps) {
       aria-label={`${child.tag}${book ? ` — ${book.title}` : ""}`}
       onClick={() => onToggle(child.id)}
     >
-      <span
-        className={styles.avatar}
-        style={{ background: child.color }}
-        aria-hidden="true"
-      >
-        {child.emoji}
+      <ChildAvatar emoji={child.emoji} color={child.color}>
         {returned ? <span className={styles.stamp}>✓</span> : null}
-      </span>
+      </ChildAvatar>
       <span className={styles.tag}>{child.tag}</span>
       <span className={styles.book}>{book ? book.title : "sin libro"}</span>
     </button>
