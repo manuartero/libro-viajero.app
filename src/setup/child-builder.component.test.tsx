@@ -96,17 +96,31 @@ describe("<ChildBuilder />", () => {
     expect(screen.getByText("Animales")).toBeDefined();
   });
 
-  it("caps the nickname at 20 characters", () => {
+  it("truncates the nickname to 20 characters on submit", () => {
+    const onAdd = vi.fn();
     render(
       <ChildBuilder
         usedEmojis={[]}
         usedColors={[]}
         editing={null}
         {...noHandlers}
+        onAdd={onAdd}
       />,
     );
 
-    expect(screen.getByLabelText<HTMLInputElement>("Apodo").maxLength).toBe(20);
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    // maxLength on the input is advisory — a programmatic/paste value can
+    // exceed it, so the boundary enforcement is at submit.
+    fireEvent.change(screen.getByLabelText("Apodo"), {
+      target: { value: "a".repeat(25) },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Añadir peque a la clase" }),
+    );
+
+    expect(onAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ tag: "a".repeat(20) }),
+    );
   });
 
   it("disables adding until there is an emoji and a nickname", () => {

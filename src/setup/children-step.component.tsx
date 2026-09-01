@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { ChildBuilder } from "src/setup/child-builder.component";
 import { Roster } from "src/setup/roster.component";
-import styles from "./children-step.module.css";
+import { StepScreen } from "src/setup/step-screen.component";
+import styles from "./step-screen.module.css";
 
 type ChildrenStepProps = {
   classroomName: string;
@@ -36,62 +37,12 @@ export function ChildrenStep({
   const usedColors = others.map((child) => child.color);
 
   return (
-    <div className={styles.screen}>
-      <header className={styles.header}>
-        <button
-          type="button"
-          className={styles.back}
-          aria-label="Volver al nombre de la clase"
-          onClick={onBack}
-        >
-          ←
-        </button>
-        <div className={styles.mastheadBlock}>
-          <p className={styles.masthead}>{classroomName}</p>
-          <p className={styles.dateline}>
-            Paso 2 de 4 · Curso {yearShort} · {pluralPeques(childList.length)}
-          </p>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.intro}>
-          <h1 className={styles.introTitle}>Añade a tus peques</h1>
-          <p className={styles.introHint}>
-            Cada peque de {classroomName} tendrá su avatar para pasar lista.
-          </p>
-        </div>
-
-        {/* The key remounts the builder: ChildBuilder seeds its state from
-            `editing` once, so a fresh form per add / reload per edit depends
-            on this remount. */}
-        <ChildBuilder
-          key={editing?.id ?? `new-${childList.length}`}
-          usedEmojis={usedEmojis}
-          usedColors={usedColors}
-          editing={editing}
-          onAdd={onAdd}
-          onSave={(child) => {
-            onSave(child);
-            setEditingId(null);
-          }}
-          onRemove={(childId) => {
-            onRemove(childId);
-            setEditingId(null);
-          }}
-          onCancel={() => setEditingId(null)}
-        />
-
-        <Roster
-          childList={childList}
-          editingId={editingId}
-          onSelect={(childId) =>
-            setEditingId((prev) => (prev === childId ? null : childId))
-          }
-        />
-      </main>
-
-      <footer className={styles.footer}>
+    <StepScreen
+      classroomName={classroomName}
+      dateline={`Paso 2 de 4 · Curso ${yearShort} · ${pluralPeques(childList.length)}`}
+      backLabel="Volver al nombre de la clase"
+      onBack={onBack}
+      footer={
         <button
           type="button"
           className={styles.create}
@@ -100,7 +51,42 @@ export function ChildrenStep({
         >
           Añadir libros →
         </button>
-      </footer>
-    </div>
+      }
+    >
+      <div className={styles.intro}>
+        <h1 className={styles.introTitle}>Añade a tus peques</h1>
+        <p className={styles.introHint}>
+          Cada peque de {classroomName} tendrá su avatar para pasar lista.
+        </p>
+      </div>
+
+      {/* The key remounts the builder: ChildBuilder seeds its state from
+          `editing` once, so a fresh form per add / reload per edit depends
+          on this remount. */}
+      <ChildBuilder
+        key={editing?.id ?? `new-${childList.length}`}
+        usedEmojis={usedEmojis}
+        usedColors={usedColors}
+        editing={editing}
+        onAdd={onAdd}
+        onSave={(child) => {
+          onSave(child);
+          setEditingId(null);
+        }}
+        onRemove={(childId) => {
+          onRemove(childId);
+          setEditingId(null);
+        }}
+        onCancel={() => setEditingId(null)}
+      />
+
+      <Roster
+        childList={childList}
+        editingId={editingId}
+        onSelect={(childId) =>
+          setEditingId((prev) => (prev === childId ? null : childId))
+        }
+      />
+    </StepScreen>
   );
 }

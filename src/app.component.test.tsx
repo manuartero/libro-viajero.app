@@ -31,12 +31,6 @@ describe("<App />", () => {
     localStorage.clear();
   });
 
-  it("shows the setup wizard on a fresh boot", () => {
-    render(<App />);
-
-    expect(screen.getByLabelText("¿Cómo se llama tu clase?")).toBeDefined();
-  });
-
   it("persists the created classroom and shows the dashboard", () => {
     render(<App />);
 

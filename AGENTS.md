@@ -2,12 +2,7 @@
 
 **libro-viajero.app** — 100% client-side React + TypeScript app for teachers running a "traveling book" classroom initiative. Friday check-in: tap who returned their book, see who's missing, confirm next week's assignments. All data in `localStorage`.
 
-Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stack, stories, acceptance criteria) · [docs/DATA_MODEL.md](docs/DATA_MODEL.md) (types, storage, algorithms) · [README.md](README.md) (setup & commands).
-
-## Plan Mode
-
-- Plans extremely concise; sacrifice grammar for concision.
-- End every plan with the list of unresolved questions, if any.
+Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [docs/DATA_MODEL.md](docs/DATA_MODEL.md) (storage schema, algorithms) · [README.md](README.md) (setup & commands).
 
 ## Standards
 
@@ -19,10 +14,25 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stack, stories, accept
 - Units: `rem` for type/spacing, `%`/flex/grid for layout, `dvh` (never `vh`) for viewport height, `clamp()` for fluid sizing. `px` only for borders/shadows.
 - Touch targets ≥ 44×44px. No horizontal scroll, ever.
 
+### Language
+
+- **UI copy is Spanish; docs, code, and comments are English.** Parent-facing strings (e.g. the reminder message) are Spanish too.
+
+### Design language ("raw newsprint")
+
+- Tokens in `src/styles/globals.css`: `--paper`/`--paper-dark` (ground), `--ink`/`--ink-soft` (text/borders), `--returned`/`--returned-dark` (green), `--missing` (red), `--font-body` (Helvetica), `--font-display` (Besley serif, 700).
+- Hard 2–3px `--ink` borders, `border-radius: 0` on buttons, uppercase letter-spaced datelines. No shadows, no gradients.
+- Two 12-color palettes exist on purpose: `AVATAR_COLORS` (child domain) and `COVER_PLACEHOLDER_COLORS` (book domain) — same hues, owned separately so domains don't cross-import.
+
+### Dependencies
+
+- Exact versions only (`save-exact=true`). Runtime deps are currently `react`, `react-dom`, `@fontsource/besley` — adding one is a decision, not a convenience.
+- **No**: react-router, Redux, Zustand, MUI, Tailwind, styled-components, Axios, date-fns, lodash, or any other library not listed.
+
 ### Filenames
 
 - Always `kebab-case`. Never PascalCase or camelCase.
-- Pattern `<module>.<role>.ts(x)`: `storage.service.ts`, `child-avatar.component.tsx`, `rotation.service.test.ts`.
+- Pattern `<module>.<role>.ts(x)`: `storage.service.ts`, `child-avatar.component.tsx`, `open-library.service.test.ts`.
 
 ### Imports
 
@@ -32,7 +42,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stack, stories, accept
 ### Code style
 
 - `type` for data shapes; `interface` only for behavioral contracts (e.g. `Runnable { run() }`).
-- No `class`, no `this`, no `new` — plain functions, closures, function factories.
+- No `class`, no `this` — plain functions, closures, function factories. `new` only for built-ins (`Date`, `Map`, `Set`, `Error`, …). Exception: React error boundaries must be class components (`app-error-boundary.component.tsx`).
 - Let TypeScript infer return types; annotate only when inference fails or a public API needs it.
 - 2+ params → single destructured object param.
 - No `any`; use `unknown` if truly unknown.
@@ -44,7 +54,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stack, stories, accept
 
 ### CSS
 
-- All styling in `.module.css` — no inline styles.
+- All styling in `.module.css` — inline `style` only for values computed at runtime (e.g. avatar/cover background color).
 - Custom properties in `:root` in `src/styles/globals.css`, imported once from `main.tsx`. No global class names outside it.
 
 ### Folder layout
@@ -59,3 +69,4 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stack, stories, accept
 - Query as a user perceives the UI: role + accessible name → label/visible text → `getByTestId` as last resort. Never by CSS class or DOM shape.
 - Assert behavior and handler spies, not rendering detail. Hooks via `renderHook`.
 - Accessibility is the test contract: if an element isn't reachable by role + name, fix the component.
+- No test slop: no asserting static attributes or constants, no re-testing the same code path with cosmetically different inputs, no testing platform behavior the code doesn't handle.

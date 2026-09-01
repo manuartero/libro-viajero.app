@@ -38,14 +38,19 @@ const goToAssign = () => {
 };
 
 describe("<SetupWizard />", () => {
-  it("cannot leave the name step without a classroom name", () => {
+  it("cannot leave the name step without a real classroom name", () => {
     render(<SetupWizard onCreate={() => {}} />);
 
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", {
-        name: "Añadir peques →",
-      }).disabled,
-    ).toBe(true);
+    const next = screen.getByRole<HTMLButtonElement>("button", {
+      name: "Añadir peques →",
+    });
+    expect(next.disabled).toBe(true);
+
+    // Whitespace-only is not a name either.
+    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
+      target: { value: "   " },
+    });
+    expect(next.disabled).toBe(true);
   });
 
   it("cannot continue to books without children", () => {
@@ -216,20 +221,6 @@ describe("<SetupWizard />", () => {
 
     expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe("");
     expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
-  });
-
-  it("does not accept a whitespace-only classroom name", () => {
-    render(<SetupWizard onCreate={() => {}} />);
-
-    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
-      target: { value: "   " },
-    });
-
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", {
-        name: "Añadir peques →",
-      }).disabled,
-    ).toBe(true);
   });
 
   it("shows the current course as fixed text, with no stepper", () => {
