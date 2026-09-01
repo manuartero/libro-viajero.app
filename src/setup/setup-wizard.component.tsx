@@ -1,11 +1,15 @@
 import { useState } from "react";
+import type { Book, BookDraft } from "src/book/book.model";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { newId } from "src/lib/id";
+import { mondayOf } from "src/lib/week";
 import type { Project } from "src/project/project.model";
 import {
   currentSchoolYear,
   schoolYearFrom,
 } from "src/project/school-year.model";
+import { AssignStep } from "src/setup/assign-step.component";
+import { BooksStep } from "src/setup/books-step.component";
 import { ChildrenStep } from "src/setup/children-step.component";
 import { ClassNameStep } from "src/setup/class-name-step.component";
 
@@ -14,10 +18,15 @@ type SetupWizardProps = {
 };
 
 export function SetupWizard({ onCreate }: SetupWizardProps) {
-  const [step, setStep] = useState<"name" | "children">("name");
+  const [step, setStep] = useState<"name" | "children" | "books" | "assign">(
+    "name",
+  );
   const [classroomName, setClassroomName] = useState("");
   const [yearStart, setYearStart] = useState(() => currentSchoolYear().start);
   const [childList, setChildList] = useState<Child[]>([]);
+  const [bookList, setBookList] = useState<Book[]>([]);
+  // childId -> bookId; pruned whenever either side is removed.
+  const [pairs, setPairs] = useState<Record<string, string>>({});
 
   const year = schoolYearFrom(yearStart);
 
@@ -31,15 +40,58 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
 
   const removeChild = (childId: string) => {
     setChildList((prev) => prev.filter((c) => c.id !== childId));
+    setPairs(({ [childId]: _removed, ...rest }) => rest);
+  };
+
+  const addBook = (draft: BookDraft) => {
+    setBookList((prev) => [...prev, { id: newId(), ...draft }]);
+  };
+
+  const removeBook = (bookId: string) => {
+    setBookList((prev) => prev.filter((b) => b.id !== bookId));
+    setPairs((prev) =>
+      Object.fromEntries(
+        Object.entries(prev).filter(
+          ([, pairedBookId]) => pairedBookId !== bookId,
+        ),
+      ),
+    );
+  };
+
+  const assignBook = ({
+    childId,
+    bookId,
+  }: {
+    childId: string;
+    bookId: string;
+  }) => {
+    // One book, one child: strip the book from any other pairing first.
+    setPairs((prev) => ({
+      ...Object.fromEntries(
+        Object.entries(prev).filter(
+          ([, pairedBookId]) => pairedBookId !== bookId,
+        ),
+      ),
+      [childId]: bookId,
+    }));
+  };
+
+  const unassignChild = (childId: string) => {
+    setPairs(({ [childId]: _removed, ...rest }) => rest);
   };
 
   const createProject = () => {
+    const weekStart = mondayOf();
     onCreate({
       id: newId(),
       name: `${classroomName.trim()} ${year.short}`,
       children: childList,
-      books: [],
-      currentAssignments: [],
+      books: bookList,
+      currentAssignments: childList.map((child) => ({
+        childId: child.id,
+        bookId: pairs[child.id],
+        weekStart,
+      })),
       history: [],
     });
   };
@@ -56,15 +108,46 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
     );
   }
 
+  if (step === "children") {
+    return (
+      <ChildrenStep
+        classroomName={classroomName.trim()}
+        yearShort={year.short}
+        childList={childList}
+        onBack={() => setStep("name")}
+        onAdd={addChild}
+        onSave={saveChild}
+        onRemove={removeChild}
+        onNext={() => setStep("books")}
+      />
+    );
+  }
+
+  if (step === "books") {
+    return (
+      <BooksStep
+        classroomName={classroomName.trim()}
+        yearShort={year.short}
+        childCount={childList.length}
+        bookList={bookList}
+        onBack={() => setStep("children")}
+        onAdd={addBook}
+        onRemove={removeBook}
+        onNext={() => setStep("assign")}
+      />
+    );
+  }
+
   return (
-    <ChildrenStep
+    <AssignStep
       classroomName={classroomName.trim()}
       yearShort={year.short}
       childList={childList}
-      onBack={() => setStep("name")}
-      onAdd={addChild}
-      onSave={saveChild}
-      onRemove={removeChild}
+      bookList={bookList}
+      pairs={pairs}
+      onBack={() => setStep("books")}
+      onAssign={assignBook}
+      onUnassign={unassignChild}
       onCreate={createProject}
     />
   );
