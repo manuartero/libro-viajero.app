@@ -1,9 +1,14 @@
-import type { Project } from "src/project/project.model";
+import { ChildAvatar } from "src/child/child-avatar.component";
+import {
+  indexBooks,
+  indexChildren,
+  type Project,
+} from "src/project/project.model";
 import styles from "./next-week.module.css";
 
 type NextWeekPanelProps = {
   project: Project;
-  returnedChildIds: string[];
+  returnedChildIds: ReadonlySet<string>;
 };
 
 // Placeholder rotation: shift returned books by one position.
@@ -14,7 +19,7 @@ const shiftSuggestions = ({
   returnedChildIds,
 }: NextWeekPanelProps) => {
   const returned = project.currentAssignments.filter((a) =>
-    returnedChildIds.includes(a.childId),
+    returnedChildIds.has(a.childId),
   );
   return returned.map((assignment, i) => ({
     bookId: assignment.bookId,
@@ -28,8 +33,8 @@ export function NextWeekPanel({
 }: NextWeekPanelProps) {
   const suggestions = shiftSuggestions({ project, returnedChildIds });
 
-  const childById = new Map(project.children.map((child) => [child.id, child]));
-  const bookById = new Map(project.books.map((book) => [book.id, book]));
+  const childById = indexChildren(project);
+  const bookById = indexBooks(project);
 
   return (
     <section className={styles.panel} aria-labelledby="next-week-title">
@@ -55,13 +60,11 @@ export function NextWeekPanel({
                   →
                 </span>
                 <span className={styles.child}>
-                  <span
-                    className={styles.emoji}
-                    style={{ background: child.color }}
-                    aria-hidden="true"
-                  >
-                    {child.emoji}
-                  </span>
+                  <ChildAvatar
+                    emoji={child.emoji}
+                    color={child.color}
+                    size="xsmall"
+                  />
                   {child.tag}
                 </span>
               </li>

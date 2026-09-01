@@ -3,6 +3,7 @@ import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
+import type { BookPairing, Pairing } from "src/project/project.model";
 import styles from "./assign-step.module.css";
 
 type AssignStepProps = {
@@ -10,9 +11,9 @@ type AssignStepProps = {
   yearShort: string;
   childList: Child[];
   bookList: Book[];
-  pairs: Record<string, string>; // childId -> bookId
+  pairs: Pairing;
   onBack: () => void;
-  onAssign: (input: { childId: string; bookId: string }) => void;
+  onAssign: (input: BookPairing) => void;
   onUnassign: (childId: string) => void;
   onCreate: () => void;
 };
@@ -107,9 +108,8 @@ export function AssignStep({
           </h2>
           <ul className={styles.childList}>
             {childList.map((child) => {
-              const book = pairs[child.id]
-                ? bookById.get(pairs[child.id])
-                : undefined;
+              const pairedBookId = pairs[child.id];
+              const book = pairedBookId ? bookById.get(pairedBookId) : undefined;
               return (
                 <li key={child.id} className={styles.childRow}>
                   <button

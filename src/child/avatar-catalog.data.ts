@@ -31,7 +31,7 @@ export const CURATED_EMOJIS = [
   { emoji: "🍓", name: "Fresa" },
 ] as const satisfies readonly CuratedEmoji[];
 
-export type AvatarColor = {
+type AvatarColor = {
   color: string;
   name: string;
 };

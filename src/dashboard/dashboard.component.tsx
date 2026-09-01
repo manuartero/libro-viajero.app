@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ChildCard } from "src/dashboard/child-card.component";
 import { MissingSummary } from "src/dashboard/missing-summary.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
-import type { Project } from "src/project/project.model";
+import { assignedBookByChild, type Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
 
 type DashboardProps = {
@@ -11,23 +11,24 @@ type DashboardProps = {
 };
 
 export function Dashboard({ project }: DashboardProps) {
-  const [returnedChildIds, setReturnedChildIds] = useState<string[]>([]);
-
-  const toggleReturned = (childId: string) => {
-    setReturnedChildIds((prev) =>
-      prev.includes(childId)
-        ? prev.filter((id) => id !== childId)
-        : [...prev, childId],
-    );
-  };
-
-  const bookById = new Map(project.books.map((book) => [book.id, book]));
-  const bookOfChild = new Map(
-    project.currentAssignments.map((a) => [a.childId, bookById.get(a.bookId)]),
+  const [returnedChildIds, setReturnedChildIds] = useState<ReadonlySet<string>>(
+    new Set(),
   );
 
+  const toggleReturned = useCallback((childId: string) => {
+    setReturnedChildIds((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(childId)) {
+        next.add(childId);
+      }
+      return next;
+    });
+  }, []);
+
+  const bookOfChild = useMemo(() => assignedBookByChild(project), [project]);
+
   const missing = project.children
-    .filter((child) => !returnedChildIds.includes(child.id))
+    .filter((child) => !returnedChildIds.has(child.id))
     .map((child) => ({ child, book: bookOfChild.get(child.id) }));
 
   return (
@@ -35,7 +36,7 @@ export function Dashboard({ project }: DashboardProps) {
       <header className={styles.header}>
         <p className={styles.projectName}>{project.name}</p>
         <ReturnCounter
-          returned={returnedChildIds.length}
+          returned={returnedChildIds.size}
           total={project.children.length}
         />
       </header>
@@ -47,7 +48,7 @@ export function Dashboard({ project }: DashboardProps) {
               <ChildCard
                 child={child}
                 book={bookOfChild.get(child.id)}
-                returned={returnedChildIds.includes(child.id)}
+                returned={returnedChildIds.has(child.id)}
                 onToggle={toggleReturned}
               />
             </li>

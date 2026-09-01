@@ -22,8 +22,9 @@ export function ClassNameStep({
   const year = schoolYearFrom(yearStart);
   const canContinue = classroomName.trim().length > 0;
   // Teachers set up this course or the next one — anything further is a typo.
-  const minStart = currentSchoolYear().start - 1;
-  const maxStart = currentSchoolYear().start + 1;
+  const { start: currentStart } = currentSchoolYear();
+  const minStart = currentStart - 1;
+  const maxStart = currentStart + 1;
 
   return (
     <form

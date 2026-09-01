@@ -1,4 +1,5 @@
 import type { Book, BookDraft } from "src/book/book.model";
+import { pluralize } from "src/lib/plural";
 import { BookSearch } from "src/setup/book-search.component";
 import { Bookshelf } from "src/setup/bookshelf.component";
 import styles from "./books-step.module.css";
@@ -15,7 +16,7 @@ type BooksStepProps = {
 };
 
 const pluralLibros = (count: number) =>
-  count === 1 ? "1 libro" : `${count} libros`;
+  pluralize({ count, singular: "libro", plural: "libros" });
 
 export function BooksStep({
   classroomName,
@@ -57,7 +58,7 @@ export function BooksStep({
       <footer className={styles.footer}>
         <p className={styles.progress}>
           {over > 0
-            ? `Te ${over === 1 ? "sobra 1 libro" : `sobran ${over} libros`}`
+            ? `Te ${over === 1 ? "sobra" : "sobran"} ${pluralLibros(over)}`
             : `${bookList.length} de ${pluralLibros(childCount)}`}
         </p>
         <button

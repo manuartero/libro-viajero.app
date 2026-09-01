@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Child, ChildDraft } from "src/child/child.model";
+import { pluralize } from "src/lib/plural";
 import { ChildBuilder } from "src/setup/child-builder.component";
 import { Roster } from "src/setup/roster.component";
 import styles from "./children-step.module.css";
@@ -14,9 +15,6 @@ type ChildrenStepProps = {
   onRemove: (childId: string) => void;
   onNext: () => void;
 };
-
-const pluralPeques = (count: number) =>
-  count === 1 ? "1 peque" : `${count} peques`;
 
 export function ChildrenStep({
   classroomName,
@@ -49,7 +47,12 @@ export function ChildrenStep({
         <div className={styles.mastheadBlock}>
           <p className={styles.masthead}>{classroomName}</p>
           <p className={styles.dateline}>
-            Paso 2 de 4 · Curso {yearShort} · {pluralPeques(childList.length)}
+            Paso 2 de 4 · Curso {yearShort} ·{" "}
+            {pluralize({
+              count: childList.length,
+              singular: "peque",
+              plural: "peques",
+            })}
           </p>
         </div>
       </header>

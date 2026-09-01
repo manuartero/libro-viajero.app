@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { Book } from "src/book/book.model";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
@@ -10,7 +11,13 @@ type ChildCardProps = {
   onToggle: (childId: string) => void;
 };
 
-export function ChildCard({ child, book, returned, onToggle }: ChildCardProps) {
+// memo: tapping one card must not re-render the other ~25 cards.
+export const ChildCard = memo(function ChildCard({
+  child,
+  book,
+  returned,
+  onToggle,
+}: ChildCardProps) {
   return (
     <button
       type="button"
@@ -26,4 +33,4 @@ export function ChildCard({ child, book, returned, onToggle }: ChildCardProps) {
       <span className={styles.book}>{book ? book.title : "sin libro"}</span>
     </button>
   );
-}
+});

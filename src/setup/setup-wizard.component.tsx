@@ -3,7 +3,7 @@ import type { Book, BookDraft } from "src/book/book.model";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { newId } from "src/lib/id";
 import { mondayOf } from "src/lib/week";
-import type { Project } from "src/project/project.model";
+import type { Pairing, Project } from "src/project/project.model";
 import {
   currentSchoolYear,
   schoolYearFrom,
@@ -12,6 +12,28 @@ import { AssignStep } from "src/setup/assign-step.component";
 import { BooksStep } from "src/setup/books-step.component";
 import { ChildrenStep } from "src/setup/children-step.component";
 import { ClassNameStep } from "src/setup/class-name-step.component";
+
+const withoutChild = ({
+  pairs,
+  childId,
+}: {
+  pairs: Pairing;
+  childId: string;
+}): Pairing => {
+  const { [childId]: _removed, ...rest } = pairs;
+  return rest;
+};
+
+const withoutBook = ({
+  pairs,
+  bookId,
+}: {
+  pairs: Pairing;
+  bookId: string;
+}): Pairing =>
+  Object.fromEntries(
+    Object.entries(pairs).filter(([, pairedBookId]) => pairedBookId !== bookId),
+  );
 
 type SetupWizardProps = {
   onCreate: (project: Project) => void;
@@ -25,8 +47,8 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
   const [yearStart, setYearStart] = useState(() => currentSchoolYear().start);
   const [childList, setChildList] = useState<Child[]>([]);
   const [bookList, setBookList] = useState<Book[]>([]);
-  // childId -> bookId; pruned whenever either side is removed.
-  const [pairs, setPairs] = useState<Record<string, string>>({});
+  // Pruned whenever either side is removed.
+  const [pairs, setPairs] = useState<Pairing>({});
 
   const year = schoolYearFrom(yearStart);
 
@@ -40,7 +62,7 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
 
   const removeChild = (childId: string) => {
     setChildList((prev) => prev.filter((c) => c.id !== childId));
-    setPairs(({ [childId]: _removed, ...rest }) => rest);
+    setPairs((prev) => withoutChild({ pairs: prev, childId }));
   };
 
   const addBook = (draft: BookDraft) => {
@@ -49,13 +71,7 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
 
   const removeBook = (bookId: string) => {
     setBookList((prev) => prev.filter((b) => b.id !== bookId));
-    setPairs((prev) =>
-      Object.fromEntries(
-        Object.entries(prev).filter(
-          ([, pairedBookId]) => pairedBookId !== bookId,
-        ),
-      ),
-    );
+    setPairs((prev) => withoutBook({ pairs: prev, bookId }));
   };
 
   const assignBook = ({
@@ -67,17 +83,13 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
   }) => {
     // One book, one child: strip the book from any other pairing first.
     setPairs((prev) => ({
-      ...Object.fromEntries(
-        Object.entries(prev).filter(
-          ([, pairedBookId]) => pairedBookId !== bookId,
-        ),
-      ),
+      ...withoutBook({ pairs: prev, bookId }),
       [childId]: bookId,
     }));
   };
 
   const unassignChild = (childId: string) => {
-    setPairs(({ [childId]: _removed, ...rest }) => rest);
+    setPairs((prev) => withoutChild({ pairs: prev, childId }));
   };
 
   const createProject = () => {

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import type { Book } from "src/book/book.model";
-import type { Child } from "src/child/child.model";
+import { ChildAvatar } from "src/child/child-avatar.component";
+import type { ChildWithBook } from "src/project/project.model";
 import styles from "./missing-summary.module.css";
 
 type MissingSummaryProps = {
-  missing: { child: Child; book: Book | undefined }[];
+  missing: ChildWithBook[];
 };
 
 const reminderMessage = ({ tag, title }: { tag: string; title: string }) =>
@@ -21,10 +21,7 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
     );
   }
 
-  const copyReminder = async ({
-    child,
-    book,
-  }: MissingSummaryProps["missing"][number]) => {
+  const copyReminder = async ({ child, book }: ChildWithBook) => {
     await navigator.clipboard.writeText(
       reminderMessage({ tag: child.tag, title: book?.title ?? "su libro" }),
     );
@@ -44,13 +41,7 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
         {missing.map(({ child, book }) => (
           <li key={child.id} className={styles.row}>
             <span className={styles.who}>
-              <span
-                className={styles.emoji}
-                style={{ background: child.color }}
-                aria-hidden="true"
-              >
-                {child.emoji}
-              </span>
+              <ChildAvatar emoji={child.emoji} color={child.color} size="xsmall" />
               {child.tag}
               <span className={styles.bookTitle}>
                 {book ? book.title : "sin libro"}
