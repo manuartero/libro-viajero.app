@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Book } from "src/book/book.model";
 import type { Child } from "src/child/child.model";
+import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./missing-summary.module.css";
 
 type MissingSummaryProps = {
@@ -8,7 +9,7 @@ type MissingSummaryProps = {
 };
 
 const reminderMessage = ({ tag, title }: { tag: string; title: string }) =>
-  `Hi! Just a reminder that ${tag}'s copy of '${title}' hasn't come back yet. No worries — just whenever you can! 📚`;
+  `¡Hola! Un recordatorio: el libro «${title}» de ${tag} aún no ha vuelto a clase. Sin agobios — ¡cuando podáis! 📚`;
 
 export function MissingSummary({ missing }: MissingSummaryProps) {
   const [copiedChildId, setCopiedChildId] = useState<string | null>(null);
@@ -44,13 +45,11 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
         {missing.map(({ child, book }) => (
           <li key={child.id} className={styles.row}>
             <span className={styles.who}>
-              <span
-                className={styles.emoji}
-                style={{ background: child.color }}
-                aria-hidden="true"
-              >
-                {child.emoji}
-              </span>
+              <ChildAvatar
+                emoji={child.emoji}
+                color={child.color}
+                size="tiny"
+              />
               {child.tag}
               <span className={styles.bookTitle}>
                 {book ? book.title : "sin libro"}

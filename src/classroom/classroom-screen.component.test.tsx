@@ -19,7 +19,9 @@ describe("<ClassroomScreen />", () => {
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Zorro" }));
-    fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Añadir peque a la clase" }),
+    );
 
     expect(onUpdate).toHaveBeenCalledTimes(1);
     const next = onUpdate.mock.calls[0][0];

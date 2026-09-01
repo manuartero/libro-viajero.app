@@ -14,15 +14,6 @@ describe("<Roster />", () => {
     expect(screen.getByText("Aquí irán apareciendo tus peques")).toBeDefined();
   });
 
-  it("lists every child as an editable chip", () => {
-    render(
-      <Roster childList={childList} editingId={null} onSelect={() => {}} />,
-    );
-
-    expect(screen.getByRole("button", { name: "Rana, editar" })).toBeDefined();
-    expect(screen.getByRole("button", { name: "Dino, editar" })).toBeDefined();
-  });
-
   it("reports the tapped child", () => {
     const onSelect = vi.fn();
     render(

@@ -3,6 +3,7 @@ import type { AppData } from "src/project/project.model";
 // Placeholder namespace until Google auth lands; then payload.sub takes over.
 // TODO(auth): on first login, migrate `libro-viajero:anonymous` into the
 // user's own namespace — otherwise every pre-auth classroom disappears.
+// See docs/DATA_MODEL.md § localStorage Schema.
 export const ANONYMOUS_USER_ID = "anonymous";
 
 const storageKey = (googleId: string) => `libro-viajero:${googleId}`;
