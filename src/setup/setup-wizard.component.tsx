@@ -4,10 +4,7 @@ import type { Child, ChildDraft } from "src/child/child.model";
 import { newId } from "src/lib/id";
 import { mondayOf } from "src/lib/week";
 import type { Project } from "src/project/project.model";
-import {
-  currentSchoolYear,
-  schoolYearFrom,
-} from "src/project/school-year.model";
+import { currentSchoolYear } from "src/project/school-year.model";
 import { AssignStep } from "src/setup/assign-step.component";
 import { BooksStep } from "src/setup/books-step.component";
 import { ChildrenStep } from "src/setup/children-step.component";
@@ -22,13 +19,14 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
     "name",
   );
   const [classroomName, setClassroomName] = useState("");
-  const [yearStart, setYearStart] = useState(() => currentSchoolYear().start);
   const [childList, setChildList] = useState<Child[]>([]);
   const [bookList, setBookList] = useState<Book[]>([]);
   // childId -> bookId; pruned whenever either side is removed.
   const [pairs, setPairs] = useState<Record<string, string>>({});
 
-  const year = schoolYearFrom(yearStart);
+  // Fixed to the current course — teachers set up during the summer,
+  // so this is always the course about to start (or just started).
+  const year = currentSchoolYear();
 
   const addChild = (draft: ChildDraft) => {
     setChildList((prev) => [...prev, { id: newId(), ...draft }]);
@@ -100,9 +98,8 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
     return (
       <ClassNameStep
         classroomName={classroomName}
-        yearStart={yearStart}
+        yearLabel={year.label}
         onClassroomNameChange={setClassroomName}
-        onYearStartChange={setYearStart}
         onNext={() => setStep("children")}
       />
     );

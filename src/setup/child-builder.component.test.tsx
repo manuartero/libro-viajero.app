@@ -50,7 +50,7 @@ describe("<ChildBuilder />", () => {
     render(
       <ChildBuilder
         usedEmojis={["🐸"]}
-        usedColors={["#8ac926"]}
+        usedColors={["#ff595e"]}
         editing={null}
         {...noHandlers}
         onAdd={onAdd}
@@ -58,13 +58,42 @@ describe("<ChildBuilder />", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Dino" }));
-    fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Añadir peque a la clase" }),
+    );
 
     expect(onAdd).toHaveBeenCalledWith({
       tag: "Dino",
       emoji: "🦕",
-      color: "#ffca3a",
+      color: "#f3722c",
     });
+  });
+
+  it("cycles emoji panels with the next arrow and wraps around", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={null}
+        {...noHandlers}
+      />,
+    );
+
+    expect(screen.getByText("Animales")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Girasol" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
+    expect(screen.getByText("Naturaleza")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Girasol" }));
+    expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe(
+      "Girasol",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
+    expect(screen.getByText("Objetos")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
+    expect(screen.getByText("Animales")).toBeDefined();
   });
 
   it("caps the nickname at 20 characters", () => {
@@ -91,7 +120,7 @@ describe("<ChildBuilder />", () => {
     );
 
     const add = screen.getByRole<HTMLButtonElement>("button", {
-      name: "Añadir a la clase",
+      name: "Añadir peque a la clase",
     });
     expect(add.disabled).toBe(true);
 

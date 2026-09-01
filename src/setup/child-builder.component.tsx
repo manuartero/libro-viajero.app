@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   AVATAR_COLORS,
-  CURATED_EMOJIS,
   type CuratedEmoji,
+  EMOJI_PANELS,
   nextUnusedColor,
 } from "src/child/avatar-catalog.data";
 import type { Child, ChildDraft } from "src/child/child.model";
@@ -34,6 +34,9 @@ export function ChildBuilder({
   const [pickedColor, setPickedColor] = useState<string | null>(
     editing?.color ?? null,
   );
+  const [panelIndex, setPanelIndex] = useState(0);
+
+  const panel = EMOJI_PANELS[panelIndex];
 
   // Preselected so color is an optional tap: emoji + add is enough.
   const color = pickedColor ?? nextUnusedColor(usedColors);
@@ -96,8 +99,27 @@ export function ChildBuilder({
 
       <fieldset className={styles.picker}>
         <legend className={styles.pickerLegend}>Elige un emoji</legend>
+        <div className={styles.panelBar}>
+          <span className={styles.panelLabel}>
+            {panel.label}
+            <span className={styles.panelCount}>
+              {" "}
+              · {panelIndex + 1}/{EMOJI_PANELS.length}
+            </span>
+          </span>
+          <button
+            type="button"
+            className={styles.panelNext}
+            aria-label="Más emojis"
+            onClick={() =>
+              setPanelIndex((prev) => (prev + 1) % EMOJI_PANELS.length)
+            }
+          >
+            ›
+          </button>
+        </div>
         <div className={styles.emojiGrid}>
-          {CURATED_EMOJIS.map((entry) => {
+          {panel.emojis.map((entry) => {
             const selected = emoji === entry.emoji;
             const used = usedEmojis.includes(entry.emoji);
             return (
@@ -161,7 +183,7 @@ export function ChildBuilder({
         </div>
       ) : (
         <button type="submit" className={styles.add} disabled={!canSubmit}>
-          Añadir a la clase
+          Añadir peque a la clase
         </button>
       )}
     </form>

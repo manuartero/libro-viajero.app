@@ -55,6 +55,13 @@ export function ChildrenStep({
       </header>
 
       <main className={styles.main}>
+        <div className={styles.intro}>
+          <h1 className={styles.introTitle}>Añade a tus peques</h1>
+          <p className={styles.introHint}>
+            Cada peque de {classroomName} tendrá su avatar para pasar lista.
+          </p>
+        </div>
+
         {/* The key remounts the builder: ChildBuilder seeds its state from
             `editing` once, so a fresh form per add / reload per edit depends
             on this remount. */}
