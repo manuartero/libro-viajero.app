@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Book } from "src/book/book.model";
 import { BookSearch } from "src/library/book-search.component";
 import { Bookshelf } from "src/library/bookshelf.component";
@@ -8,7 +8,9 @@ import styles from "./library-screen.module.css";
 
 type LibraryScreenProps = {
   project: Project;
-  onUpdate: (project: Project) => void;
+  // Returns whether the update persisted; on false the screen keeps its
+  // transient UI (confirm panel) so the action stays retryable.
+  onUpdate: (project: Project) => boolean;
 };
 
 const pluralLibros = (count: number) =>
@@ -17,6 +19,15 @@ const pluralLibros = (count: number) =>
 export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
   // A book that is at a child's home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Book | null>(null);
+
+  // The alertdialog contract: focus moves into the panel when it opens —
+  // which also scrolls it into view, since the trigger sits far below it.
+  const confirmRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (confirmingRemove) {
+      confirmRef.current?.focus();
+    }
+  }, [confirmingRemove]);
 
   const readerOf = (bookId: string) => {
     const assignment = project.currentAssignments.find(
@@ -32,8 +43,9 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
     : null;
 
   const remove = (bookId: string) => {
-    onUpdate(removeBook({ project, bookId }));
-    setConfirmingRemove(null);
+    if (onUpdate(removeBook({ project, bookId }))) {
+      setConfirmingRemove(null);
+    }
   };
 
   return (
@@ -50,6 +62,8 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
       <main className={styles.main}>
         {confirmingRemove ? (
           <div
+            ref={confirmRef}
+            tabIndex={-1}
             className={styles.confirmPanel}
             role="alertdialog"
             aria-label={`Quitar ${confirmingRemove.title}`}

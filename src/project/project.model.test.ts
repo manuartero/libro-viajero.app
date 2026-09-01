@@ -1,7 +1,9 @@
+import { mondayOf } from "src/lib/week";
 import type { Project } from "src/project/project.model";
 import {
   addBook,
   addChild,
+  distributeBooks,
   removeBook,
   removeChild,
   saveChild,
@@ -83,6 +85,63 @@ describe("addBook()", () => {
     expect(next.books).toHaveLength(3);
     expect(next.books[2].title).toBe("La cebra Camila");
     expect(next.books[2].id).toBeTruthy();
+  });
+});
+
+describe("distributeBooks()", () => {
+  it("keeps the weekStart of an unchanged pair and stamps Monday on a new one", () => {
+    const next = distributeBooks({
+      project: baseProject(),
+      pairs: { c1: "b1", c2: "b2" },
+    });
+    expect(next.currentAssignments).toEqual([
+      { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+      { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
+    ]);
+
+    const swapped = distributeBooks({
+      project: baseProject(),
+      pairs: { c1: "b2", c2: "b1" },
+    });
+    expect(swapped.currentAssignments).toEqual([
+      { childId: "c1", bookId: "b2", weekStart: mondayOf() },
+      { childId: "c2", bookId: "b1", weekStart: mondayOf() },
+    ]);
+  });
+
+  it("allows a partial reparto", () => {
+    const next = distributeBooks({
+      project: baseProject(),
+      pairs: { c2: "b1" },
+    });
+    expect(next.currentAssignments).toEqual([
+      { childId: "c2", bookId: "b1", weekStart: mondayOf() },
+    ]);
+  });
+
+  it("drops pairs that reference a missing child or book", () => {
+    const next = distributeBooks({
+      project: baseProject(),
+      pairs: { ghost: "b1", c1: "b-gone" },
+    });
+    expect(next.currentAssignments).toEqual([]);
+  });
+
+  it("gives a book claimed twice to the first child in class order", () => {
+    const next = distributeBooks({
+      project: baseProject(),
+      pairs: { c1: "b1", c2: "b1" },
+    });
+    expect(next.currentAssignments).toEqual([
+      { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+    ]);
+  });
+
+  it("leaves history and the input project untouched", () => {
+    const project = baseProject();
+    const next = distributeBooks({ project, pairs: { c1: "b2" } });
+    expect(next.history).toBe(project.history);
+    expect(project.currentAssignments).toHaveLength(2);
   });
 });
 

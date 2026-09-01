@@ -1,6 +1,7 @@
 import type { Book, BookDraft } from "src/book/book.model";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { newId } from "src/lib/id";
+import { mondayOf } from "src/lib/week";
 
 export type Assignment = {
   childId: string;
@@ -82,6 +83,44 @@ export function addBook({
   draft: BookDraft;
 }): Project {
   return { ...project, books: [...project.books, { ...draft, id: newId() }] };
+}
+
+// Replaces currentAssignments from a childId → bookId mapping (a reparto).
+// Guarantees the assignment invariants regardless of where `pairs` came from:
+// only live children and books, one book per child and one child per book
+// (first child in class order wins), and an unchanged pair keeps its
+// weekStart so rotation scoring stays honest — a new or changed pair starts
+// counting from this week's Monday.
+export function distributeBooks({
+  project,
+  pairs,
+}: {
+  project: Project;
+  pairs: Record<string, string>;
+}): Project {
+  const weekStartOf = new Map(
+    project.currentAssignments.map((a) => [
+      `${a.childId}:${a.bookId}`,
+      a.weekStart,
+    ]),
+  );
+  const liveBookIds = new Set(project.books.map((b) => b.id));
+  const takenBookIds = new Set<string>();
+  const currentAssignments = project.children.flatMap((child) => {
+    const bookId = pairs[child.id];
+    if (!bookId || !liveBookIds.has(bookId) || takenBookIds.has(bookId)) {
+      return [];
+    }
+    takenBookIds.add(bookId);
+    return [
+      {
+        childId: child.id,
+        bookId,
+        weekStart: weekStartOf.get(`${child.id}:${bookId}`) ?? mondayOf(),
+      },
+    ];
+  });
+  return { ...project, currentAssignments };
 }
 
 export function removeBook({

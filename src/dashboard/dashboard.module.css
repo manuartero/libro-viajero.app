@@ -114,6 +114,56 @@
   gap: 0.5rem;
 }
 
+.bookless {
+  border-top: 1px solid var(--ink-soft);
+  padding-top: 0.75rem;
+}
+
+.booklessTitle {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.booklessList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.booklessRow {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.booklessTag {
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.repartirAgain {
+  min-height: 2.75rem;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.repartirAgain:active {
+  background: var(--paper-dark);
+}
+
 .footer {
   position: sticky;
   bottom: 0;

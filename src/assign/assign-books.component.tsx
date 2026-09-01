@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { BookCover } from "src/book/book-cover.component";
 import { ChildAvatar } from "src/child/child-avatar.component";
-import { mondayOf } from "src/lib/week";
-import type { Assignment, Project } from "src/project/project.model";
+import type { Project } from "src/project/project.model";
 import styles from "./assign-books.module.css";
 
 type AssignBooksProps = {
   project: Project;
-  onConfirm: (assignments: Assignment[]) => void;
+  // childId -> bookId; distributeBooks() turns it into assignments.
+  onConfirm: (pairs: Record<string, string>) => void;
   onBack: () => void;
 };
 
@@ -61,26 +61,6 @@ export function AssignBooks({ project, onConfirm, onBack }: AssignBooksProps) {
       delete next[childId];
       return next;
     });
-  };
-
-  const save = () => {
-    // An unchanged pair keeps its weekStart so rotation scoring stays honest;
-    // a new or changed pair starts counting from this week's Monday.
-    const weekStartOf = new Map(
-      project.currentAssignments.map((a) => [
-        `${a.childId}:${a.bookId}`,
-        a.weekStart,
-      ]),
-    );
-    const assignments = childList
-      .filter((child) => pairs[child.id])
-      .map((child) => ({
-        childId: child.id,
-        bookId: pairs[child.id],
-        weekStart:
-          weekStartOf.get(`${child.id}:${pairs[child.id]}`) ?? mondayOf(),
-      }));
-    onConfirm(assignments);
   };
 
   return (
@@ -201,7 +181,7 @@ export function AssignBooks({ project, onConfirm, onBack }: AssignBooksProps) {
           type="button"
           className={styles.save}
           disabled={assignedCount === 0}
-          onClick={save}
+          onClick={() => onConfirm(pairs)}
         >
           Guardar reparto
         </button>

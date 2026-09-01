@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import type { AppTab } from "src/app.model";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it, vi } from "vitest";
@@ -22,16 +23,33 @@ const books = [
   { id: "b2", title: "El Grúfalo" },
 ];
 
+const renderDashboard = ({
+  overrides,
+  returnedChildIds = [],
+  onToggleReturned = () => {},
+  onNavigate = () => {},
+  onRepartir = () => {},
+}: {
+  overrides?: Partial<Project>;
+  returnedChildIds?: string[];
+  onToggleReturned?: (childId: string) => void;
+  onNavigate?: (tab: AppTab) => void;
+  onRepartir?: () => void;
+}) =>
+  render(
+    <Dashboard
+      project={project(overrides)}
+      returnedChildIds={returnedChildIds}
+      onToggleReturned={onToggleReturned}
+      onNavigate={onNavigate}
+      onRepartir={onRepartir}
+    />,
+  );
+
 describe("<Dashboard />", () => {
   it("invites to add children when the class is empty", () => {
     const onNavigate = vi.fn();
-    render(
-      <Dashboard
-        project={project()}
-        onNavigate={onNavigate}
-        onRepartir={() => {}}
-      />,
-    );
+    renderDashboard({ onNavigate });
 
     fireEvent.click(screen.getByRole("button", { name: "Añadir peques" }));
 
@@ -40,13 +58,7 @@ describe("<Dashboard />", () => {
 
   it("invites to add books when the library is empty", () => {
     const onNavigate = vi.fn();
-    render(
-      <Dashboard
-        project={project({ children })}
-        onNavigate={onNavigate}
-        onRepartir={() => {}}
-      />,
-    );
+    renderDashboard({ overrides: { children }, onNavigate });
 
     fireEvent.click(screen.getByRole("button", { name: "Añadir libros" }));
 
@@ -55,59 +67,77 @@ describe("<Dashboard />", () => {
 
   it("invites to distribute books when nothing is assigned yet", () => {
     const onRepartir = vi.fn();
-    render(
-      <Dashboard
-        project={project({ children, books })}
-        onNavigate={() => {}}
-        onRepartir={onRepartir}
-      />,
-    );
+    renderDashboard({ overrides: { children, books }, onRepartir });
 
     fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
 
     expect(onRepartir).toHaveBeenCalledTimes(1);
   });
 
-  it("shows the check-in with a repartir banner while some child lacks a book", () => {
-    render(
-      <Dashboard
-        project={project({
-          children,
-          books,
-          currentAssignments: [
-            { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
-          ],
-        })}
-        onNavigate={() => {}}
-        onRepartir={() => {}}
-      />,
-    );
+  it("checks in only children with a book and lists the rest apart", () => {
+    const onRepartir = vi.fn();
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+        ],
+      },
+      onRepartir,
+    });
+
+    // Zorro never took a book home: out of the count, not a check-in card.
+    expect(screen.getByRole("status").textContent).toContain("0/1");
+    expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Zorro" })).toBeNull();
+    expect(screen.getByText("Sin libro esta semana")).toBeDefined();
+    expect(screen.getByText("Zorro")).toBeDefined();
 
     expect(screen.getByText("1 peque sin libro")).toBeDefined();
-    expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
-    expect(screen.getByRole("button", { name: "Zorro" })).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+    expect(onRepartir).toHaveBeenCalledTimes(1);
   });
 
   it("runs the plain check-in when every child has a book", () => {
-    render(
-      <Dashboard
-        project={project({
-          children,
-          books,
-          currentAssignments: [
-            { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
-            { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
-          ],
-        })}
-        onNavigate={() => {}}
-        onRepartir={() => {}}
-      />,
-    );
+    const onToggleReturned = vi.fn();
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+          { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
+        ],
+      },
+      returnedChildIds: ["c1"],
+      onToggleReturned,
+    });
 
-    expect(screen.queryByText(/sin libro/)).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Rana — Elmer" }));
-
+    expect(screen.queryByText(/peques? sin libro/)).toBeNull();
     expect(screen.getByRole("status").textContent).toContain("1/2");
+
+    fireEvent.click(screen.getByRole("button", { name: "Zorro — El Grúfalo" }));
+
+    expect(onToggleReturned).toHaveBeenCalledWith("c2");
+  });
+
+  it("still offers the reparto when every child has a book", () => {
+    const onRepartir = vi.fn();
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+          { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
+        ],
+      },
+      onRepartir,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+
+    expect(onRepartir).toHaveBeenCalledTimes(1);
   });
 });

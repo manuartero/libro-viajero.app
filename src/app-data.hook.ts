@@ -33,31 +33,32 @@ export function useAppData() {
     appData.projects.find((p) => p.id === appData.activeProjectId) ?? null;
 
   // On a failed save the state stays pre-mutation so nothing on screen
-  // pretends to be persisted.
+  // pretends to be persisted. Callers get the outcome back so they can keep
+  // transient UI (forms, dialogs, the reparto) alive instead of tearing it
+  // down over a change that never landed.
   const persist = (next: AppData) => {
     if (!saveAppData({ googleId: ANONYMOUS_USER_ID, data: next })) {
       setSaveFailed(true);
-      return;
+      return false;
     }
     setSaveFailed(false);
     setAppData(next);
+    return true;
   };
 
-  const createProject = (project: Project) => {
+  const createProject = (project: Project) =>
     persist({
       projects: [...appData.projects, project],
       activeProjectId: project.id,
     });
-  };
 
-  const updateProject = (project: Project) => {
+  const updateProject = (project: Project) =>
     persist({
       ...appData,
       projects: appData.projects.map((p) =>
         p.id === project.id ? project : p,
       ),
     });
-  };
 
   return { activeProject, saveFailed, createProject, updateProject };
 }

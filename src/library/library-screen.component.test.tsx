@@ -15,7 +15,7 @@ const project = (overrides?: Partial<Project>): Project => ({
 
 describe("<LibraryScreen />", () => {
   it("adds a manually entered book to the live project", () => {
-    const onUpdate = vi.fn();
+    const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<LibraryScreen project={project()} onUpdate={onUpdate} />);
 
     fireEvent.click(
@@ -33,7 +33,7 @@ describe("<LibraryScreen />", () => {
   });
 
   it("removes an unassigned book without asking", () => {
-    const onUpdate = vi.fn();
+    const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<LibraryScreen project={project()} onUpdate={onUpdate} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Elmer, quitar" }));
@@ -43,7 +43,7 @@ describe("<LibraryScreen />", () => {
   });
 
   it("asks before removing a book that is at a child's home", () => {
-    const onUpdate = vi.fn();
+    const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     const assigned = project({
       currentAssignments: [
         { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
@@ -62,10 +62,31 @@ describe("<LibraryScreen />", () => {
     const next = onUpdate.mock.calls[0][0];
     expect(next.books).toHaveLength(0);
     expect(next.currentAssignments).toHaveLength(0);
+    expect(screen.queryByText(/está en casa/)).toBeNull();
+  });
+
+  it("keeps the confirm panel when the removal does not persist", () => {
+    const onUpdate = vi.fn<(next: Project) => boolean>(() => false);
+    render(
+      <LibraryScreen
+        project={project({
+          currentAssignments: [
+            { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+          ],
+        })}
+        onUpdate={onUpdate}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, quitar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sí, quitarlo" }));
+
+    expect(onUpdate).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(/está en casa de «Rana»/)).toBeDefined();
   });
 
   it("keeps the book when the removal is cancelled", () => {
-    const onUpdate = vi.fn();
+    const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(
       <LibraryScreen
         project={project({

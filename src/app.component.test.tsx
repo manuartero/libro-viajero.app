@@ -14,6 +14,22 @@ const addChild = (emojiName: string) => {
   fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
 };
 
+// create → add Rana → add Elmer → back to Semana, ready for the reparto.
+const setupClassWithRanaAndElmer = () => {
+  createClass("Los Caracoles");
+  fireEvent.click(screen.getByRole("button", { name: "Clase" }));
+  addChild("Rana");
+  fireEvent.click(screen.getByRole("button", { name: "Biblioteca" }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "¿No lo encuentras? Añádelo a mano" }),
+  );
+  fireEvent.change(screen.getByLabelText("Título"), {
+    target: { value: "Elmer" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Añadir libro" }));
+  fireEvent.click(screen.getByRole("button", { name: "Semana" }));
+};
+
 describe("<App />", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -84,19 +100,7 @@ describe("<App />", () => {
 
   it("distributes books from the dashboard and returns to the check-in", () => {
     render(<App />);
-    createClass("Los Caracoles");
-
-    fireEvent.click(screen.getByRole("button", { name: "Clase" }));
-    addChild("Rana");
-    fireEvent.click(screen.getByRole("button", { name: "Biblioteca" }));
-    fireEvent.click(
-      screen.getByRole("button", { name: "¿No lo encuentras? Añádelo a mano" }),
-    );
-    fireEvent.change(screen.getByLabelText("Título"), {
-      target: { value: "Elmer" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Añadir libro" }));
-    fireEvent.click(screen.getByRole("button", { name: "Semana" }));
+    setupClassWithRanaAndElmer();
 
     fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
     // The repartir flow is full-screen: the tab bar is gone.
@@ -111,6 +115,57 @@ describe("<App />", () => {
       localStorage.getItem("libro-viajero:anonymous") ?? "null",
     );
     expect(stored.projects[0].currentAssignments).toHaveLength(1);
+  });
+
+  it("keeps the reparto mounted when saving fails, so the taps survive a retry", () => {
+    render(<App />);
+    setupClassWithRanaAndElmer();
+
+    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+
+    const setItem = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
+
+    // Still in the full-screen reparto: the pairing is intact and the teacher
+    // sees the warning instead of a silently discarded distribution.
+    expect(screen.queryByRole("navigation")).toBeNull();
+    expect(screen.getByRole("alert").textContent).toContain(
+      "No se pudo guardar",
+    );
+    expect(
+      screen.getByRole("button", { name: "Rana, tiene Elmer" }),
+    ).toBeDefined();
+
+    setItem.mockRestore();
+    errorLog.mockRestore();
+
+    fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
+
+    expect(screen.getByRole("navigation", { name: "Secciones" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
+  });
+
+  it("keeps check-in progress across tab switches", () => {
+    render(<App />);
+    setupClassWithRanaAndElmer();
+    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana — Elmer" }));
+    expect(screen.getByRole("status").textContent).toContain("1/1");
+
+    fireEvent.click(screen.getByRole("button", { name: "Clase" }));
+    fireEvent.click(screen.getByRole("button", { name: "Semana" }));
+
+    expect(screen.getByRole("status").textContent).toContain("1/1");
   });
 
   it("keeps the create screen mounted and warns when saving fails", () => {

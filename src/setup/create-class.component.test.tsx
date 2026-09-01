@@ -1,8 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { CreateClass } from "src/setup/create-class.component";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 describe("<CreateClass />", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("disables creation until the class has a name", () => {
     render(<CreateClass onCreate={() => {}} />);
 
@@ -35,7 +39,9 @@ describe("<CreateClass />", () => {
     expect(project.history).toEqual([]);
   });
 
-  it("steps the course year within one year of the current one", () => {
+  it("steps forward at most one course year", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-01T10:00:00"));
     const onCreate = vi.fn();
     render(<CreateClass onCreate={onCreate} />);
 
@@ -48,11 +54,24 @@ describe("<CreateClass />", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Crear la clase" }));
 
-    const yearShort = onCreate.mock.calls[0][0].name.split(" ").at(-1);
-    const currentStart =
-      new Date().getMonth() >= 6
-        ? new Date().getFullYear()
-        : new Date().getFullYear() - 1;
-    expect(yearShort.startsWith(String(currentStart + 1))).toBe(true);
+    expect(onCreate.mock.calls[0][0].name).toBe("Los Caracoles 2027/28");
+  });
+
+  it("steps back at most one course year", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-01T10:00:00"));
+    const onCreate = vi.fn();
+    render(<CreateClass onCreate={onCreate} />);
+
+    const previous = screen.getByRole("button", { name: "Curso anterior" });
+    fireEvent.click(previous);
+    expect(previous.hasAttribute("disabled")).toBe(true);
+
+    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
+      target: { value: "Los Caracoles" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Crear la clase" }));
+
+    expect(onCreate.mock.calls[0][0].name).toBe("Los Caracoles 2025/26");
   });
 });

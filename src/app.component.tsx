@@ -5,6 +5,7 @@ import { AssignBooks } from "src/assign/assign-books.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import { LibraryScreen } from "src/library/library-screen.component";
+import { distributeBooks } from "src/project/project.model";
 import { CreateClass } from "src/setup/create-class.component";
 import { TabBar } from "src/tab-bar.component";
 import styles from "./app.module.css";
@@ -13,6 +14,18 @@ export function App() {
   const { activeProject, saveFailed, createProject, updateProject } =
     useAppData();
   const [view, setView] = useState<AppView>("semana");
+  // Check-in progress lives here so it survives tab switches: the views
+  // below are mutually exclusive branches and Dashboard unmounts on
+  // navigation. Persisting it arrives with "Confirmar semana".
+  const [returnedChildIds, setReturnedChildIds] = useState<string[]>([]);
+
+  const toggleReturned = (childId: string) => {
+    setReturnedChildIds((prev) =>
+      prev.includes(childId)
+        ? prev.filter((id) => id !== childId)
+        : [...prev, childId],
+    );
+  };
 
   const saveError = saveFailed ? (
     <p role="alert" className={styles.saveError}>
@@ -37,6 +50,8 @@ export function App() {
         {view === "semana" ? (
           <Dashboard
             project={activeProject}
+            returnedChildIds={returnedChildIds}
+            onToggleReturned={toggleReturned}
             onNavigate={setView}
             onRepartir={() => setView("repartir")}
           />
@@ -47,12 +62,16 @@ export function App() {
         ) : (
           <AssignBooks
             project={activeProject}
-            onConfirm={(assignments) => {
-              updateProject({
-                ...activeProject,
-                currentAssignments: assignments,
-              });
-              setView("semana");
+            onConfirm={(pairs) => {
+              // Leave the reparto only when it actually persisted; on a
+              // failed save the flow stays mounted so no tap is lost.
+              if (
+                updateProject(
+                  distributeBooks({ project: activeProject, pairs }),
+                )
+              ) {
+                setView("semana");
+              }
             }}
             onBack={() => setView("semana")}
           />

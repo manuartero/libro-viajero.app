@@ -65,14 +65,49 @@ describe("useAppData()", () => {
       });
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    act(() =>
-      result.current.updateProject({ ...project("p1"), name: "Perdida" }),
-    );
+    let outcome = true;
+    act(() => {
+      outcome = result.current.updateProject({
+        ...project("p1"),
+        name: "Perdida",
+      });
+    });
 
+    expect(outcome).toBe(false);
     expect(result.current.saveFailed).toBe(true);
     expect(result.current.activeProject?.name).toBe("Clase p1");
 
     setItem.mockRestore();
+    errorLog.mockRestore();
+  });
+
+  it("clears the failure flag once a later save lands", () => {
+    const { result } = renderHook(() => useAppData());
+    act(() => result.current.createProject(project("p1")));
+
+    const setItem = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
+    act(() =>
+      result.current.updateProject({ ...project("p1"), name: "Perdida" }),
+    );
+    expect(result.current.saveFailed).toBe(true);
+    setItem.mockRestore();
+
+    let outcome = false;
+    act(() => {
+      outcome = result.current.updateProject({
+        ...project("p1"),
+        name: "Recuperada",
+      });
+    });
+
+    expect(outcome).toBe(true);
+    expect(result.current.saveFailed).toBe(false);
+    expect(result.current.activeProject?.name).toBe("Recuperada");
     errorLog.mockRestore();
   });
 
@@ -86,6 +121,11 @@ describe("useAppData()", () => {
     const { result } = renderHook(() => useAppData());
 
     expect(result.current.activeProject?.id).toBe("p1");
+    // The heal is written back so it doesn't repeat on every boot.
+    const stored = JSON.parse(
+      localStorage.getItem("libro-viajero:anonymous") ?? "null",
+    );
+    expect(stored.activeProjectId).toBe("p1");
     errorLog.mockRestore();
   });
 });

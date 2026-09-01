@@ -37,13 +37,10 @@ describe("<AssignBooks />", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
     expect(onConfirm).toHaveBeenCalledTimes(1);
-    const assignments = onConfirm.mock.calls[0][0];
-    expect(assignments).toHaveLength(2);
-    expect(assignments[0]).toMatchObject({ childId: "c1", bookId: "b1" });
-    expect(assignments[1]).toMatchObject({ childId: "c2", bookId: "b2" });
+    expect(onConfirm.mock.calls[0][0]).toEqual({ c1: "b1", c2: "b2" });
   });
 
-  it("seeds from the live assignments and keeps their weekStart", () => {
+  it("seeds from the live assignments so re-entering only adjusts", () => {
     const onConfirm = vi.fn();
     render(
       <AssignBooks
@@ -66,12 +63,32 @@ describe("<AssignBooks />", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
-    const assignments = onConfirm.mock.calls[0][0];
-    expect(assignments).toEqual([
-      { childId: "c1", bookId: "b1", weekStart: "2026-08-24" },
-      expect.objectContaining({ childId: "c2", bookId: "b2" }),
-    ]);
-    expect(assignments[1].weekStart).not.toBe("2026-08-24");
+    expect(onConfirm.mock.calls[0][0]).toEqual({ c1: "b1", c2: "b2" });
+  });
+
+  it("assigns the tapped book to an explicitly selected child", () => {
+    const onConfirm = vi.fn();
+    render(
+      <AssignBooks
+        project={project()}
+        onConfirm={onConfirm}
+        onBack={() => {}}
+      />,
+    );
+
+    // Rana is the default active child; picking Zorro overrides it.
+    fireEvent.click(screen.getByRole("button", { name: "Zorro, sin libro" }));
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+
+    expect(
+      screen.getByRole("button", { name: "Zorro, tiene Elmer" }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Rana, sin libro" }),
+    ).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
+    expect(onConfirm.mock.calls[0][0]).toEqual({ c2: "b1" });
   });
 
   it("allows saving a partial reparto but not an empty one", () => {
@@ -91,7 +108,7 @@ describe("<AssignBooks />", () => {
     expect(save.hasAttribute("disabled")).toBe(false);
 
     fireEvent.click(save);
-    expect(onConfirm.mock.calls[0][0]).toHaveLength(1);
+    expect(Object.keys(onConfirm.mock.calls[0][0])).toHaveLength(1);
   });
 
   it("unassigns a child's book back to the tray", () => {

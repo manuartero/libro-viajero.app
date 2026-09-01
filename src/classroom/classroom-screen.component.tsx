@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Child } from "src/child/child.model";
 import { ChildBuilder } from "src/classroom/child-builder.component";
 import { Roster } from "src/classroom/roster.component";
@@ -8,7 +8,9 @@ import styles from "./classroom-screen.module.css";
 
 type ClassroomScreenProps = {
   project: Project;
-  onUpdate: (project: Project) => void;
+  // Returns whether the update persisted; on false the screen keeps its
+  // transient UI (form, confirm panel) so nothing typed is lost.
+  onUpdate: (project: Project) => boolean;
 };
 
 const pluralPeques = (count: number) =>
@@ -18,6 +20,15 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   // A child with a book at home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Child | null>(null);
+
+  // The alertdialog contract: focus moves into the panel when it opens —
+  // which also scrolls it into view, since the trigger sits far below it.
+  const confirmRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (confirmingRemove) {
+      confirmRef.current?.focus();
+    }
+  }, [confirmingRemove]);
 
   const childList = project.children;
   const editing = childList.find((child) => child.id === editingId) ?? null;
@@ -29,9 +40,10 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
     project.currentAssignments.some((a) => a.childId === childId);
 
   const remove = (childId: string) => {
-    onUpdate(removeChild({ project, childId }));
-    setEditingId(null);
-    setConfirmingRemove(null);
+    if (onUpdate(removeChild({ project, childId }))) {
+      setEditingId(null);
+      setConfirmingRemove(null);
+    }
   };
 
   return (
@@ -48,6 +60,8 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
       <main className={styles.main}>
         {confirmingRemove ? (
           <div
+            ref={confirmRef}
+            tabIndex={-1}
             className={styles.confirmPanel}
             role="alertdialog"
             aria-label={`Quitar a ${confirmingRemove.tag}`}
@@ -85,8 +99,9 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
           editing={editing}
           onAdd={(draft) => onUpdate(addChild({ project, draft }))}
           onSave={(child) => {
-            onUpdate(saveChild({ project, child }));
-            setEditingId(null);
+            if (onUpdate(saveChild({ project, child }))) {
+              setEditingId(null);
+            }
           }}
           onRemove={(childId) => {
             if (hasBook(childId)) {

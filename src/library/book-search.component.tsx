@@ -49,8 +49,11 @@ export function BookSearch({ onAdd }: BookSearchProps) {
               results: drafts.map((draft) => ({ key: newId(), draft })),
             },
       );
-    } catch {
+    } catch (error) {
       if (!controller.signal.aborted) {
+        // The UI blames connectivity; keep the real cause reachable in the
+        // console (HTTP status errors and JSON parse failures land here too).
+        console.error("libro-viajero: book search failed", error);
         setSearch({ status: "error" });
       }
     }
