@@ -58,8 +58,8 @@
 | SETUP-3 | As a teacher, I can assign an emoji and background color to each child to create their avatar        |
 | SETUP-4 | As a teacher, I can add books to the project by searching by title                                   |
 | SETUP-5 | As a teacher, the app automatically finds and displays the book cover when I search                  |
-| SETUP-6 | As a teacher, I can manually assign one book to each child at the start of the project               |
-| SETUP-7 | As a teacher, I cannot start the project if the number of books doesn't match the number of children |
+| SETUP-6 | As a teacher, I can distribute books to children from the dashboard ("Repartir libros"), at the start and mid-course |
+| SETUP-7 | As a teacher, I can run the class with fewer books than children — the children without a book wait for the next rotation |
 
 ### Friday Check-in (Dashboard)
 
@@ -96,7 +96,16 @@
 ### F2: Project Management
 - Create, rename, and (future) delete projects
 - v1: one project can be "active" at a time
-- Setup wizard: 3 steps (children → books → assign)
+- Create screen: class name + course year only — the project starts empty
+- Children and books are managed from their own sections after creation;
+  the dashboard's empty states guide the first-time setup
+  (add children → add books → distribute)
+
+### F2b: Navigation
+- No router: a single view state with a bottom tab bar of 3 sections —
+  **Semana** (check-in dashboard) · **Clase** (children) · **Biblioteca** (books)
+- "Repartir libros" (book distribution) is a full-screen flow launched from
+  the dashboard; the tab bar hides while it is active
 
 ### F3: Child Avatars
 - Nickname/tag: free text, up to 20 characters
@@ -138,9 +147,10 @@
 - [ ] A different Google account sees separate data
 
 ### Mobile UX
-- [ ] All interactive elements are at least 44×44px
+- [ ] All interactive elements are at least 44×44px (tab bar items included)
 - [ ] Check-in works entirely in portrait mode at 360px width (Xiaomi Redmi 15C)
 - [ ] No horizontal scroll on any view
+- [ ] Every section (Semana, Clase, Biblioteca) is one tap away via the tab bar
 
 ---
 

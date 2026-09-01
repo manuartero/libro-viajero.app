@@ -1,26 +1,22 @@
+import { useState } from "react";
+import { newId } from "src/lib/id";
+import type { Project } from "src/project/project.model";
 import {
   currentSchoolYear,
   schoolYearFrom,
 } from "src/project/school-year.model";
-import styles from "./class-name-step.module.css";
+import styles from "./create-class.module.css";
 
-type ClassNameStepProps = {
-  classroomName: string;
-  yearStart: number;
-  onClassroomNameChange: (name: string) => void;
-  onYearStartChange: (start: number) => void;
-  onNext: () => void;
+type CreateClassProps = {
+  onCreate: (project: Project) => void;
 };
 
-export function ClassNameStep({
-  classroomName,
-  yearStart,
-  onClassroomNameChange,
-  onYearStartChange,
-  onNext,
-}: ClassNameStepProps) {
+export function CreateClass({ onCreate }: CreateClassProps) {
+  const [classroomName, setClassroomName] = useState("");
+  const [yearStart, setYearStart] = useState(currentSchoolYear().start);
+
   const year = schoolYearFrom(yearStart);
-  const canContinue = classroomName.trim().length > 0;
+  const canCreate = classroomName.trim().length > 0;
   // Teachers set up this course or the next one — anything further is a typo.
   const minStart = currentSchoolYear().start - 1;
   const maxStart = currentSchoolYear().start + 1;
@@ -30,13 +26,21 @@ export function ClassNameStep({
       className={styles.screen}
       onSubmit={(event) => {
         event.preventDefault();
-        if (canContinue) {
-          onNext();
+        if (!canCreate) {
+          return;
         }
+        onCreate({
+          id: newId(),
+          name: `${classroomName.trim()} ${year.short}`,
+          children: [],
+          books: [],
+          currentAssignments: [],
+          history: [],
+        });
       }}
     >
       <div className={styles.masthead}>
-        <p className={styles.eyebrow}>Libro viajero · Paso 1 de 4</p>
+        <p className={styles.eyebrow}>Libro viajero</p>
         <label className={styles.question} htmlFor="classroom-name">
           ¿Cómo se llama tu clase?
         </label>
@@ -48,7 +52,7 @@ export function ClassNameStep({
           maxLength={30}
           placeholder="Clase Caracoles"
           autoComplete="off"
-          onChange={(event) => onClassroomNameChange(event.target.value)}
+          onChange={(event) => setClassroomName(event.target.value)}
         />
         <div className={styles.dateline}>
           <button
@@ -56,7 +60,7 @@ export function ClassNameStep({
             className={styles.yearStep}
             aria-label="Curso anterior"
             disabled={yearStart <= minStart}
-            onClick={() => onYearStartChange(yearStart - 1)}
+            onClick={() => setYearStart(yearStart - 1)}
           >
             ‹
           </button>
@@ -66,7 +70,7 @@ export function ClassNameStep({
             className={styles.yearStep}
             aria-label="Curso siguiente"
             disabled={yearStart >= maxStart}
-            onClick={() => onYearStartChange(yearStart + 1)}
+            onClick={() => setYearStart(yearStart + 1)}
           >
             ›
           </button>
@@ -74,8 +78,8 @@ export function ClassNameStep({
       </div>
 
       <footer className={styles.footer}>
-        <button type="submit" className={styles.next} disabled={!canContinue}>
-          Añadir peques →
+        <button type="submit" className={styles.create} disabled={!canCreate}>
+          Crear la clase
         </button>
       </footer>
     </form>

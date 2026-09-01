@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { ChildBuilder } from "src/setup/child-builder.component";
+import { ChildBuilder } from "src/classroom/child-builder.component";
 import { describe, expect, it, vi } from "vitest";
 
 const noHandlers = {

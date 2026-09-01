@@ -112,7 +112,7 @@ type Project = {
 
 ### `SchoolYear`
 
-`project/school-year.model.ts` — a transient value, derived on demand and **never persisted** (only the `start` year is kept as wizard state).
+`project/school-year.model.ts` — a transient value, derived on demand and **never persisted** (only the `start` year is kept as create-screen state).
 
 ```typescript
 type SchoolYear = {
