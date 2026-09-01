@@ -141,6 +141,22 @@ describe("<ChildBuilder />", () => {
     expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
   });
 
+  it("opens on the panel of the edited child's emoji, shown as selected", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={{ id: "c1", tag: "Girasol", emoji: "🌻", color: "#8ac926" }}
+        {...noHandlers}
+      />,
+    );
+
+    expect(screen.getByText("Naturaleza")).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Girasol", pressed: true }),
+    ).toBeDefined();
+  });
+
   it("saves edits and offers removal when editing an existing child", () => {
     const onSave = vi.fn();
     const onRemove = vi.fn();

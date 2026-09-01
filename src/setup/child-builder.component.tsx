@@ -34,7 +34,13 @@ export function ChildBuilder({
   const [pickedColor, setPickedColor] = useState<string | null>(
     editing?.color ?? null,
   );
-  const [panelIndex, setPanelIndex] = useState(0);
+  // Open on the panel holding the edited child's emoji, so it shows selected.
+  const [panelIndex, setPanelIndex] = useState(() => {
+    const found = EMOJI_PANELS.findIndex((candidate) =>
+      candidate.emojis.some((entry) => entry.emoji === editing?.emoji),
+    );
+    return found === -1 ? 0 : found;
+  });
 
   const panel = EMOJI_PANELS[panelIndex];
 
