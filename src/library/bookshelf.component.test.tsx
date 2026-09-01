@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Bookshelf } from "src/setup/bookshelf.component";
+import { Bookshelf } from "src/library/bookshelf.component";
 import { describe, expect, it, vi } from "vitest";
 
 describe("<Bookshelf />", () => {

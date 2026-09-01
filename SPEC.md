@@ -41,7 +41,7 @@ Login is identification only — no server communication, ever.
 
 ### Project Setup — ✅ shipped
 
-The wizard is 4 steps: classroom name + school year → children → books → assign. Avatars: a curated grid of 20 emoji (no human faces — an avatar must never resemble a real child; each emoji carries a Spanish nickname suggestion so adding a child can be pure tapping) and a palette of 12 colors. Books: Open Library title search (up to 8 results with covers) with a manual-entry fallback.
+"Crear la clase" asks only for the class name and course year — the project starts empty and the dashboard's empty states guide the first-time setup (añadir peques → añadir libros → repartir libros). Navigation is a bottom tab bar of three sections (**Semana** · **Clase** · **Biblioteca**) driven by a single view state, no router; "Repartir libros" is a full-screen flow launched from the dashboard (the tab bar hides while it is active). Avatars: a curated grid of 20 emoji (no human faces — an avatar must never resemble a real child; each emoji carries a Spanish nickname suggestion so adding a child can be pure tapping) and a palette of 12 colors. Books: Open Library title search (up to 8 results with covers) with a manual-entry fallback.
 
 |   ID    |                                                Story                                                 | Status |
 | ------- | ---------------------------------------------------------------------------------------------------- | ------ |
@@ -50,8 +50,8 @@ The wizard is 4 steps: classroom name + school year → children → books → a
 | SETUP-3 | As a teacher, I can assign an emoji and background color to each child to create their avatar        | ✅     |
 | SETUP-4 | As a teacher, I can add books to the project by searching by title                                   | ✅     |
 | SETUP-5 | As a teacher, the app automatically finds and displays the book cover when I search                  | ✅     |
-| SETUP-6 | As a teacher, I can manually assign one book to each child at the start of the project               | ✅     |
-| SETUP-7 | As a teacher, I cannot start the project if the number of books doesn't match the number of children | ✅     |
+| SETUP-6 | As a teacher, I can distribute books to children from the dashboard ("Repartir libros"), at the start and mid-course | ✅     |
+| SETUP-7 | As a teacher, I can run the class with fewer books than children — the children without a book wait for the next rotation | ✅     |
 
 ### Friday Check-in (Dashboard)
 

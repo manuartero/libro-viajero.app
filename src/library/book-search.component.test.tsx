@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { BookSearch } from "src/setup/book-search.component";
+import { BookSearch } from "src/library/book-search.component";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const okResponse = (docs: unknown[]) =>

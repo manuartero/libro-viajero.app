@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Roster } from "src/setup/roster.component";
+import { Roster } from "src/classroom/roster.component";
 import { describe, expect, it, vi } from "vitest";
 
 const childList = [
