@@ -17,6 +17,11 @@ type SetupWizardProps = {
   onCreate: (project: Project) => void;
 };
 
+const withoutBook = (pairs: Record<string, string>, bookId: string) =>
+  Object.fromEntries(
+    Object.entries(pairs).filter(([, pairedBookId]) => pairedBookId !== bookId),
+  );
+
 export function SetupWizard({ onCreate }: SetupWizardProps) {
   const [step, setStep] = useState<"name" | "children" | "books" | "assign">(
     "name",
@@ -49,13 +54,7 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
 
   const removeBook = (bookId: string) => {
     setBookList((prev) => prev.filter((b) => b.id !== bookId));
-    setPairs((prev) =>
-      Object.fromEntries(
-        Object.entries(prev).filter(
-          ([, pairedBookId]) => pairedBookId !== bookId,
-        ),
-      ),
-    );
+    setPairs((prev) => withoutBook(prev, bookId));
   };
 
   const assignBook = ({
@@ -66,14 +65,7 @@ export function SetupWizard({ onCreate }: SetupWizardProps) {
     bookId: string;
   }) => {
     // One book, one child: strip the book from any other pairing first.
-    setPairs((prev) => ({
-      ...Object.fromEntries(
-        Object.entries(prev).filter(
-          ([, pairedBookId]) => pairedBookId !== bookId,
-        ),
-      ),
-      [childId]: bookId,
-    }));
+    setPairs((prev) => ({ ...withoutBook(prev, bookId), [childId]: bookId }));
   };
 
   const unassignChild = (childId: string) => {

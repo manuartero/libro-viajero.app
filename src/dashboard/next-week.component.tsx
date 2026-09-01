@@ -1,3 +1,4 @@
+import { ChildAvatar } from "src/child/child-avatar.component";
 import type { Project } from "src/project/project.model";
 import styles from "./next-week.module.css";
 
@@ -55,13 +56,11 @@ export function NextWeekPanel({
                   →
                 </span>
                 <span className={styles.child}>
-                  <span
-                    className={styles.emoji}
-                    style={{ background: child.color }}
-                    aria-hidden="true"
-                  >
-                    {child.emoji}
-                  </span>
+                  <ChildAvatar
+                    emoji={child.emoji}
+                    color={child.color}
+                    size="tiny"
+                  />
                   {child.tag}
                 </span>
               </li>
