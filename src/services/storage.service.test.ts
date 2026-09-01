@@ -20,28 +20,35 @@ describe("getAppData()", () => {
 
   it("backs up an unreadable entry and boots fresh", () => {
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
-    localStorage.setItem("libro-viajero:g-123", JSON.stringify({ foo: 1 }));
+    localStorage.setItem("libro-viajero:v1:g-123", JSON.stringify({ foo: 1 }));
 
     expect(getAppData("g-123")).toEqual({
       projects: [],
       activeProjectId: null,
     });
 
-    const backupKey = Object.keys(localStorage).find((key) =>
-      key.startsWith("libro-viajero:g-123:backup"),
-    );
-    expect(backupKey).toBeDefined();
-    expect(localStorage.getItem(backupKey ?? "")).toBe(
+    expect(localStorage.getItem("libro-viajero:v1:g-123:backup")).toBe(
       JSON.stringify({ foo: 1 }),
     );
 
     // Corrupted (unparseable) entries take the same recovery path.
-    localStorage.setItem("libro-viajero:g-456", "{not json");
+    localStorage.setItem("libro-viajero:v1:g-456", "{not json");
     expect(getAppData("g-456")).toEqual({
       projects: [],
       activeProjectId: null,
     });
     errorLog.mockRestore();
+  });
+
+  it("migrates data stored under the unversioned legacy key", () => {
+    const data: AppData = { projects: [sampleProject], activeProjectId: "p1" };
+    localStorage.setItem("libro-viajero:g-123", JSON.stringify(data));
+
+    expect(getAppData("g-123")).toEqual(data);
+    expect(localStorage.getItem("libro-viajero:v1:g-123")).toBe(
+      JSON.stringify(data),
+    );
+    expect(localStorage.getItem("libro-viajero:g-123")).toBeNull();
   });
 
   it("keeps each user's data in its own namespace", () => {

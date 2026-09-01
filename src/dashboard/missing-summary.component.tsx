@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import type { ChildWithBook } from "src/project/project.model";
 import styles from "./missing-summary.module.css";
@@ -12,6 +12,16 @@ const reminderMessage = ({ tag, title }: { tag: string; title: string }) =>
 
 export function MissingSummary({ missing }: MissingSummaryProps) {
   const [copiedChildId, setCopiedChildId] = useState<string | null>(null);
+  const copiedTimer = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (copiedTimer.current !== null) {
+        clearTimeout(copiedTimer.current);
+      }
+    },
+    [],
+  );
 
   if (missing.length === 0) {
     return (
@@ -26,7 +36,10 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
       reminderMessage({ tag: child.tag, title: book?.title ?? "su libro" }),
     );
     setCopiedChildId(child.id);
-    setTimeout(
+    if (copiedTimer.current !== null) {
+      clearTimeout(copiedTimer.current);
+    }
+    copiedTimer.current = window.setTimeout(
       () => setCopiedChildId((prev) => (prev === child.id ? null : prev)),
       2000,
     );

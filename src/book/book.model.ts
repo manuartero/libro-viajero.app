@@ -26,11 +26,21 @@ export const COVER_PLACEHOLDER_COLORS = [
   "#8d99ae",
 ] as const;
 
+// Cached: called on every render of every placeholder cover, and titles are
+// few and stable within a session.
+const coverColorCache = new Map<string, string>();
+
 // Deterministic so a book keeps its placeholder color across renders and reloads.
 export function coverColorFor(title: string): string {
+  const cached = coverColorCache.get(title);
+  if (cached !== undefined) {
+    return cached;
+  }
   let sum = 0;
   for (const char of title) {
     sum += char.codePointAt(0) ?? 0;
   }
-  return COVER_PLACEHOLDER_COLORS[sum % COVER_PLACEHOLDER_COLORS.length];
+  const color = COVER_PLACEHOLDER_COLORS[sum % COVER_PLACEHOLDER_COLORS.length];
+  coverColorCache.set(title, color);
+  return color;
 }

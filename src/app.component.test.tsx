@@ -19,7 +19,7 @@ describe("<App />", () => {
 
     expect(screen.getByText(/^Los Caracoles \d{4}\/\d{2}$/)).toBeDefined();
     const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
+      localStorage.getItem("libro-viajero:v1:anonymous") ?? "null",
     );
     expect(stored.projects).toHaveLength(1);
     expect(stored.activeProjectId).toBe(stored.projects[0].id);
@@ -55,7 +55,7 @@ describe("<App />", () => {
 
   it("self-heals a dangling activeProjectId instead of re-running setup", () => {
     localStorage.setItem(
-      "libro-viajero:anonymous",
+      "libro-viajero:v1:anonymous",
       JSON.stringify({ projects: [sampleProject], activeProjectId: "gone" }),
     );
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});

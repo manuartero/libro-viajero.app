@@ -5,7 +5,30 @@ import type { AppData } from "src/project/project.model";
 // user's own namespace — otherwise every pre-auth classroom disappears.
 export const ANONYMOUS_USER_ID = "anonymous";
 
-const storageKey = (googleId: string) => `libro-viajero:${googleId}`;
+// Bump on AppData shape changes and add the matching migration below —
+// isAppData() alone cannot tell an old-shaped payload from a broken one.
+const STORAGE_VERSION = "v1";
+
+const storageKey = (googleId: string) =>
+  `libro-viajero:${STORAGE_VERSION}:${googleId}`;
+
+// Pre-versioning key used by installs before v1.
+const legacyKey = (googleId: string) => `libro-viajero:${googleId}`;
+
+// One-time move of a pre-versioned entry into the current key.
+const migrateLegacyEntry = (googleId: string): string | null => {
+  const raw = localStorage.getItem(legacyKey(googleId));
+  if (raw === null) {
+    return null;
+  }
+  try {
+    localStorage.setItem(storageKey(googleId), raw);
+    localStorage.removeItem(legacyKey(googleId));
+  } catch {
+    // Best effort: the legacy entry stays in place and is used as-is.
+  }
+  return raw;
+};
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
 
@@ -20,7 +43,9 @@ const isAppData = (value: unknown): value is AppData => {
 export function getAppData(googleId: string): AppData {
   let raw: string | null;
   try {
-    raw = localStorage.getItem(storageKey(googleId));
+    raw =
+      localStorage.getItem(storageKey(googleId)) ??
+      migrateLegacyEntry(googleId);
   } catch (error) {
     // Storage blocked by the browser (private mode, cookie settings):
     // the app still runs, it just won't persist.
@@ -39,12 +64,13 @@ export function getAppData(googleId: string): AppData {
   if (!isAppData(parsed)) {
     // Unparseable or wrong-shaped entry: keep the raw payload under a backup
     // key so a bad write stays recoverable, then boot fresh instead of
-    // crashing — the next save would otherwise overwrite it.
+    // crashing — the next save would otherwise overwrite it. One fixed key:
+    // a timestamped key per failed read would accumulate full-size copies.
     console.error(
       `libro-viajero: unreadable data at ${storageKey(googleId)}, backing it up`,
     );
     try {
-      localStorage.setItem(`${storageKey(googleId)}:backup-${Date.now()}`, raw);
+      localStorage.setItem(`${storageKey(googleId)}:backup`, raw);
     } catch {
       // Backup is best-effort; without space the original stays in place.
     }
