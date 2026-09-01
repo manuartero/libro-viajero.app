@@ -24,6 +24,7 @@ export function BookCover({
         src={coverUrl}
         alt=""
         loading="lazy"
+        data-testid="book-cover-image"
         onError={() => setFailed(true)}
       />
     );
@@ -34,6 +35,7 @@ export function BookCover({
       className={`${styles.cover} ${styles.placeholder} ${styles[size]}`}
       style={{ background: coverColorFor(title) }}
       aria-hidden="true"
+      data-testid="book-cover-placeholder"
     >
       {[...title][0]?.toUpperCase() ?? "?"}
     </span>

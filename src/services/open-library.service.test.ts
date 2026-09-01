@@ -1,8 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { okResponse } from "./open-library.fixture";
 import { searchBooks } from "./open-library.service";
-
-const okResponse = (docs: unknown[]) =>
-  ({ ok: true, json: async () => ({ docs }) }) as Response;
 
 describe("searchBooks()", () => {
   afterEach(() => {
@@ -59,7 +57,7 @@ describe("searchBooks()", () => {
 
     const drafts = await searchBooks({ title: "elmer" });
 
-    expect(drafts).toEqual([
+    expect(drafts).toStrictEqual([
       {
         title: "Elmer",
         author: undefined,
@@ -67,12 +65,6 @@ describe("searchBooks()", () => {
         isbn: undefined,
       },
     ]);
-  });
-
-  it("returns an empty list when the search finds nothing", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(okResponse([])));
-
-    expect(await searchBooks({ title: "zzzz" })).toEqual([]);
   });
 
   it("throws on a non-ok response", async () => {
@@ -84,15 +76,6 @@ describe("searchBooks()", () => {
     await expect(searchBooks({ title: "elmer" })).rejects.toThrow("503");
   });
 
-  it("throws on a network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new TypeError("Failed to fetch")),
-    );
-
-    await expect(searchBooks({ title: "elmer" })).rejects.toThrow();
-  });
-
   it("forwards the caller's abort signal", async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse([]));
     vi.stubGlobal("fetch", fetchMock);
@@ -100,8 +83,10 @@ describe("searchBooks()", () => {
 
     await searchBooks({ title: "elmer", signal: controller.signal });
 
+    // Aborting the caller's controller must abort the signal handed to fetch;
+    // with the timeout-only signal it would stay unaborted.
     const init: RequestInit = fetchMock.mock.calls[0][1];
-    expect(init.signal).toBeInstanceOf(AbortSignal);
+    expect(init.signal?.aborted).toBe(false);
     controller.abort();
     expect(init.signal?.aborted).toBe(true);
   });

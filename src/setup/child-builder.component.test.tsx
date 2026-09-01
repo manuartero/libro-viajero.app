@@ -68,16 +68,28 @@ describe("<ChildBuilder />", () => {
   });
 
   it("caps the nickname at 20 characters", () => {
+    const onAdd = vi.fn();
     render(
       <ChildBuilder
         usedEmojis={[]}
         usedColors={[]}
         editing={null}
         {...noHandlers}
+        onAdd={onAdd}
       />,
     );
 
-    expect(screen.getByLabelText<HTMLInputElement>("Apodo").maxLength).toBe(20);
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    // fireEvent.change bypasses the input's advisory maxLength, so this
+    // exercises the submit-time slice that enforces the Child invariant.
+    fireEvent.change(screen.getByLabelText("Apodo"), {
+      target: { value: "a".repeat(25) },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
+
+    expect(onAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ tag: "a".repeat(20) }),
+    );
   });
 
   it("disables adding until there is an emoji and a nickname", () => {

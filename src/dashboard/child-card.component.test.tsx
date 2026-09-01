@@ -37,7 +37,7 @@ describe("<ChildCard />", () => {
     expect(onToggle).toHaveBeenCalledWith("c1");
   });
 
-  it("marks the returned state via aria-pressed", () => {
+  it("marks the returned state as pressed", () => {
     render(
       <ChildCard
         child={child}
@@ -48,9 +48,7 @@ describe("<ChildCard />", () => {
     );
 
     expect(
-      screen
-        .getByRole("button", { name: /Verde/ })
-        .getAttribute("aria-pressed"),
-    ).toBe("true");
+      screen.getByRole("button", { name: /Verde/, pressed: true }),
+    ).toBeDefined();
   });
 });

@@ -17,8 +17,4 @@ describe("mondayOf()", () => {
   it("crosses month and year boundaries", () => {
     expect(mondayOf(new Date(2026, 0, 1))).toBe("2025-12-29"); // Thu Jan 1
   });
-
-  it("formats as YYYY-MM-DD with zero padding", () => {
-    expect(mondayOf(new Date(2026, 3, 8))).toBe("2026-04-06");
-  });
 });

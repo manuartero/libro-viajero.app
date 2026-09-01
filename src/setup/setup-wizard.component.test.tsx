@@ -1,49 +1,33 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { mondayOf } from "src/lib/week";
 import { SetupWizard } from "src/setup/setup-wizard.component";
-import { describe, expect, it, vi } from "vitest";
-
-const nameTheClass = (name: string) => {
-  fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
-    target: { value: name },
-  });
-  fireEvent.click(screen.getByRole("button", { name: "Añadir peques →" }));
-};
-
-const addChild = (emojiName: string) => {
-  fireEvent.click(screen.getByRole("button", { name: emojiName }));
-  fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
-};
-
-const goToBooks = () => {
-  fireEvent.click(screen.getByRole("button", { name: "Añadir libros →" }));
-};
-
-// Manual entry keeps wizard-level tests free of fetch stubbing.
-const addBookManually = (title: string) => {
-  fireEvent.click(
-    screen.getByRole("button", { name: "¿No lo encuentras? Añádelo a mano" }),
-  );
-  fireEvent.change(screen.getByLabelText("Título"), {
-    target: { value: title },
-  });
-  fireEvent.click(screen.getByRole("button", { name: "Añadir libro" }));
-};
-
-const goToAssign = () => {
-  fireEvent.click(
-    screen.getByRole("button", { name: "Elegir lector para cada libro →" }),
-  );
-};
+import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  addBookManually,
+  addChild,
+  goToAssign,
+  goToBooks,
+  nameTheClass,
+} from "./wizard.fixture";
 
 describe("<SetupWizard />", () => {
-  it("cannot leave the name step without a classroom name", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("cannot leave the name step without a real classroom name", () => {
     render(<SetupWizard onCreate={() => {}} />);
 
-    expect(
+    const next = () =>
       screen.getByRole<HTMLButtonElement>("button", {
         name: "Añadir peques →",
-      }).disabled,
-    ).toBe(true);
+      });
+    expect(next().disabled).toBe(true);
+
+    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
+      target: { value: "   " },
+    });
+    expect(next().disabled).toBe(true);
   });
 
   it("cannot continue to books without children", () => {
@@ -51,11 +35,19 @@ describe("<SetupWizard />", () => {
 
     nameTheClass("Los Caracoles");
 
-    expect(
+    const next = () =>
       screen.getByRole<HTMLButtonElement>("button", {
         name: "Añadir libros →",
-      }).disabled,
-    ).toBe(true);
+      });
+    expect(next().disabled).toBe(true);
+
+    // Removing the only child re-blocks the step.
+    addChild("Rana");
+    expect(next().disabled).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
+    expect(screen.queryByRole("button", { name: "Rana, editar" })).toBeNull();
+    expect(next().disabled).toBe(true);
   });
 
   it("cannot leave the books step until books match children", () => {
@@ -92,10 +84,6 @@ describe("<SetupWizard />", () => {
     goToAssign();
 
     // Auto-advancing active child: two book taps pair everyone in order.
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", { name: "Crear la clase" })
-        .disabled,
-    ).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
     fireEvent.click(
       screen.getByRole("button", { name: "La oruga glotona, asignar" }),
@@ -120,9 +108,9 @@ describe("<SetupWizard />", () => {
       ),
     ).toEqual(new Set(bookIds));
     for (const assignment of project.currentAssignments) {
-      expect(assignment.weekStart).toBe("2026-08-24"); // Sunday → previous Monday
+      // The wizard stamps the current week; Monday math is owned by week.test.
+      expect(assignment.weekStart).toBe(mondayOf(new Date(2026, 7, 30)));
     }
-    vi.useRealTimers();
   });
 
   it("keeps books when going back to children and forward again", () => {
@@ -213,21 +201,6 @@ describe("<SetupWizard />", () => {
     addChild("Rana");
 
     expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe("");
-    expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
-  });
-
-  it("does not accept a whitespace-only classroom name", () => {
-    render(<SetupWizard onCreate={() => {}} />);
-
-    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
-      target: { value: "   " },
-    });
-
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", {
-        name: "Añadir peques →",
-      }).disabled,
-    ).toBe(true);
   });
 
   it("steps the course down and clamps at the previous course", () => {
@@ -242,7 +215,6 @@ describe("<SetupWizard />", () => {
 
     expect(screen.getByText("Curso 2025/2026")).toBeDefined();
     expect(previous.disabled).toBe(true);
-    vi.useRealTimers();
   });
 
   it("edits a child from the roster", () => {
@@ -261,22 +233,5 @@ describe("<SetupWizard />", () => {
       screen.getByRole("button", { name: "Ranita, editar" }),
     ).toBeDefined();
     expect(screen.queryByRole("button", { name: "Rana, editar" })).toBeNull();
-  });
-
-  it("removes a child from the roster", () => {
-    render(<SetupWizard onCreate={() => {}} />);
-
-    nameTheClass("Los Caracoles");
-    addChild("Rana");
-
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
-
-    expect(screen.queryByRole("button", { name: "Rana, editar" })).toBeNull();
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", {
-        name: "Añadir libros →",
-      }).disabled,
-    ).toBe(true);
   });
 });

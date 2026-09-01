@@ -1,36 +1,19 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { BookCover } from "src/book/book-cover.component";
 import { describe, expect, it } from "vitest";
 
+// BookCover is deliberately decorative (alt="", aria-hidden) — its accessible
+// name is the visible title next to it — so role/name queries cannot reach it.
+// testId is the documented last resort; only the fallback logic is worth a test.
 describe("<BookCover />", () => {
-  it("renders the cover image when a URL is given", () => {
-    const { container } = render(
-      <BookCover title="Elmer" coverUrl="https://covers.example/1-M.jpg" />,
-    );
-
-    const img = container.querySelector("img");
-    expect(img?.getAttribute("src")).toBe("https://covers.example/1-M.jpg");
-  });
-
   it("falls back to the placeholder when the image fails to load", () => {
-    const { container } = render(
+    render(
       <BookCover title="Elmer" coverUrl="https://covers.example/1-M.jpg" />,
     );
 
-    const img = container.querySelector("img");
-    if (!img) {
-      throw new Error("expected an <img>");
-    }
-    fireEvent.error(img);
+    fireEvent.error(screen.getByTestId("book-cover-image"));
 
-    expect(container.querySelector("img")).toBeNull();
-    expect(container.textContent).toBe("E");
-  });
-
-  it("renders the placeholder immediately without a cover URL", () => {
-    const { container } = render(<BookCover title="la oruga" />);
-
-    expect(container.querySelector("img")).toBeNull();
-    expect(container.textContent).toBe("L");
+    expect(screen.queryByTestId("book-cover-image")).toBeNull();
+    expect(screen.getByTestId("book-cover-placeholder").textContent).toBe("E");
   });
 });

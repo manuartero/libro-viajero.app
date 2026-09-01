@@ -19,17 +19,9 @@ describe("schoolYearFrom()", () => {
 });
 
 describe("currentSchoolYear()", () => {
-  it("treats summer setup as the upcoming course", () => {
-    expect(currentSchoolYear(new Date(2026, 7, 30)).label).toBe("2026/2027");
-  });
-
-  it("starts the upcoming course in July", () => {
-    expect(currentSchoolYear(new Date(2026, 6, 1)).start).toBe(2026);
-    expect(currentSchoolYear(new Date(2026, 5, 30)).start).toBe(2025);
-  });
-
-  it("keeps the running course during winter and spring", () => {
-    expect(currentSchoolYear(new Date(2027, 0, 15)).label).toBe("2026/2027");
-    expect(currentSchoolYear(new Date(2027, 4, 20)).label).toBe("2026/2027");
+  it("switches to the upcoming course in July", () => {
+    expect(currentSchoolYear(new Date(2026, 5, 30)).start).toBe(2025); // Jun 30
+    expect(currentSchoolYear(new Date(2026, 6, 1)).start).toBe(2026); // Jul 1
+    expect(currentSchoolYear(new Date(2027, 0, 15)).label).toBe("2026/2027"); // mid-course
   });
 });

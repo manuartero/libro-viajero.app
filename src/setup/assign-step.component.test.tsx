@@ -2,15 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { AssignStep } from "src/setup/assign-step.component";
 import { describe, expect, it, vi } from "vitest";
 
-const childList = [
-  { id: "c1", tag: "Rana", emoji: "🐸", color: "#8ac926" },
-  { id: "c2", tag: "Dino", emoji: "🦕", color: "#ffca3a" },
-];
-
-const bookList = [
-  { id: "b1", title: "Elmer" },
-  { id: "b2", title: "La oruga" },
-];
+import { bookList, childList } from "./wizard.fixture";
 
 const renderStep = ({
   pairs = {},
@@ -66,15 +58,16 @@ describe("<AssignStep />", () => {
     expect(onUnassign).toHaveBeenCalledWith("c1");
   });
 
-  it("only enables creation when every child has a book", () => {
-    const { unmount } = renderStep({ pairs: { c1: "b1" } });
+  it("blocks creation while a child is missing a book", () => {
+    renderStep({ pairs: { c1: "b1" } });
 
     expect(
       screen.getByRole<HTMLButtonElement>("button", { name: "Crear la clase" })
         .disabled,
     ).toBe(true);
-    unmount();
+  });
 
+  it("creates the classroom once every child has a book", () => {
     const onCreate = vi.fn();
     renderStep({ pairs: { c1: "b1", c2: "b2" }, onCreate });
 
