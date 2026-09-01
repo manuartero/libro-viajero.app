@@ -8,7 +8,9 @@ const createClass = (name: string) => {
   });
   fireEvent.click(screen.getByRole("button", { name: "Añadir peques →" }));
   fireEvent.click(screen.getByRole("button", { name: "Rana" }));
-  fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Añadir peque a la clase" }),
+  );
   fireEvent.click(screen.getByRole("button", { name: "Añadir libros →" }));
   fireEvent.click(
     screen.getByRole("button", { name: "¿No lo encuentras? Añádelo a mano" }),

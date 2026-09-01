@@ -11,7 +11,9 @@ const nameTheClass = (name: string) => {
 
 const addChild = (emojiName: string) => {
   fireEvent.click(screen.getByRole("button", { name: emojiName }));
-  fireEvent.click(screen.getByRole("button", { name: "Añadir a la clase" }));
+  fireEvent.click(
+    screen.getByRole("button", { name: "Añadir peque a la clase" }),
+  );
 };
 
 const goToBooks = () => {
@@ -221,18 +223,16 @@ describe("<SetupWizard />", () => {
     expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
   });
 
-  it("steps the course down and clamps at the previous course", () => {
+  it("shows the current course as fixed text, with no stepper", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 7, 30));
     render(<SetupWizard onCreate={() => {}} />);
 
-    const previous = screen.getByRole<HTMLButtonElement>("button", {
-      name: "Curso anterior",
-    });
-    fireEvent.click(previous);
-
-    expect(screen.getByText("Curso 2025/2026")).toBeDefined();
-    expect(previous.disabled).toBe(true);
+    expect(screen.getByText("Curso 2026/2027")).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Curso anterior" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Curso siguiente" }),
+    ).toBeNull();
     vi.useRealTimers();
   });
 
