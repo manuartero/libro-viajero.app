@@ -138,3 +138,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .playwright-mcp/
+
+# Claude Code local state (worktrees, plans)
+.claude/
