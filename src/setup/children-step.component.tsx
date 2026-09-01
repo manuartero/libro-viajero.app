@@ -1,9 +1,10 @@
 import { useState } from "react";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { pluralize } from "src/lib/plural";
+import { PrimaryButton } from "src/lib/primary-button.component";
 import { ChildBuilder } from "src/setup/child-builder.component";
 import { Roster } from "src/setup/roster.component";
-import styles from "./children-step.module.css";
+import { StepShell } from "src/setup/step-shell.component";
 
 type ChildrenStepProps = {
   classroomName: string;
@@ -33,70 +34,55 @@ export function ChildrenStep({
   const usedEmojis = others.map((child) => child.emoji);
   const usedColors = others.map((child) => child.color);
 
+  const peques = pluralize({
+    count: childList.length,
+    singular: "peque",
+    plural: "peques",
+  });
+
   return (
-    <div className={styles.screen}>
-      <header className={styles.header}>
-        <button
-          type="button"
-          className={styles.back}
-          aria-label="Volver al nombre de la clase"
-          onClick={onBack}
-        >
-          ←
-        </button>
-        <div className={styles.mastheadBlock}>
-          <p className={styles.masthead}>{classroomName}</p>
-          <p className={styles.dateline}>
-            Paso 2 de 4 · Curso {yearShort} ·{" "}
-            {pluralize({
-              count: childList.length,
-              singular: "peque",
-              plural: "peques",
-            })}
-          </p>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-        {/* The key remounts the builder: ChildBuilder seeds its state from
-            `editing` once, so a fresh form per add / reload per edit depends
-            on this remount. */}
-        <ChildBuilder
-          key={editing?.id ?? `new-${childList.length}`}
-          usedEmojis={usedEmojis}
-          usedColors={usedColors}
-          editing={editing}
-          onAdd={onAdd}
-          onSave={(child) => {
-            onSave(child);
-            setEditingId(null);
-          }}
-          onRemove={(childId) => {
-            onRemove(childId);
-            setEditingId(null);
-          }}
-          onCancel={() => setEditingId(null)}
-        />
-
-        <Roster
-          childList={childList}
-          editingId={editingId}
-          onSelect={(childId) =>
-            setEditingId((prev) => (prev === childId ? null : childId))
-          }
-        />
-      </main>
-
-      <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.create}
+    <StepShell
+      classroomName={classroomName}
+      dateline={`Paso 2 de 4 · Curso ${yearShort} · ${peques}`}
+      backLabel="Volver al nombre de la clase"
+      onBack={onBack}
+      footer={
+        <PrimaryButton
+          tone="go"
           disabled={childList.length === 0}
           onClick={onNext}
         >
           Añadir libros →
-        </button>
-      </footer>
-    </div>
+        </PrimaryButton>
+      }
+    >
+      {/* The key remounts the builder: ChildBuilder seeds its state from
+          `editing` once, so a fresh form per add / reload per edit depends
+          on this remount. */}
+      <ChildBuilder
+        key={editing?.id ?? `new-${childList.length}`}
+        usedEmojis={usedEmojis}
+        usedColors={usedColors}
+        editing={editing}
+        onAdd={onAdd}
+        onSave={(child) => {
+          onSave(child);
+          setEditingId(null);
+        }}
+        onRemove={(childId) => {
+          onRemove(childId);
+          setEditingId(null);
+        }}
+        onCancel={() => setEditingId(null)}
+      />
+
+      <Roster
+        childList={childList}
+        editingId={editingId}
+        onSelect={(childId) =>
+          setEditingId((prev) => (prev === childId ? null : childId))
+        }
+      />
+    </StepShell>
   );
 }

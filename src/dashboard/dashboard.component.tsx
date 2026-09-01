@@ -3,6 +3,7 @@ import { ChildCard } from "src/dashboard/child-card.component";
 import { MissingSummary } from "src/dashboard/missing-summary.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
+import { PrimaryButton } from "src/lib/primary-button.component";
 import { assignedBookByChild, type Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
 
@@ -61,9 +62,9 @@ export function Dashboard({ project }: DashboardProps) {
       </main>
 
       <footer className={styles.footer}>
-        <button type="button" className={styles.confirm} disabled>
+        <PrimaryButton tone="go" disabled>
           Confirmar semana
-        </button>
+        </PrimaryButton>
         <p className={styles.footerNote}>
           Guardar la semana llega con la persistencia
         </p>

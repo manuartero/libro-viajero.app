@@ -8,6 +8,10 @@
   --missing: #c0392b;
   --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-display: "Besley", Georgia, serif;
+  --screen-max-width: 28rem;
+  --tap-size: 2.75rem;
+  --caps-size: 0.75rem;
+  --caps-tracking: 0.14em;
 }
 
 * {

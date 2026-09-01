@@ -1,5 +1,8 @@
 import type { AppData } from "src/project/project.model";
-import { sampleProject, stubStorageFailure } from "src/services/storage.fixture";
+import {
+  sampleProject,
+  stubStorageFailure,
+} from "src/services/storage.fixture";
 import { getAppData, saveAppData } from "src/services/storage.service";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 

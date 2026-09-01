@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from "react";
+import { PrimaryButton } from "src/lib/primary-button.component";
 import styles from "./app-error-boundary.module.css";
 
 type AppErrorBoundaryProps = {
@@ -33,13 +34,9 @@ export class AppErrorBoundary extends Component<
           <p className={styles.hint}>
             Recarga la página para volver a intentarlo.
           </p>
-          <button
-            type="button"
-            className={styles.reload}
-            onClick={() => window.location.reload()}
-          >
+          <PrimaryButton size="medium" onClick={() => window.location.reload()}>
             Recargar
-          </button>
+          </PrimaryButton>
         </main>
       );
     }

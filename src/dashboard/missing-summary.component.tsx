@@ -41,7 +41,11 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
         {missing.map(({ child, book }) => (
           <li key={child.id} className={styles.row}>
             <span className={styles.who}>
-              <ChildAvatar emoji={child.emoji} color={child.color} size="xsmall" />
+              <ChildAvatar
+                emoji={child.emoji}
+                color={child.color}
+                size="xsmall"
+              />
               {child.tag}
               <span className={styles.bookTitle}>
                 {book ? book.title : "sin libro"}

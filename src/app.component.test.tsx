@@ -1,6 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import { App } from "src/app.component";
-import { sampleProject, stubStorageFailure } from "src/services/storage.fixture";
+import {
+  sampleProject,
+  stubStorageFailure,
+} from "src/services/storage.fixture";
 import { createClass } from "src/setup/wizard.fixture";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -39,7 +42,9 @@ describe("<App />", () => {
     createClass("Los Caracoles");
 
     expect(
-      within(screen.getByRole("alert")).getByText(/No se pudo guardar la clase/),
+      within(screen.getByRole("alert")).getByText(
+        /No se pudo guardar la clase/,
+      ),
     ).toBeDefined();
     expect(
       screen.getByRole("button", { name: "Crear la clase" }),

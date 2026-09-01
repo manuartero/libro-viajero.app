@@ -1,3 +1,4 @@
+import { PrimaryButton } from "src/lib/primary-button.component";
 import {
   currentSchoolYear,
   schoolYearFrom,
@@ -75,9 +76,9 @@ export function ClassNameStep({
       </div>
 
       <footer className={styles.footer}>
-        <button type="submit" className={styles.next} disabled={!canContinue}>
+        <PrimaryButton type="submit" disabled={!canContinue}>
           Añadir peques →
-        </button>
+        </PrimaryButton>
       </footer>
     </form>
   );

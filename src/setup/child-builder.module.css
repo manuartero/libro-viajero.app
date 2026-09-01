@@ -145,33 +145,6 @@
   color: var(--ink-soft);
 }
 
-.add,
-.save {
-  width: 100%;
-  min-height: 3rem;
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.125rem;
-  cursor: pointer;
-}
-
-.add:active,
-.save:active {
-  background: var(--ink-soft);
-}
-
-.add:disabled,
-.save:disabled {
-  background: var(--paper-dark);
-  border-color: var(--ink-soft);
-  color: var(--ink-soft);
-  cursor: default;
-}
-
 .editActions {
   display: grid;
   grid-template-columns: 2fr 1fr;

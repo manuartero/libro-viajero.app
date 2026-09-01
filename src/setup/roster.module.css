@@ -5,9 +5,9 @@
 
 .title {
   margin: 0 0 0.625rem;
-  font-size: 0.75rem;
+  font-size: var(--caps-size);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--caps-tracking);
   text-transform: uppercase;
 }
 

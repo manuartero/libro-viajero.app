@@ -1,0 +1,43 @@
+.button {
+  width: 100%;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.large {
+  min-height: 3.25rem;
+  font-size: 1.375rem;
+}
+
+.medium {
+  min-height: 3rem;
+  font-size: 1.125rem;
+}
+
+.ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ink:active {
+  background: var(--ink-soft);
+}
+
+.go {
+  background: var(--returned);
+  color: #fff;
+}
+
+.go:active {
+  background: var(--returned-dark);
+}
+
+.button:disabled {
+  background: var(--paper-dark);
+  border-color: var(--ink-soft);
+  color: var(--ink-soft);
+  cursor: default;
+}

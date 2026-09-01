@@ -1,77 +1,8 @@
-.screen {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  max-width: 28rem;
-  margin-inline: auto;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.625rem 1rem;
-  background: var(--paper);
-  border-bottom: 3px solid var(--ink);
-}
-
-.back {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--paper);
-  font-size: 1.25rem;
-  cursor: pointer;
-}
-
-.back:active {
-  background: var(--paper-dark);
-}
-
-.mastheadBlock {
-  min-width: 0;
-}
-
-.masthead {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.375rem;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dateline {
-  margin: 0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-}
-
 .sectionTitle {
   margin: 0 0 0.625rem;
-  font-size: 0.75rem;
+  font-size: var(--caps-size);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--caps-tracking);
   text-transform: uppercase;
 }
 
@@ -99,7 +30,7 @@
   align-items: center;
   gap: 0.25rem;
   width: 4.5rem;
-  min-height: 2.75rem;
+  min-height: var(--tap-size);
   padding: 0.375rem 0.25rem;
   border: 2px solid var(--ink);
   border-radius: 0;
@@ -149,7 +80,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 2.75rem;
+  min-height: var(--tap-size);
   padding: 0.25rem 0.5rem;
   border: 2px solid var(--ink);
   border-radius: 0;
@@ -197,7 +128,7 @@
 }
 
 .unassign {
-  width: 2.75rem;
+  width: var(--tap-size);
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -210,36 +141,4 @@
 
 .unassign:active {
   background: var(--paper-dark);
-}
-
-.footer {
-  position: sticky;
-  bottom: 0;
-  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
-  background: var(--paper);
-  border-top: 3px solid var(--ink);
-}
-
-.create {
-  width: 100%;
-  min-height: 3.25rem;
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--returned);
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.375rem;
-  cursor: pointer;
-}
-
-.create:active {
-  background: var(--returned-dark);
-}
-
-.create:disabled {
-  background: var(--paper-dark);
-  border-color: var(--ink-soft);
-  color: var(--ink-soft);
-  cursor: default;
 }

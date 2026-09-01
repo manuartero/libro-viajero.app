@@ -7,6 +7,7 @@ import {
 } from "src/child/avatar-catalog.data";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
+import { PrimaryButton } from "src/lib/primary-button.component";
 import styles from "./child-builder.module.css";
 
 type ChildBuilderProps = {
@@ -145,9 +146,9 @@ export function ChildBuilder({
 
       {editing ? (
         <div className={styles.editActions}>
-          <button type="submit" className={styles.save} disabled={!canSubmit}>
+          <PrimaryButton type="submit" size="medium" disabled={!canSubmit}>
             Guardar
-          </button>
+          </PrimaryButton>
           <button
             type="button"
             className={styles.remove}
@@ -160,9 +161,9 @@ export function ChildBuilder({
           </button>
         </div>
       ) : (
-        <button type="submit" className={styles.add} disabled={!canSubmit}>
+        <PrimaryButton type="submit" size="medium" disabled={!canSubmit}>
           Añadir a la clase
-        </button>
+        </PrimaryButton>
       )}
     </form>
   );
