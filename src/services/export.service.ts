@@ -19,6 +19,10 @@ export function downloadAppData(data: AppData) {
   const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download = filename;
+  // Firefox and Safari abort the download if the anchor is detached or the
+  // URL is revoked before the click has been dispatched.
+  document.body.appendChild(anchor);
   anchor.click();
-  URL.revokeObjectURL(url);
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }

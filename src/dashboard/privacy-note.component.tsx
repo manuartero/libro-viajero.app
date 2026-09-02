@@ -1,5 +1,33 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import styles from "./privacy-note.module.css";
+
+// aria-modal alone does not stop Tab from walking into the dashboard behind
+// the panel; wrap it between the panel's first and last control instead.
+const keepFocusInside = ({
+  event,
+  panel,
+}: {
+  event: KeyboardEvent;
+  panel: HTMLElement | null;
+}) => {
+  if (!panel) {
+    return;
+  }
+  const controls = panel.querySelectorAll<HTMLElement>("button");
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (!first || !last) {
+    return;
+  }
+  const active = document.activeElement;
+  if (event.shiftKey && (active === first || !panel.contains(active))) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && (active === last || !panel.contains(active))) {
+    event.preventDefault();
+    first.focus();
+  }
+};
 
 type PrivacyNoteProps = {
   onDownloadData: () => void;
@@ -9,24 +37,37 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    // The trigger is always mounted, so focus can go straight back to it.
+    triggerRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (!open) {
       return;
     }
     titleRef.current?.focus();
-    const closeOnEscape = (event: KeyboardEvent) => {
+    const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setOpen(false);
+        close();
+        return;
+      }
+      if (event.key === "Tab") {
+        keepFocusInside({ event, panel: panelRef.current });
       }
     };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
-  }, [open]);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, close]);
 
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         className={styles.trigger}
         aria-label="Tus datos y privacidad"
@@ -39,6 +80,7 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
       {open ? (
         <div className={styles.backdrop}>
           <section
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -74,11 +116,7 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
             >
               Descargar mis datos
             </button>
-            <button
-              type="button"
-              className={styles.close}
-              onClick={() => setOpen(false)}
-            >
+            <button type="button" className={styles.close} onClick={close}>
               Cerrar
             </button>
           </section>

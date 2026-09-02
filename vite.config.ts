@@ -10,7 +10,9 @@ export const CONTENT_SECURITY_POLICY = [
   "default-src 'none'",
   "script-src 'self'",
   "style-src 'self'",
-  "img-src 'self' data: https://covers.openlibrary.org",
+  // Covers often answer with a 302 to archive.org and then to an
+  // ia*.us.archive.org host; CSP checks every hop of the chain.
+  "img-src 'self' data: https://covers.openlibrary.org https://archive.org https://*.archive.org",
   "font-src 'self'",
   "connect-src 'self' https://openlibrary.org",
   "base-uri 'none'",

@@ -23,7 +23,13 @@ const readRaw = () => {
   const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
   if (legacy !== null) {
     // Silent one-time migration; the old key stays behind as a backup.
-    localStorage.setItem(STORAGE_KEY, legacy);
+    try {
+      localStorage.setItem(STORAGE_KEY, legacy);
+    } catch (error) {
+      // The copy is best-effort: the class is still readable from the old
+      // key, so never let a failed write make it look deleted.
+      console.error("libro-viajero: cannot migrate legacy data", error);
+    }
   }
   return legacy;
 };

@@ -28,6 +28,8 @@
 
 .projectName {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.375rem;

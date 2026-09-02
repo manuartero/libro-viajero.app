@@ -55,4 +55,44 @@ describe("<PrivacyNote />", () => {
 
     expect(screen.queryByRole("dialog")).toBeNull();
   });
+
+  it("moves focus to the dialog title when it opens", () => {
+    render(<PrivacyNote onDownloadData={() => {}} />);
+
+    openNote();
+
+    expect(document.activeElement).toBe(
+      screen.getByRole("heading", { name: "Tus datos" }),
+    );
+  });
+
+  it("returns focus to the trigger when it closes", () => {
+    render(<PrivacyNote onDownloadData={() => {}} />);
+    const trigger = screen.getByRole("button", {
+      name: "Tus datos y privacidad",
+    });
+
+    openNote();
+    fireEvent.click(screen.getByRole("button", { name: "Cerrar" }));
+    expect(document.activeElement).toBe(trigger);
+
+    openNote();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("keeps Tab inside the dialog", () => {
+    render(<PrivacyNote onDownloadData={() => {}} />);
+
+    openNote();
+    const close = screen.getByRole("button", { name: "Cerrar" });
+    close.focus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "Descargar mis datos" }),
+    );
+
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(close);
+  });
 });
