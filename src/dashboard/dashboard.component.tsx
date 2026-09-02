@@ -2,15 +2,17 @@ import { useState } from "react";
 import { ChildCard } from "src/dashboard/child-card.component";
 import { MissingSummary } from "src/dashboard/missing-summary.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
+import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
 import type { Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
 
 type DashboardProps = {
   project: Project;
+  onDownloadData: () => void;
 };
 
-export function Dashboard({ project }: DashboardProps) {
+export function Dashboard({ project, onDownloadData }: DashboardProps) {
   const [returnedChildIds, setReturnedChildIds] = useState<string[]>([]);
 
   const toggleReturned = (childId: string) => {
@@ -34,10 +36,13 @@ export function Dashboard({ project }: DashboardProps) {
     <div className={styles.screen}>
       <header className={styles.header}>
         <p className={styles.projectName}>{project.name}</p>
-        <ReturnCounter
-          returned={returnedChildIds.length}
-          total={project.children.length}
-        />
+        <div className={styles.headerTools}>
+          <ReturnCounter
+            returned={returnedChildIds.length}
+            total={project.children.length}
+          />
+          <PrivacyNote onDownloadData={onDownloadData} />
+        </div>
       </header>
 
       <main className={styles.main}>

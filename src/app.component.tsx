@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import type { AppData, Project } from "src/project/project.model";
-import {
-  ANONYMOUS_USER_ID,
-  getAppData,
-  saveAppData,
-} from "src/services/storage.service";
+import { downloadAppData } from "src/services/export.service";
+import { getAppData, saveAppData } from "src/services/storage.service";
 import { SetupWizard } from "src/setup/setup-wizard.component";
 import styles from "./app.module.css";
 
 const loadAppData = (): AppData => {
-  const stored = getAppData(ANONYMOUS_USER_ID);
+  const stored = getAppData();
   const hasActive = stored.projects.some(
     (p) => p.id === stored.activeProjectId,
   );
@@ -24,7 +21,7 @@ const loadAppData = (): AppData => {
     ...stored,
     activeProjectId: stored.projects[0].id,
   };
-  saveAppData({ googleId: ANONYMOUS_USER_ID, data: healed });
+  saveAppData(healed);
   return healed;
 };
 
@@ -40,7 +37,7 @@ export function App() {
       projects: [...appData.projects, project],
       activeProjectId: project.id,
     };
-    if (!saveAppData({ googleId: ANONYMOUS_USER_ID, data: next })) {
+    if (!saveAppData(next)) {
       setSaveFailed(true);
       return;
     }
@@ -62,5 +59,10 @@ export function App() {
     );
   }
 
-  return <Dashboard project={activeProject} />;
+  return (
+    <Dashboard
+      project={activeProject}
+      onDownloadData={() => downloadAppData(appData)}
+    />
+  );
 }

@@ -1,26 +1,10 @@
 # Data Model Reference
 
-Each type lives in its domain module: `src/child/child.model.ts`, `src/book/book.model.ts`, `src/project/project.model.ts` (`Assignment`, `WeeklySession`, `Project`, `AppData`), `src/auth/auth.model.ts`. This document explains the data model, storage schema, and key algorithms.
+Each type lives in its domain module: `src/child/child.model.ts`, `src/book/book.model.ts`, `src/project/project.model.ts` (`Assignment`, `WeeklySession`, `Project`, `AppData`). This document explains the data model, storage schema, and key algorithms.
 
 ---
 
 ## Type Aliases
-
-### `AuthUser`
-
-Derived from the decoded Google JWT. Kept in React state — never persisted.
-
-```typescript
-type AuthUser = {
-  googleId: string;  // payload.sub — stable unique ID, never changes even if email changes
-  name: string;      // payload.name — display only
-  picture: string;   // payload.picture — Google profile photo URL
-};
-```
-
-`googleId` is the namespace key for all localStorage data.
-
----
 
 ### `Child`
 
@@ -142,11 +126,13 @@ type AppData = {
 ## localStorage Schema
 
 ```
-Key:   libro-viajero:{googleId}
+Key:   libro-viajero
 Value: JSON.stringify(AppData)
 ```
 
-**Default value** (when no data exists for a user):
+One key. There are no accounts, so there is nothing to namespace by: one phone, one teacher.
+
+**Default value** (when nothing is stored):
 ```json
 {
   "projects": [],
@@ -155,10 +141,16 @@ Value: JSON.stringify(AppData)
 ```
 
 All reads and writes go through `services/storage.service.ts`:
-- `getAppData(googleId)` — absent, unparseable, or wrong-shaped entries degrade to the default value; an unreadable entry is preserved under `libro-viajero:{googleId}:backup-{timestamp}` before being abandoned
-- `saveAppData({ googleId, data })` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
+- `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the default value; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned. Data found under the legacy key `libro-viajero:anonymous` (from when a Google login was still planned) is copied to `libro-viajero` on first read; the old key is left in place
+- `saveAppData(data)` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
 
-**Anonymous namespace (pre-auth)**: until Google auth ships, all data lives under `googleId = "anonymous"` (`ANONYMOUS_USER_ID`). When auth lands, the first login must migrate `libro-viajero:anonymous` into the user's `libro-viajero:{payload.sub}` namespace — otherwise every pre-auth classroom silently disappears.
+---
+
+## Export File
+
+`services/export.service.ts` — `downloadAppData(data)`
+
+"Descargar mis datos" in the dashboard's privacy panel. Writes `libro-viajero-{YYYY-MM-DD}.json` straight from the browser (`Blob` + `<a download>`): the full `AppData`, pretty-printed. Same shape as the storage value, so a future import is just a validated `saveAppData()`.
 
 ---
 

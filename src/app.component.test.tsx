@@ -41,9 +41,7 @@ describe("<App />", () => {
     createClass("Los Caracoles");
 
     expect(screen.getByText(/^Los Caracoles \d{4}\/\d{2}$/)).toBeDefined();
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects).toHaveLength(1);
     expect(stored.activeProjectId).toBe(stored.projects[0].id);
   });
@@ -82,7 +80,7 @@ describe("<App />", () => {
 
   it("self-heals a dangling activeProjectId instead of re-running setup", () => {
     localStorage.setItem(
-      "libro-viajero:anonymous",
+      "libro-viajero",
       JSON.stringify({
         projects: [
           {

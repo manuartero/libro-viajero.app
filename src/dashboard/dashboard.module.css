@@ -19,6 +19,13 @@
   border-bottom: 3px solid var(--ink);
 }
 
+.headerTools {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
 .projectName {
   margin: 0;
   font-family: var(--font-display);

@@ -16,44 +16,33 @@ Every Friday the teacher needs to:
 
 This app makes all of that frictionless. Open it Friday afternoon, tap through the check-in, confirm next week's assignments. Done in under 2 minutes.
 
-**All data lives in your browser. No server. No accounts stored anywhere. Just you and your classroom.**
-
 **Mobile-first**: built for the phone in the teacher's hand (user testing on a Xiaomi Redmi 15C). Desktop just gets the same layout, centered.
+
+---
+
+## Privacy
+
+**Ningún dato sale de tu teléfono sin que tú lo sepas.**
+
+- No server, no database, no accounts, no login. Everything lives in the browser's `localStorage`, on the teacher's phone — the same place, and the same protection, as the notes app.
+- Children are never identified by real name: emoji + color avatars and a teacher-chosen nickname.
+- The only network traffic is a book title sent to [Open Library](https://openlibrary.org) to find a cover. A Content-Security-Policy baked into the built page lets the browser enforce that nothing else is contacted.
+- **Descargar mis datos** (the **?** button on the dashboard) downloads a JSON copy of everything, so a class survives a new phone or a cleared browser.
 
 ---
 
 ## Features
 
-- **Google Sign-In**: identification only — data never leaves your device
 - **Child avatars**: emoji + color, no real names
-- **Book covers**: found automatically via Open Library search
+- **Book covers**: found automatically via Open Library search, or entered by hand
 - **Friday check-in**: tap to mark returns; see who's missing, with a ready-to-copy parent reminder
 - **Smart rotation**: next week's assignments suggested automatically — every child reads every book
 - **History**: every past week's check-in
+- **Your data, your file**: one-tap download of all app data
 
 ---
 
-## Setup
-
-### 1. Google OAuth Client ID
-
-You need a free Google Cloud OAuth Client ID:
-
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Create a project → APIs & Services → Credentials → Create OAuth 2.0 Client ID
-3. Type: **Web application**
-4. Authorized JavaScript origins: `http://localhost:5173` (dev) and your production domain
-5. Copy the Client ID
-
-### 2. Environment
-
-```bash
-cp .env.example .env
-# Edit .env and set your Client ID:
-# VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-```
-
-### 3. Running the Project
+## Running the project
 
 ```bash
 pnpm install
@@ -62,6 +51,8 @@ pnpm test        # Vitest
 pnpm build       # TypeScript check + Vite production build
 pnpm blue-ball   # lint + test + build — run before pushing
 ```
+
+No environment variables, no API keys.
 
 ---
 

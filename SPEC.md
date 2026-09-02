@@ -18,6 +18,7 @@
 - Book lending tracking (who has which physical copy at any time beyond current week)
 - Parent-facing view
 - Any server-side component
+- Accounts or login of any kind — there is nothing to log in to
 
 ---
 
@@ -31,7 +32,7 @@
 | CSS Modules           | `.module.css` files — no CSS framework                     |
 | pnpm                  | package manager, exact versions only (`save-exact=true`)   |
 | biome                 | lint + format                                              |
-| `@react-oauth/google` | **only** third-party runtime dependency                    |
+| Runtime deps          | **none** beyond React; `@fontsource/besley` bundles the font locally |
 
 `pnpm blue-ball` = lint + test + build. No red gate, no merge.
 
@@ -41,13 +42,13 @@
 
 ## User Stories
 
-### Authentication
+### Privacy & Data Ownership
 
-|   ID   |                                              Story                                               |
-| ------ | ------------------------------------------------------------------------------------------------ |
-| AUTH-1 | As a teacher, I can sign in with my Google account so the app knows who I am and my data is mine |
-| AUTH-2 | As a teacher, I can sign out and be confident my data stays on my device                         |
-| AUTH-3 | As a teacher, signing in again shows me exactly where I left off                                 |
+|   ID   |                                                 Story                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------ |
+| PRIV-1 | As a teacher, I can open the app and pick up where I left off, with no account and no sign-in          |
+| PRIV-2 | As a teacher, I can read in plain words, from the dashboard, what leaves my phone (nothing I don't know about) |
+| PRIV-3 | As a teacher, I can download a copy of all my data as a file, whenever I want                         |
 
 ### Project Setup
 
@@ -87,11 +88,12 @@
 
 ## Feature Breakdown
 
-### F1: Google Authentication
-- Uses `@react-oauth/google` client library
-- Google `sub` (user ID) namespaces all localStorage data
-- No server communication — login is identification only
-- Session is in-memory; data persists in localStorage
+### F1: Privacy & Data Ownership
+- No server, no accounts, no login. One phone = one teacher = one localStorage key
+- The only network traffic is the Open Library search (book titles) and cover images
+- Enforced by a Content-Security-Policy `<meta>` injected at build time (`vite.config.ts`): scripts, styles and fonts from the app's own origin only; `connect-src` limited to `openlibrary.org`; images from `covers.openlibrary.org`
+- Dashboard header shows a **?** button opening "Tus datos": the promise *"Ningún dato sale de tu teléfono sin que tú lo sepas"*, what does leave (Open Library), and a warning that clearing browser data deletes the class
+- **Descargar mis datos** in that panel downloads `libro-viajero-{YYYY-MM-DD}.json` with the whole `AppData`, straight from the browser
 
 ### F2: Project Management
 - Create, rename, and (future) delete projects
@@ -133,9 +135,11 @@
 - [ ] Confirmed session appears in history
 - [ ] After confirming, dashboard reflects new assignments
 
-### Data persistence
-- [ ] Reloading the page after sign-in shows the same projects and history
-- [ ] A different Google account sees separate data
+### Data persistence & privacy
+- [ ] Reloading the page shows the same projects and history, with no sign-in
+- [ ] The browser's network tab shows requests to `openlibrary.org` / `covers.openlibrary.org` only
+- [ ] The built `index.html` carries the Content-Security-Policy meta tag
+- [ ] "Descargar mis datos" produces a JSON file that parses back into the stored `AppData`
 
 ### Mobile UX
 - [ ] All interactive elements are at least 44×44px
@@ -161,6 +165,7 @@
 - **PWA**: Installable, offline-capable app
 - **Multi-device sync**: Same teacher, multiple devices
 - **Shared projects**: Co-teachers managing the same classroom
+- **Import**: restore a class from a downloaded `libro-viajero-*.json` (new phone, next year's teacher)
 - **Export**: PDF summary of the semester's rotation
 - **Book ratings**: Children mark how much they liked a book
 - **ISBN scanning**: Camera-based book lookup

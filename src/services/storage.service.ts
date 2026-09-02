@@ -1,11 +1,9 @@
 import type { AppData } from "src/project/project.model";
 
-// Placeholder namespace until Google auth lands; then payload.sub takes over.
-// TODO(auth): on first login, migrate `libro-viajero:anonymous` into the
-// user's own namespace — otherwise every pre-auth classroom disappears.
-export const ANONYMOUS_USER_ID = "anonymous";
-
-const storageKey = (googleId: string) => `libro-viajero:${googleId}`;
+// One phone, one teacher, one namespace. There are no accounts to key by.
+const STORAGE_KEY = "libro-viajero";
+// Key used while a Google login was still planned; it never shipped.
+const LEGACY_STORAGE_KEY = "libro-viajero:anonymous";
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
 
@@ -17,10 +15,23 @@ const isAppData = (value: unknown): value is AppData => {
   return Array.isArray(candidate.projects) && "activeProjectId" in candidate;
 };
 
-export function getAppData(googleId: string): AppData {
+const readRaw = () => {
+  const current = localStorage.getItem(STORAGE_KEY);
+  if (current !== null) {
+    return current;
+  }
+  const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+  if (legacy !== null) {
+    // Silent one-time migration; the old key stays behind as a backup.
+    localStorage.setItem(STORAGE_KEY, legacy);
+  }
+  return legacy;
+};
+
+export function getAppData(): AppData {
   let raw: string | null;
   try {
-    raw = localStorage.getItem(storageKey(googleId));
+    raw = readRaw();
   } catch (error) {
     // Storage blocked by the browser (private mode, cookie settings):
     // the app still runs, it just won't persist.
@@ -41,10 +52,10 @@ export function getAppData(googleId: string): AppData {
     // key so a bad write stays recoverable, then boot fresh instead of
     // crashing — the next save would otherwise overwrite it.
     console.error(
-      `libro-viajero: unreadable data at ${storageKey(googleId)}, backing it up`,
+      `libro-viajero: unreadable data at ${STORAGE_KEY}, backing it up`,
     );
     try {
-      localStorage.setItem(`${storageKey(googleId)}:backup-${Date.now()}`, raw);
+      localStorage.setItem(`${STORAGE_KEY}:backup-${Date.now()}`, raw);
     } catch {
       // Backup is best-effort; without space the original stays in place.
     }
@@ -53,15 +64,9 @@ export function getAppData(googleId: string): AppData {
   return parsed;
 }
 
-export function saveAppData({
-  googleId,
-  data,
-}: {
-  googleId: string;
-  data: AppData;
-}): boolean {
+export function saveAppData(data: AppData): boolean {
   try {
-    localStorage.setItem(storageKey(googleId), JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     return true;
   } catch (error) {
     // Quota exhausted or storage blocked — the caller must tell the teacher.
