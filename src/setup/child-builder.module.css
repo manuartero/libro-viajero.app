@@ -145,6 +145,34 @@
   color: var(--ink-soft);
 }
 
+.tagValue {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.tagEmpty {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--ink-soft);
+}
+
+.changeTag {
+  align-self: flex-start;
+  min-height: 2.75rem;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .add,
 .save {
   width: 100%;

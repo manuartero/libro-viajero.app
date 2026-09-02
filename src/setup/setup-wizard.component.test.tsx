@@ -212,7 +212,7 @@ describe("<SetupWizard />", () => {
     nameTheClass("Los Caracoles");
     addChild("Rana");
 
-    expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe("");
+    expect(screen.getByText("Toca un emoji")).toBeDefined();
     expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
   });
 
@@ -252,6 +252,7 @@ describe("<SetupWizard />", () => {
     addChild("Rana");
 
     fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cambiar apodo" }));
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Ranita" },
     });

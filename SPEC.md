@@ -101,7 +101,7 @@
 - Setup wizard: 3 steps (children → books → assign)
 
 ### F3: Child Avatars
-- Nickname/tag: free text, up to 20 characters
+- Nickname/tag: defaults to the tapped emoji's name ("Rana", "Dino"); the text field stays hidden until the teacher taps **Cambiar apodo**. Free text, up to 20 characters. The happy path never asks for a name
 - Emoji: chosen from a curated grid of ~40 emoji (no keyboard input)
 - Color: chosen from a palette of ~12 accessible background colors
 - Avatar = emoji centered on a colored circle
