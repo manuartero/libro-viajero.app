@@ -8,7 +8,7 @@ type MissingSummaryProps = {
 };
 
 const reminderMessage = ({ tag, title }: { tag: string; title: string }) =>
-  `Hi! Just a reminder that ${tag}'s copy of '${title}' hasn't come back yet. No worries — just whenever you can! 📚`;
+  `¡Hola! Un recordatorio: el libro «${title}» de ${tag} aún no ha vuelto a clase. Sin agobios — ¡cuando podáis! 📚`;
 
 export function MissingSummary({ missing }: MissingSummaryProps) {
   const [copiedChildId, setCopiedChildId] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
               <ChildAvatar
                 emoji={child.emoji}
                 color={child.color}
-                size="xsmall"
+                size="tiny"
               />
               {child.tag}
               <span className={styles.bookTitle}>

@@ -1,9 +1,0 @@
-.progress {
-  margin: 0 0 0.5rem;
-  font-size: var(--caps-size);
-  font-weight: 700;
-  letter-spacing: var(--caps-tracking);
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  text-align: center;
-}

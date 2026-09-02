@@ -63,7 +63,7 @@ export function NextWeekPanel({
                   <ChildAvatar
                     emoji={child.emoji}
                     color={child.color}
-                    size="xsmall"
+                    size="tiny"
                   />
                   {child.tag}
                 </span>

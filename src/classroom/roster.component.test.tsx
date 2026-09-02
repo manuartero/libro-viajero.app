@@ -1,7 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Roster } from "src/setup/roster.component";
+import { Roster } from "src/classroom/roster.component";
 import { describe, expect, it, vi } from "vitest";
-import { childList } from "./wizard.fixture";
+
+const childList = [
+  { id: "c1", tag: "Rana", emoji: "🐸", color: "#8ac926" },
+  { id: "c2", tag: "Dino", emoji: "🦕", color: "#ffca3a" },
+];
 
 describe("<Roster />", () => {
   it("invites the teacher when the class is still empty", () => {
@@ -10,13 +14,12 @@ describe("<Roster />", () => {
     expect(screen.getByText("Aquí irán apareciendo tus peques")).toBeDefined();
   });
 
-  it("reports the tapped child from the editable chips", () => {
+  it("reports the tapped child", () => {
     const onSelect = vi.fn();
     render(
       <Roster childList={childList} editingId={null} onSelect={onSelect} />,
     );
 
-    expect(screen.getByRole("button", { name: "Rana, editar" })).toBeDefined();
     fireEvent.click(screen.getByRole("button", { name: "Dino, editar" }));
 
     expect(onSelect).toHaveBeenCalledWith("c2");

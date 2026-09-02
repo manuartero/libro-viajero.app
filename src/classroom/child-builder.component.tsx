@@ -1,13 +1,12 @@
 import { useState } from "react";
 import {
   AVATAR_COLORS,
-  CURATED_EMOJIS,
   type CuratedEmoji,
+  EMOJI_PANELS,
   nextUnusedColor,
 } from "src/child/avatar-catalog.data";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
-import { PrimaryButton } from "src/lib/primary-button.component";
 import styles from "./child-builder.module.css";
 
 type ChildBuilderProps = {
@@ -35,6 +34,15 @@ export function ChildBuilder({
   const [pickedColor, setPickedColor] = useState<string | null>(
     editing?.color ?? null,
   );
+  // Open on the panel holding the edited child's emoji, so it shows selected.
+  const [panelIndex, setPanelIndex] = useState(() => {
+    const found = EMOJI_PANELS.findIndex((candidate) =>
+      candidate.emojis.some((entry) => entry.emoji === editing?.emoji),
+    );
+    return found === -1 ? 0 : found;
+  });
+
+  const panel = EMOJI_PANELS[panelIndex];
 
   // Preselected so color is an optional tap: emoji + add is enough.
   const color = pickedColor ?? nextUnusedColor(usedColors);
@@ -97,8 +105,27 @@ export function ChildBuilder({
 
       <fieldset className={styles.picker}>
         <legend className={styles.pickerLegend}>Elige un emoji</legend>
+        <div className={styles.panelBar}>
+          <span className={styles.panelLabel}>
+            {panel.label}
+            <span className={styles.panelCount}>
+              {" "}
+              · {panelIndex + 1}/{EMOJI_PANELS.length}
+            </span>
+          </span>
+          <button
+            type="button"
+            className={styles.panelNext}
+            aria-label="Más emojis"
+            onClick={() =>
+              setPanelIndex((prev) => (prev + 1) % EMOJI_PANELS.length)
+            }
+          >
+            ›
+          </button>
+        </div>
         <div className={styles.emojiGrid}>
-          {CURATED_EMOJIS.map((entry) => {
+          {panel.emojis.map((entry) => {
             const selected = emoji === entry.emoji;
             const used = usedEmojis.includes(entry.emoji);
             return (
@@ -146,9 +173,9 @@ export function ChildBuilder({
 
       {editing ? (
         <div className={styles.editActions}>
-          <PrimaryButton type="submit" size="medium" disabled={!canSubmit}>
+          <button type="submit" className={styles.save} disabled={!canSubmit}>
             Guardar
-          </PrimaryButton>
+          </button>
           <button
             type="button"
             className={styles.remove}
@@ -161,9 +188,9 @@ export function ChildBuilder({
           </button>
         </div>
       ) : (
-        <PrimaryButton type="submit" size="medium" disabled={!canSubmit}>
-          Añadir a la clase
-        </PrimaryButton>
+        <button type="submit" className={styles.add} disabled={!canSubmit}>
+          Añadir peque a la clase
+        </button>
       )}
     </form>
   );

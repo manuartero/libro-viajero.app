@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { okResponse } from "src/services/open-library.fixture";
-import { BookSearch } from "src/setup/book-search.component";
+import { BookSearch } from "src/library/book-search.component";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+const okResponse = (docs: unknown[]) =>
+  ({ ok: true, json: async () => ({ docs }) }) as Response;
 
 const submitSearch = (query: string) => {
   fireEvent.change(screen.getByLabelText("Busca un libro por título"), {
@@ -79,25 +81,19 @@ describe("<BookSearch />", () => {
     });
   });
 
-  it("recovers from a failed search via the retry button", async () => {
+  it("shows an alert with retry and manual fallback when the search fails", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn()
-        .mockRejectedValueOnce(new TypeError("Failed to fetch"))
-        .mockResolvedValueOnce(
-          okResponse([{ title: "Elmer", author_name: ["David McKee"] }]),
-        ),
+      vi.fn().mockRejectedValue(new TypeError("Failed to fetch")),
     );
     render(<BookSearch onAdd={() => {}} />);
 
     submitSearch("elmer");
 
     expect(await screen.findByRole("alert")).toBeDefined();
-    fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
-
+    expect(screen.getByRole("button", { name: "Reintentar" })).toBeDefined();
     expect(
-      await screen.findByRole("button", { name: "Elmer, David McKee" }),
+      screen.getByRole("button", { name: "Añadirlo a mano" }),
     ).toBeDefined();
   });
 

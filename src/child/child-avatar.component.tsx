@@ -4,7 +4,7 @@ import styles from "./child-avatar.module.css";
 type ChildAvatarProps = {
   emoji: string;
   color: string;
-  size?: "xsmall" | "small" | "medium" | "large";
+  size?: "tiny" | "small" | "medium" | "large";
   children?: ReactNode; // overlays, e.g. the returned stamp
 };
 
