@@ -6,7 +6,7 @@ import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
 import type { Tab } from "src/navigation/navigation.model";
-import type { Project } from "src/project/project.model";
+import type { MissingBook, Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
 
 type DashboardProps = {
@@ -81,7 +81,7 @@ export function Dashboard({
     returnedChildIds.includes(child.id),
   ).length;
 
-  const missing = withBook
+  const missing: MissingBook[] = withBook
     .filter((child) => !returnedChildIds.includes(child.id))
     .map((child) => ({ child, book: bookOfChild.get(child.id) }));
 

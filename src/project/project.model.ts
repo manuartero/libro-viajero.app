@@ -22,6 +22,13 @@ export function pairsFrom(assignments: readonly Assignment[]): AssignmentPairs {
   return pairs;
 }
 
+// A child paired with the book they took home and have not returned. `book`
+// is optional because an assignment can outlive the book it points at.
+export type MissingBook = {
+  child: Child;
+  book: Book | undefined;
+};
+
 export type WeeklySession = {
   weekStart: string;
   returnedChildIds: string[];
