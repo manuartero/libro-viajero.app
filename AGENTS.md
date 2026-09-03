@@ -22,7 +22,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 - Tokens in `src/styles/globals.css`: `--paper`/`--paper-dark` (ground), `--ink`/`--ink-soft` (text/borders), `--returned`/`--returned-dark` (green), `--missing` (red), `--font-body` (Helvetica), `--font-display` (Besley serif, 700).
 - Hard 2–3px `--ink` borders, `border-radius: 0` on buttons, uppercase letter-spaced datelines. No shadows, no gradients.
-- One 12-color palette for the whole app: `src/palette/palette.json`, read only by `palette.data.ts`, sorted by hue (warm → cool → neutral). Its **length** and its **membership** are load-bearing, its order is not: `coverColorFor()`'s `HUE_STRIDE` must stay coprime with the length or cover colors collapse onto a fraction of the palette, and `Child.color` is persisted as a raw hex, so dropping an entry strands existing children on a color no swatch matches. Reordering only changes which hue `nextUnusedColor()` hands out first. Note the stride carries two separate properties: coprimality buys full coverage, while `5` specifically is what puts similar titles on far-apart hues — `1` and `11` are equally coprime and land them on neighbours. Both are tested in `book.model.test.ts`.
+- One 12-color palette for the whole app: `src/palette/palette.json`, read only by `palette.data.ts`, sorted by hue (warm → cool → neutral). Only its **membership** is load-bearing: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children on a color no swatch matches. Adding one is free, and so is reordering — order only changes which hue `nextUnusedColor()` hands out first and which placeholder `coverColorFor()` gives a title, neither of which is persisted.
 
 ### Dependencies
 
