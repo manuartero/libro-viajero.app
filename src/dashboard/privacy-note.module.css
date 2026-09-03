@@ -16,27 +16,32 @@
   background: var(--paper-dark);
 }
 
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgb(26 26 26 / 55%);
-}
-
+/* A bottom sheet, from a dialog the UA would otherwise centre: `auto auto 0`
+   pins it to the bottom edge and still centres it horizontally. */
 .panel {
+  margin: auto auto 0;
   width: 100%;
   max-width: 28rem;
   max-height: 90dvh;
   overflow-y: auto;
+  padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
+  background: var(--paper);
+  color: var(--ink);
+  border: none;
+  border-top: 3px solid var(--ink);
+  border-radius: 0;
+}
+
+/* Scoped to [open] on purpose: a bare `display` here would out-specify the
+   UA's `dialog:not([open]) { display: none }` and leave the sheet on screen. */
+.panel[open] {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
-  background: var(--paper);
-  border-top: 3px solid var(--ink);
+}
+
+.panel::backdrop {
+  background: rgb(26 26 26 / 55%);
 }
 
 .title {
@@ -45,10 +50,6 @@
   font-weight: 700;
   font-size: 1.5rem;
   line-height: 1.2;
-}
-
-.title:focus-visible {
-  outline: none;
 }
 
 .lead {
