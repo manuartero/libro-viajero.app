@@ -22,7 +22,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 - Tokens in `src/styles/globals.css`: `--paper`/`--paper-dark` (ground), `--ink`/`--ink-soft` (text/borders), `--returned`/`--returned-dark` (green), `--missing` (red), `--font-body` (Helvetica), `--font-display` (Besley serif, 700).
 - Hard 2–3px `--ink` borders, `border-radius: 0` on buttons, uppercase letter-spaced datelines. No shadows, no gradients.
-- One 12-color palette for the whole app: `PALETTE` in `src/palette/palette.data.ts`, sorted by hue (warm → cool → neutral). The order is load-bearing — `nextUnusedColor()` walks it front-to-back, and `coverColorFor()` indexes it with a stride coprime with its length so similar titles get far-apart hues.
+- One 12-color palette for the whole app: `PALETTE` in `src/palette/palette.data.ts`, sorted by hue (warm → cool → neutral). Its **length** and its **membership** are load-bearing, its order is not: `coverColorFor()`'s `HUE_STRIDE` must stay coprime with the length or cover colors collapse onto a fraction of the palette, and `Child.color` is persisted as a raw hex, so dropping an entry strands existing children on a color no swatch matches. Reordering only changes which hue `nextUnusedColor()` hands out first. Note the stride carries two separate properties: coprimality buys full coverage, while `5` specifically is what puts similar titles on far-apart hues — `1` and `11` are equally coprime and land them on neighbours. Both are tested in `book.model.test.ts`.
 
 ### Dependencies
 
@@ -65,7 +65,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 - No `utils/`, `types/`, `helpers/` catch-alls — and no `types.ts` either. Name folders by domain; every type lives in its domain module (`src/project/project.model.ts` defines `Project`), even if that means more files.
 - Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `palette/`.
 - `src/` root holds **only** `main.tsx`. The app shell — `App`, `AppView`, `useAppData`, `AppErrorBoundary`, `TabBar` — lives in `src/app/`.
-- Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`). Nothing else imports the JSON.
+- Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`). Nothing else imports the JSON. The exception is data whose literal types are load-bearing at compile time: `palette.data.ts` stays inline `.ts` because `as const satisfies readonly PaletteColor[]` is what pins its shape, and a JSON import would erase that.
 
 ### Testing
 

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import type { Book } from "src/book/book.model";
+import { useState } from "react";
+import { type Book, pluralLibros } from "src/book/book.model";
+import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BookSearch } from "src/library/book-search.component";
 import { Bookshelf } from "src/library/bookshelf.component";
 import type { Project } from "src/project/project.model";
@@ -13,21 +14,9 @@ type LibraryScreenProps = {
   onUpdate: (project: Project) => boolean;
 };
 
-const pluralLibros = (count: number) =>
-  count === 1 ? "1 libro" : `${count} libros`;
-
 export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
   // A book that is at a child's home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Book | null>(null);
-
-  // The alertdialog contract: focus moves into the panel when it opens —
-  // which also scrolls it into view, since the trigger sits far below it.
-  const confirmRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (confirmingRemove) {
-      confirmRef.current?.focus();
-    }
-  }, [confirmingRemove]);
 
   const readerOf = (bookId: string) => {
     const assignment = project.currentAssignments.find(
@@ -38,9 +27,7 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
       : null;
   };
 
-  const confirmingReader = confirmingRemove
-    ? readerOf(confirmingRemove.id)
-    : null;
+  const confirmingReader = confirmingRemove && readerOf(confirmingRemove.id);
 
   const remove = (bookId: string) => {
     if (onUpdate(removeBook({ project, bookId }))) {
@@ -61,35 +48,16 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
 
       <main className={styles.main}>
         {confirmingRemove && (
-          <div
-            ref={confirmRef}
-            tabIndex={-1}
-            className={styles.confirmPanel}
-            role="alertdialog"
-            aria-label={`Quitar ${confirmingRemove.title}`}
+          <ConfirmPanel
+            label={`Quitar ${confirmingRemove.title}`}
+            confirmText="Sí, quitarlo"
+            cancelText="No, mantenerlo"
+            onConfirm={() => remove(confirmingRemove.id)}
+            onCancel={() => setConfirmingRemove(null)}
           >
-            <p className={styles.confirmText}>
-              «{confirmingRemove.title}» está en casa de «
-              {confirmingReader?.tag}». Si lo quitas, se queda sin libro esta
-              semana.
-            </p>
-            <div className={styles.confirmActions}>
-              <button
-                type="button"
-                className={styles.confirmRemove}
-                onClick={() => remove(confirmingRemove.id)}
-              >
-                Sí, quitarlo
-              </button>
-              <button
-                type="button"
-                className={styles.confirmCancel}
-                onClick={() => setConfirmingRemove(null)}
-              >
-                No, mantenerlo
-              </button>
-            </div>
-          </div>
+            «{confirmingRemove.title}» está en casa de «{confirmingReader?.tag}
+            ». Si lo quitas, se queda sin libro esta semana.
+          </ConfirmPanel>
         )}
 
         <BookSearch onAdd={(draft) => onUpdate(addBook({ project, draft }))} />

@@ -3,8 +3,16 @@ export type PaletteColor = {
   name: string;
 };
 
-// The app's only palette. Sorted by hue (warm → cool → neutral); the order is
-// load-bearing for every consumer that walks or indexes it.
+// The app's only palette, sorted by hue (warm → cool → neutral). Two things
+// here are load-bearing and one is not:
+//   length — coverColorFor()'s HUE_STRIDE must stay coprime with it, or cover
+//     colors collapse onto a fraction of the palette (a length of 10 would
+//     leave two), and nextUnusedColor() wraps on it.
+//   membership — Child.color is persisted as a raw hex and never re-validated
+//     on read, so dropping an entry leaves existing children on a color no
+//     swatch matches: ColorPicker marks none of them aria-pressed.
+//   order — cosmetic. It decides which hue nextUnusedColor() hands out first
+//     and how the swatches line up. Reordering breaks nothing.
 export const PALETTE = [
   { color: "#ff595e", name: "Coral" },
   { color: "#f3722c", name: "Naranja" },

@@ -2,8 +2,8 @@ import { useState } from "react";
 import type { Child } from "src/child/child.model";
 import { pluralPeques } from "src/child/child.model";
 import { ChildBuilder } from "src/classroom/child-builder.component";
-import { RemoveChildConfirm } from "src/classroom/remove-child-confirm.component";
 import { Roster } from "src/classroom/roster.component";
+import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import type { Project } from "src/project/project.model";
 import { addChild, removeChild, saveChild } from "src/project/project.model";
 import styles from "./classroom-screen.module.css";
@@ -47,11 +47,16 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
 
       <main className={styles.main}>
         {confirmingRemove && (
-          <RemoveChildConfirm
-            child={confirmingRemove}
+          <ConfirmPanel
+            label={`Quitar a ${confirmingRemove.tag}`}
+            confirmText="Sí, quitarlo"
+            cancelText="No, mantenerlo"
             onConfirm={() => remove(confirmingRemove.id)}
             onCancel={() => setConfirmingRemove(null)}
-          />
+          >
+            «{confirmingRemove.tag}» tiene un libro en casa. Si lo quitas, el
+            libro vuelve a la biblioteca.
+          </ConfirmPanel>
         )}
 
         <ChildBuilder

@@ -18,6 +18,13 @@ function cellClass({ selected, used }: { selected: boolean; used: boolean }) {
   return styles.emojiCell;
 }
 
+function cellLabel({ name, used }: { name: string; used: boolean }) {
+  if (used) {
+    return `${name} (en uso)`;
+  }
+  return name;
+}
+
 export function EmojiPicker({
   selectedEmoji,
   usedEmojis,
@@ -65,7 +72,7 @@ export function EmojiPicker({
               type="button"
               className={cellClass({ selected, used })}
               aria-pressed={selected}
-              aria-label={used ? `${entry.name} (en uso)` : entry.name}
+              aria-label={cellLabel({ name: entry.name, used })}
               onClick={() => onPick(entry)}
             >
               {entry.emoji}
