@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AssignScreen } from "src/assign/assign-screen.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
-import { Dashboard } from "src/dashboard/dashboard.component";
+import { DashboardScreen } from "src/dashboard/dashboard-screen.component";
 import { LibraryScreen } from "src/library/library-screen.component";
 import type { View } from "src/navigation/navigation.model";
 import { TabBar } from "src/navigation/tab-bar.component";
@@ -16,7 +16,7 @@ export function App() {
     useAppData();
   const [view, setView] = useState<View>("semana");
   // Check-in progress lives here so it survives tab switches: the views
-  // below are mutually exclusive branches and Dashboard unmounts on
+  // below are mutually exclusive branches and DashboardScreen unmounts on
   // navigation. Persisting it arrives with "Confirmar semana".
   const [returnedChildIds, setReturnedChildIds] = useState<string[]>([]);
 
@@ -49,7 +49,7 @@ export function App() {
       {saveError}
       <div className={styles.content}>
         {view === "semana" && (
-          <Dashboard
+          <DashboardScreen
             project={activeProject}
             returnedChildIds={returnedChildIds}
             onToggleReturned={toggleReturned}

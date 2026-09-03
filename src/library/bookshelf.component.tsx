@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import styles from "./bookshelf.module.css";
@@ -8,9 +9,11 @@ type BookshelfProps = {
 };
 
 export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
+  const titleId = useId();
+
   return (
-    <section className={styles.shelf} aria-labelledby="bookshelf-title">
-      <h2 id="bookshelf-title" className={styles.title}>
+    <section className={styles.shelf} aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.title}>
         La estantería
       </h2>
       {bookList.length === 0 && (

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { bookTitleOf } from "src/book/book.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import type { MissingBook } from "src/project/project.model";
@@ -56,6 +56,8 @@ function copyLabel({ state, tag }: { state: CopyState; tag: string }) {
 }
 
 export function MissingSummary({ missing }: MissingSummaryProps) {
+  const titleId = useId();
+
   const [outcome, setOutcome] = useState<CopyOutcome>(null);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -100,8 +102,8 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
   }
 
   return (
-    <section className={styles.summary} aria-labelledby="missing-title">
-      <h2 id="missing-title" className={styles.title}>
+    <section className={styles.summary} aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.title}>
         Faltan {missing.length}
       </h2>
       <ul className={styles.list}>

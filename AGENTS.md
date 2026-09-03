@@ -33,6 +33,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 - Always `kebab-case`. Never PascalCase or camelCase.
 - Pattern `<module>.<role>.ts(x)`: `storage.service.ts`, `child-avatar.component.tsx`, `open-library.service.test.ts`.
+- Every branch of `View` is a `*-screen.component.tsx` exporting a `*Screen`: `dashboard-screen`, `assign-screen`, `classroom-screen`, `library-screen`. `create-class` is not one — it renders from the `!activeProject` early return, outside the view switch.
 
 ### Imports
 
@@ -54,6 +55,16 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 - **No ternaries in JSX.** Render with guards — `{cond && (…)}` for one branch, two sibling guards (`{empty && …}` / `{!empty && …}`) for both. Never `? … : null`, never a chained `? … : … ? …`. Numbers need an explicit test (`list.length > 0 &&`), or React renders the `0`.
 - Branching that picks a *string* (a label, an `aria-label`) goes in a named helper above the component with early returns — not inline in the markup.
 - A component that outgrows one screenful splits: lift the repeated row or the self-contained panel into its own `.component.tsx` + `.module.css` beside it.
+- Every screen opens with `<ProjectHeading />` (`src/project/`), which owns the one `<h1>`; sections below it start at `<h2>`. Never title a screen with a `<p>` — that leaves the document outline starting at level 2.
+- A DOM `id` referenced by `aria-labelledby`/`aria-describedby` comes from `useId()`, never a literal. Two instances of the same panel on one screen would otherwise collide.
+
+### Platform before ARIA (IMPORTANT)
+
+Reach for the element before the attribute. Both rules below replaced hand-rolled versions that were longer, and in each case the browser's is the one that is correct in a real browser.
+
+- **Modals are `<dialog>` + `showModal()`** (`privacy-note.component.tsx`). It brings the focus trap, top-layer inertness, Escape, and focus restoration to the trigger — no `aria-modal`, no `role="dialog"`, no keydown listener, no refs for the trigger. `ConfirmPanel` is the deliberate exception and is *not* a dialog element: it renders inline in document flow with no backdrop, so trapping focus in it would be worse than not. Do not "unify" the two.
+- **Single-select is `<input type="radio">`** in a `fieldset` (`emoji-picker`, `color-picker`), which brings arrow-key navigation, wrap-around and one tab stop per group. `aria-pressed` is for genuine toggles only — `child-card` (returned or not), `roster` (which child is being edited). `role="radio"` on a `<button>` is not the answer; biome's `a11y/useSemanticElements` rejects it, and it makes you write the keyboard handling by hand.
+- jsdom implements neither: its `HTMLDialogElement` is an empty stub (`test/setup.ts` patches the two methods so a dialog can render), and `fireEvent` moves no focus. So platform behaviour is **not** unit-testable here — verify it in a real browser and delete the test rather than assert against the stub.
 
 ### CSS
 

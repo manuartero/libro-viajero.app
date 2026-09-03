@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Dashboard } from "src/dashboard/dashboard.component";
+import { DashboardScreen } from "src/dashboard/dashboard-screen.component";
 import type { Tab } from "src/navigation/navigation.model";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it, vi } from "vitest";
@@ -37,7 +37,7 @@ const renderDashboard = ({
   onRepartir?: () => void;
 }) =>
   render(
-    <Dashboard
+    <DashboardScreen
       project={project(overrides)}
       returnedChildIds={returnedChildIds}
       onToggleReturned={onToggleReturned}
@@ -47,7 +47,7 @@ const renderDashboard = ({
     />,
   );
 
-describe("<Dashboard />", () => {
+describe("<DashboardScreen />", () => {
   it("invites to add children when the class is empty", () => {
     const onNavigate = vi.fn();
     renderDashboard({ onNavigate });
