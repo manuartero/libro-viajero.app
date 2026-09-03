@@ -4,8 +4,10 @@ import {
   EMOJI_PANELS,
   nextUnusedColor,
 } from "src/child/avatar-catalog.data";
-import { PALETTE_COLORS } from "src/palette/palette.data";
+import { PALETTE } from "src/palette/palette.data";
 import { describe, expect, it } from "vitest";
+
+const PALETTE_COLORS = PALETTE.map(({ color }) => color);
 
 describe("nextUnusedColor()", () => {
   it("returns the first color not yet in use", () => {

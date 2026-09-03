@@ -1,4 +1,3 @@
-import type { AppTab } from "src/app/app.model";
 import { pluralPeques } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import { ChildCard } from "src/dashboard/child-card.component";
@@ -6,6 +5,7 @@ import { MissingSummary } from "src/dashboard/missing-summary.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
+import type { Tab } from "src/navigation/navigation.model";
 import type { Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
 
@@ -13,7 +13,7 @@ type DashboardProps = {
   project: Project;
   returnedChildIds: string[];
   onToggleReturned: (childId: string) => void;
-  onNavigate: (tab: AppTab) => void;
+  onNavigate: (tab: Tab) => void;
   onRepartir: () => void;
   onDownloadData: () => void;
 };
@@ -26,7 +26,7 @@ function emptyStateFor({
   onRepartir,
 }: {
   project: Project;
-  onNavigate: (tab: AppTab) => void;
+  onNavigate: (tab: Tab) => void;
   onRepartir: () => void;
 }) {
   if (project.children.length === 0) {

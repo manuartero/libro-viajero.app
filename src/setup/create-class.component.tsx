@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { newId } from "src/lib/id";
 import type { Project } from "src/project/project.model";
-import {
-  currentSchoolYear,
-  schoolYearFrom,
-} from "src/project/school-year.model";
+import { currentSchoolYear } from "src/project/school-year.model";
 import styles from "./create-class.module.css";
 
 type CreateClassProps = {
@@ -13,13 +10,10 @@ type CreateClassProps = {
 
 export function CreateClass({ onCreate }: CreateClassProps) {
   const [classroomName, setClassroomName] = useState("");
-  const [yearStart, setYearStart] = useState(currentSchoolYear().start);
 
-  const year = schoolYearFrom(yearStart);
+  // The course is not a choice: a class is created for the one running now.
+  const year = currentSchoolYear();
   const canCreate = classroomName.trim().length > 0;
-  // Teachers set up this course or the next one — anything further is a typo.
-  const minStart = currentSchoolYear().start - 1;
-  const maxStart = currentSchoolYear().start + 1;
 
   return (
     <form
@@ -54,27 +48,7 @@ export function CreateClass({ onCreate }: CreateClassProps) {
           autoComplete="off"
           onChange={(event) => setClassroomName(event.target.value)}
         />
-        <div className={styles.dateline}>
-          <button
-            type="button"
-            className={styles.yearStep}
-            aria-label="Curso anterior"
-            disabled={yearStart <= minStart}
-            onClick={() => setYearStart(yearStart - 1)}
-          >
-            ‹
-          </button>
-          <span className={styles.course}>Curso {year.label}</span>
-          <button
-            type="button"
-            className={styles.yearStep}
-            aria-label="Curso siguiente"
-            disabled={yearStart >= maxStart}
-            onClick={() => setYearStart(yearStart + 1)}
-          >
-            ›
-          </button>
-        </div>
+        <p className={styles.course}>Curso {year.label}</p>
       </div>
 
       <footer className={styles.footer}>

@@ -63,41 +63,6 @@ describe("getAppData()", () => {
 
     expect(getAppData()).toEqual(sampleData);
   });
-
-  it("migrates data saved under the pre-login key", () => {
-    localStorage.setItem("libro-viajero:anonymous", JSON.stringify(sampleData));
-
-    expect(getAppData()).toEqual(sampleData);
-    expect(localStorage.getItem("libro-viajero")).toBe(
-      JSON.stringify(sampleData),
-    );
-  });
-
-  it("prefers the current key over a stale pre-login copy", () => {
-    const stale: AppData = { projects: [], activeProjectId: null };
-    localStorage.setItem("libro-viajero:anonymous", JSON.stringify(stale));
-    localStorage.setItem("libro-viajero", JSON.stringify(sampleData));
-
-    expect(getAppData()).toEqual(sampleData);
-    expect(localStorage.getItem("libro-viajero")).toBe(
-      JSON.stringify(sampleData),
-    );
-  });
-
-  it("still returns the pre-login data when the migration write fails", () => {
-    localStorage.setItem("libro-viajero:anonymous", JSON.stringify(sampleData));
-    const setItem = vi
-      .spyOn(Storage.prototype, "setItem")
-      .mockImplementation(() => {
-        throw new Error("QuotaExceededError");
-      });
-    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
-
-    expect(getAppData()).toEqual(sampleData);
-
-    setItem.mockRestore();
-    errorLog.mockRestore();
-  });
 });
 
 describe("saveAppData()", () => {

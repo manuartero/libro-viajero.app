@@ -3,8 +3,6 @@ import type { AppData } from "src/project/project.model";
 // One phone, one teacher, one namespace. There are no accounts to key by.
 // See docs/DATA_MODEL.md § localStorage Schema.
 const STORAGE_KEY = "libro-viajero";
-// Key used while a Google login was still planned; it never shipped.
-const LEGACY_STORAGE_KEY = "libro-viajero:anonymous";
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
 
@@ -16,29 +14,10 @@ const isAppData = (value: unknown): value is AppData => {
   return Array.isArray(candidate.projects) && "activeProjectId" in candidate;
 };
 
-const readRaw = () => {
-  const current = localStorage.getItem(STORAGE_KEY);
-  if (current !== null) {
-    return current;
-  }
-  const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
-  if (legacy !== null) {
-    // Silent one-time migration; the old key stays behind as a backup.
-    try {
-      localStorage.setItem(STORAGE_KEY, legacy);
-    } catch (error) {
-      // The copy is best-effort: the class is still readable from the old
-      // key, so never let a failed write make it look deleted.
-      console.error("libro-viajero: cannot migrate legacy data", error);
-    }
-  }
-  return legacy;
-};
-
 export function getAppData(): AppData {
   let raw: string | null;
   try {
-    raw = readRaw();
+    raw = localStorage.getItem(STORAGE_KEY);
   } catch (error) {
     // Storage blocked by the browser (private mode, cookie settings):
     // the app still runs, it just won't persist.

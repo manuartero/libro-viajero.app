@@ -1,15 +1,15 @@
-import type { AppTab } from "src/app/app.model";
+import type { Tab } from "src/navigation/navigation.model";
 import styles from "./tab-bar.module.css";
 
-const TABS: { tab: AppTab; label: string }[] = [
+const TABS: { tab: Tab; label: string }[] = [
   { tab: "semana", label: "Semana" },
   { tab: "clase", label: "Clase" },
   { tab: "biblioteca", label: "Biblioteca" },
 ];
 
 type TabBarProps = {
-  active: AppTab;
-  onSelect: (tab: AppTab) => void;
+  active: Tab;
+  onSelect: (tab: Tab) => void;
 };
 
 function currentTab(isActive: boolean) {
