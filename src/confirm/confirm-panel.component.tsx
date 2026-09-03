@@ -1,4 +1,4 @@
-import { type ReactNode, useId } from "react";
+import { type ReactNode, useCallback, useId } from "react";
 import styles from "./confirm-panel.module.css";
 
 type ConfirmPanelProps = {
@@ -12,13 +12,9 @@ type ConfirmPanelProps = {
   onCancel: () => void;
 };
 
-// The whole alertdialog contract in one place: focus moves into the panel when
-// it opens — which also scrolls it into view, since the trigger sits far below
-// it — Escape cancels, and focus returns to the trigger on close.
-//
-// The ref callback covers all of it: it runs on mount and its cleanup on
-// unmount, so opening is handled where it happens instead of in an effect
-// watching a state value, and there is no dependency to keep in sync.
+// Focus moves into the panel on open — which also scrolls it into view, since
+// the trigger sits far below it — Escape cancels, and focus returns to the
+// trigger on close. Needs React 19: it rides on ref-callback cleanup.
 export function ConfirmPanel({
   label,
   children,
@@ -29,17 +25,23 @@ export function ConfirmPanel({
 }: ConfirmPanelProps) {
   const textId = useId();
 
+  // Stable identity is load-bearing, not a micro-optimisation: React detaches
+  // and re-attaches a ref whose callback changed, so an inline arrow would run
+  // this on every render of the host screen and yank focus off whichever
+  // button the teacher had reached.
+  const holdFocus = useCallback((node: HTMLDivElement | null) => {
+    const trigger = document.activeElement;
+    node?.focus();
+    return () => {
+      if (trigger instanceof HTMLElement) {
+        trigger.focus();
+      }
+    };
+  }, []);
+
   return (
     <div
-      ref={(node) => {
-        const trigger = document.activeElement;
-        node?.focus();
-        return () => {
-          if (trigger instanceof HTMLElement) {
-            trigger.focus();
-          }
-        };
-      }}
+      ref={holdFocus}
       tabIndex={-1}
       className={styles.confirmPanel}
       role="alertdialog"
