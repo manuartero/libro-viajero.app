@@ -1,11 +1,11 @@
 import { useState } from "react";
-import type { AppView } from "src/app/app.model";
-import { useAppData } from "src/app/app-data.hook";
-import { TabBar } from "src/app/tab-bar.component";
 import { AssignScreen } from "src/assign/assign-screen.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import { LibraryScreen } from "src/library/library-screen.component";
+import type { View } from "src/navigation/navigation.model";
+import { TabBar } from "src/navigation/tab-bar.component";
+import { useAppData } from "src/project/app-data.hook";
 import { distributeBooks } from "src/project/project.model";
 import { downloadAppData } from "src/services/export.service";
 import { CreateClass } from "src/setup/create-class.component";
@@ -14,7 +14,7 @@ import styles from "./app.module.css";
 export function App() {
   const { appData, activeProject, saveFailed, createProject, updateProject } =
     useAppData();
-  const [view, setView] = useState<AppView>("semana");
+  const [view, setView] = useState<View>("semana");
   // Check-in progress lives here so it survives tab switches: the views
   // below are mutually exclusive branches and Dashboard unmounts on
   // navigation. Persisting it arrives with "Confirmar semana".

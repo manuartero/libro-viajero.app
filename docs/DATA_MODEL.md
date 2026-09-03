@@ -15,7 +15,7 @@ One key. There are no accounts, so there is nothing to namespace by: one phone, 
 
 All reads and writes go through `src/services/storage.service.ts`:
 
-- `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the empty `AppData`; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned. Data found under the legacy key `libro-viajero:anonymous` (from when a Google login was still planned) is copied to `libro-viajero` on first read; the old key is left in place
+- `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the empty `AppData`; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned
 - `saveAppData(data)` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
 
 ---

@@ -39,39 +39,19 @@ describe("<CreateClass />", () => {
     expect(project.history).toEqual([]);
   });
 
-  it("steps forward at most one course year", () => {
+  it("stamps the class with the running course, without asking", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-01T10:00:00"));
     const onCreate = vi.fn();
     render(<CreateClass onCreate={onCreate} />);
 
-    const next = screen.getByRole("button", { name: "Curso siguiente" });
-    fireEvent.click(next);
-    expect(next.hasAttribute("disabled")).toBe(true);
+    expect(screen.getByText("Curso 2026/2027")).toBeTruthy();
 
     fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
       target: { value: "Los Caracoles" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Crear la clase" }));
 
-    expect(onCreate.mock.calls[0][0].name).toBe("Los Caracoles 2027/28");
-  });
-
-  it("steps back at most one course year", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-09-01T10:00:00"));
-    const onCreate = vi.fn();
-    render(<CreateClass onCreate={onCreate} />);
-
-    const previous = screen.getByRole("button", { name: "Curso anterior" });
-    fireEvent.click(previous);
-    expect(previous.hasAttribute("disabled")).toBe(true);
-
-    fireEvent.change(screen.getByLabelText("¿Cómo se llama tu clase?"), {
-      target: { value: "Los Caracoles" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Crear la clase" }));
-
-    expect(onCreate.mock.calls[0][0].name).toBe("Los Caracoles 2025/26");
+    expect(onCreate.mock.calls[0][0].name).toBe("Los Caracoles 2026/27");
   });
 });

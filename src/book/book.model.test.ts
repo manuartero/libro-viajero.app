@@ -1,6 +1,8 @@
-import { PALETTE_COLORS } from "src/palette/palette.data";
+import { PALETTE } from "src/palette/palette.data";
 import { describe, expect, it } from "vitest";
 import { coverColorFor } from "./book.model";
+
+const PALETTE_COLORS = PALETTE.map(({ color }) => color);
 
 describe("coverColorFor()", () => {
   it("is deterministic for the same title", () => {

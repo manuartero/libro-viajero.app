@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { AppTab } from "src/app/app.model";
 import { Dashboard } from "src/dashboard/dashboard.component";
+import type { Tab } from "src/navigation/navigation.model";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it, vi } from "vitest";
 
@@ -33,7 +33,7 @@ const renderDashboard = ({
   overrides?: Partial<Project>;
   returnedChildIds?: string[];
   onToggleReturned?: (childId: string) => void;
-  onNavigate?: (tab: AppTab) => void;
+  onNavigate?: (tab: Tab) => void;
   onRepartir?: () => void;
 }) =>
   render(
