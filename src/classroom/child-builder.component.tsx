@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { nextUnusedColor } from "src/child/avatar-catalog.data";
 import type { Child, ChildDraft } from "src/child/child.model";
+import { nextUnusedColor } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./child-builder.module.css";
 import { ColorPicker } from "./color-picker.component";
