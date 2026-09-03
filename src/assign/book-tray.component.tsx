@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import styles from "./book-tray.module.css";
@@ -8,9 +9,11 @@ type BookTrayProps = {
 };
 
 export function BookTray({ books, onAssign }: BookTrayProps) {
+  const titleId = useId();
+
   return (
-    <section aria-labelledby="tray-title">
-      <h2 id="tray-title" className={styles.sectionTitle}>
+    <section aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.sectionTitle}>
         Libros por repartir
       </h2>
 

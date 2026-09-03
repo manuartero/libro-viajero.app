@@ -7,6 +7,7 @@ import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
 import type { Tab } from "src/navigation/navigation.model";
 import type { MissingBook, Project } from "src/project/project.model";
+import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./dashboard.module.css";
 
 type DashboardProps = {
@@ -92,10 +93,10 @@ export function Dashboard({
   if (emptyState) {
     return (
       <div className={styles.screen}>
-        <header className={styles.header}>
-          <p className={styles.projectName}>{project.name}</p>
-          <PrivacyNote onDownloadData={onDownloadData} />
-        </header>
+        <ProjectHeading
+          name={project.name}
+          after={<PrivacyNote onDownloadData={onDownloadData} />}
+        />
         <main className={styles.main}>
           <div className={styles.emptyCard}>
             <p className={styles.emptyText}>{emptyState.text}</p>
@@ -114,13 +115,15 @@ export function Dashboard({
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <p className={styles.projectName}>{project.name}</p>
-        <div className={styles.headerTools}>
-          <ReturnCounter returned={returnedCount} total={withBook.length} />
-          <PrivacyNote onDownloadData={onDownloadData} />
-        </div>
-      </header>
+      <ProjectHeading
+        name={project.name}
+        after={
+          <div className={styles.headerTools}>
+            <ReturnCounter returned={returnedCount} total={withBook.length} />
+            <PrivacyNote onDownloadData={onDownloadData} />
+          </div>
+        }
+      />
 
       <main className={styles.main}>
         {unassignedCount > 0 && (

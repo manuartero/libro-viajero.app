@@ -6,6 +6,7 @@ import { Roster } from "src/classroom/roster.component";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import type { Project } from "src/project/project.model";
 import { addChild, removeChild, saveChild } from "src/project/project.model";
+import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./classroom-screen.module.css";
 
 type ClassroomScreenProps = {
@@ -36,14 +37,10 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <div className={styles.mastheadBlock}>
-          <p className={styles.masthead}>{project.name}</p>
-          <p className={styles.dateline}>
-            La clase · {pluralPeques(childList.length)}
-          </p>
-        </div>
-      </header>
+      <ProjectHeading
+        name={project.name}
+        dateline={`La clase · ${pluralPeques(childList.length)}`}
+      />
 
       <main className={styles.main}>
         {confirmingRemove && (
