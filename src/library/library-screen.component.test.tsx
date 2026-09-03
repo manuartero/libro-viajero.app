@@ -14,6 +14,12 @@ const project = (overrides?: Partial<Project>): Project => ({
 });
 
 describe("<LibraryScreen />", () => {
+  it("counts the shelf in the dateline", () => {
+    render(<LibraryScreen project={project()} onUpdate={() => true} />);
+
+    expect(screen.getByText("La biblioteca · 1 libro")).toBeDefined();
+  });
+
   it("adds a manually entered book to the live project", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<LibraryScreen project={project()} onUpdate={onUpdate} />);

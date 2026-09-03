@@ -9,14 +9,12 @@ export type CuratedEmoji = {
 };
 
 export type EmojiPanel = {
-  id: string;
   label: string;
   emojis: readonly CuratedEmoji[];
 };
 
 export const EMOJI_PANELS = [
   {
-    id: "animales",
     label: "Animales",
     emojis: [
       { emoji: "🐸", name: "Rana" },
@@ -42,7 +40,6 @@ export const EMOJI_PANELS = [
     ],
   },
   {
-    id: "naturaleza",
     label: "Naturaleza",
     emojis: [
       { emoji: "🌞", name: "Sol" },
@@ -68,7 +65,6 @@ export const EMOJI_PANELS = [
     ],
   },
   {
-    id: "objetos",
     label: "Objetos",
     emojis: [
       { emoji: "🚀", name: "Cohete" },
@@ -94,10 +90,6 @@ export const EMOJI_PANELS = [
     ],
   },
 ] as const satisfies readonly EmojiPanel[];
-
-export const CURATED_EMOJIS: readonly CuratedEmoji[] = EMOJI_PANELS.flatMap(
-  (panel): readonly CuratedEmoji[] => panel.emojis,
-);
 
 export type AvatarColor = {
   color: string;

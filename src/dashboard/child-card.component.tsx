@@ -5,7 +5,7 @@ import styles from "./child-card.module.css";
 
 type ChildCardProps = {
   child: Child;
-  book: Book | undefined;
+  book: Book;
   returned: boolean;
   onToggle: (childId: string) => void;
 };
@@ -16,14 +16,14 @@ export function ChildCard({ child, book, returned, onToggle }: ChildCardProps) {
       type="button"
       className={returned ? `${styles.card} ${styles.returned}` : styles.card}
       aria-pressed={returned}
-      aria-label={`${child.tag}${book ? ` — ${book.title}` : ""}`}
+      aria-label={`${child.tag} — ${book.title}`}
       onClick={() => onToggle(child.id)}
     >
       <ChildAvatar emoji={child.emoji} color={child.color}>
         {returned ? <span className={styles.stamp}>✓</span> : null}
       </ChildAvatar>
       <span className={styles.tag}>{child.tag}</span>
-      <span className={styles.book}>{book ? book.title : "sin libro"}</span>
+      <span className={styles.book}>{book.title}</span>
     </button>
   );
 }

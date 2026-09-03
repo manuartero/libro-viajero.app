@@ -13,13 +13,16 @@ type CreateClassProps = {
 
 export function CreateClass({ onCreate }: CreateClassProps) {
   const [classroomName, setClassroomName] = useState("");
-  const [yearStart, setYearStart] = useState(currentSchoolYear().start);
+  // Read the calendar once: re-reading it per render would let the clamp drift
+  // if the screen is left open across midnight on the 1st of July.
+  const [thisCourseStart] = useState(() => currentSchoolYear().start);
+  const [yearStart, setYearStart] = useState(thisCourseStart);
 
   const year = schoolYearFrom(yearStart);
   const canCreate = classroomName.trim().length > 0;
   // Teachers set up this course or the next one — anything further is a typo.
-  const minStart = currentSchoolYear().start - 1;
-  const maxStart = currentSchoolYear().start + 1;
+  const minStart = thisCourseStart - 1;
+  const maxStart = thisCourseStart + 1;
 
   return (
     <form

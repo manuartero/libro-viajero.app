@@ -51,6 +51,35 @@
   opacity: 0.45;
 }
 
+.dateline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.yearStep {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.yearStep:active {
+  background: var(--paper-dark);
+}
+
+.yearStep:disabled {
+  border-color: var(--ink-soft);
+  color: var(--ink-soft);
+  cursor: default;
+}
+
 .course {
   margin: 0;
   font-size: 0.875rem;

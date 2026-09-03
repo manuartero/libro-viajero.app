@@ -1,10 +1,13 @@
 import type { AppTab } from "src/app.model";
+import type { Book } from "src/book/book.model";
+import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import { ChildCard } from "src/dashboard/child-card.component";
 import { MissingSummary } from "src/dashboard/missing-summary.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
+import { plural } from "src/lib/plural";
 import type { Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
 
@@ -32,23 +35,23 @@ export function Dashboard({
 
   // Partial repartos are allowed, so the check-in only covers children who
   // actually took a book home; the rest are listed apart and never counted.
-  // `get() === undefined` (not `has`) so an assignment pointing at a book
-  // that no longer exists also lands the child in the bookless group.
-  const withBook = project.children.filter(
-    (child) => bookOfChild.get(child.id) !== undefined,
-  );
-  const bookless = project.children.filter(
-    (child) => bookOfChild.get(child.id) === undefined,
-  );
+  // One pass, because both groups answer the same question: did this child
+  // take a book home? `get() === undefined` (not `has`) so an assignment
+  // pointing at a book that no longer exists also lands them in `bookless`.
+  const withBook: { child: Child; book: Book }[] = [];
+  const bookless: Child[] = [];
+  for (const child of project.children) {
+    const book = bookOfChild.get(child.id);
+    if (book === undefined) {
+      bookless.push(child);
+    } else {
+      withBook.push({ child, book });
+    }
+  }
 
-  const returnedCount = withBook.filter((child) =>
-    returnedChildIds.includes(child.id),
-  ).length;
-
-  const missing = withBook
-    .filter((child) => !returnedChildIds.includes(child.id))
-    .map((child) => ({ child, book: bookOfChild.get(child.id) }));
-
+  const returned = new Set(returnedChildIds);
+  const missing = withBook.filter(({ child }) => !returned.has(child.id));
+  const returnedCount = withBook.length - missing.length;
   const unassignedCount = bookless.length;
 
   // The setup journey lives here as a chain of empty states: first the class
@@ -111,9 +114,7 @@ export function Dashboard({
         {unassignedCount > 0 ? (
           <div className={styles.repartirBanner}>
             <p className={styles.repartirText}>
-              {unassignedCount === 1
-                ? "1 peque sin libro"
-                : `${unassignedCount} peques sin libro`}
+              {plural({ count: unassignedCount, noun: "peque" })} sin libro
             </p>
             <button
               type="button"
@@ -126,12 +127,12 @@ export function Dashboard({
         ) : null}
 
         <ul className={styles.grid}>
-          {withBook.map((child) => (
+          {withBook.map(({ child, book }) => (
             <li key={child.id}>
               <ChildCard
                 child={child}
-                book={bookOfChild.get(child.id)}
-                returned={returnedChildIds.includes(child.id)}
+                book={book}
+                returned={returned.has(child.id)}
                 onToggle={onToggleReturned}
               />
             </li>

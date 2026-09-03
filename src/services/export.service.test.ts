@@ -1,5 +1,5 @@
 import type { AppData } from "src/project/project.model";
-import { buildExport, downloadAppData } from "src/services/export.service";
+import { downloadAppData } from "src/services/export.service";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const data: AppData = {
@@ -27,7 +27,8 @@ describe("downloadAppData()", () => {
 
   it("hands the browser a JSON file named after the day", async () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date(2026, 8, 4, 15, 0));
+    // Half past midnight local time: the UTC date would still be the 3rd.
+    vi.setSystemTime(new Date(2026, 8, 4, 0, 30));
     const createObjectURL = vi.fn((_blob: Blob) => "blob:libro-viajero");
     const revokeObjectURL = vi.fn();
     vi.stubGlobal("URL", { ...URL, createObjectURL, revokeObjectURL });
@@ -48,23 +49,5 @@ describe("downloadAppData()", () => {
     expect(revokeObjectURL).not.toHaveBeenCalled();
     vi.runAllTimers();
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:libro-viajero");
-  });
-});
-
-describe("buildExport()", () => {
-  it("names the file after the app and the teacher's local day", () => {
-    // Half past midnight local time: the UTC date would still be the 3rd.
-    const { filename } = buildExport({
-      data,
-      today: new Date(2026, 8, 4, 0, 30),
-    });
-
-    expect(filename).toBe("libro-viajero-2026-09-04.json");
-  });
-
-  it("serializes every project so the file restores the whole app", () => {
-    const { content } = buildExport({ data, today: new Date() });
-
-    expect(JSON.parse(content)).toEqual(data);
   });
 });

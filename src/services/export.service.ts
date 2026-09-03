@@ -5,20 +5,15 @@ import type { AppData } from "src/project/project.model";
 // A plain JSON file to keep in Drive, send over WhatsApp, or hand to next
 // year's teacher. No server involved — the browser writes the file.
 
-export function buildExport({ data, today }: { data: AppData; today: Date }) {
-  return {
-    filename: `libro-viajero-${isoDate(today)}.json`,
-    content: JSON.stringify(data, null, 2),
-  };
-}
-
 export function downloadAppData(data: AppData) {
-  const { filename, content } = buildExport({ data, today: new Date() });
-  const blob = new Blob([content], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = filename;
+  // isoDate, not toISOString: the file is named after the teacher's own day.
+  anchor.download = `libro-viajero-${isoDate(new Date())}.json`;
   // Firefox and Safari abort the download if the anchor is detached or the
   // URL is revoked before the click has been dispatched.
   document.body.appendChild(anchor);

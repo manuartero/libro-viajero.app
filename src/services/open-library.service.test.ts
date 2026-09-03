@@ -69,8 +69,13 @@ describe("searchBooks()", () => {
     ]);
   });
 
-  it("returns an empty list when the search finds nothing", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(okResponse([])));
+  it("survives a payload with no docs field at all", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: async () => ({}) } as Response),
+    );
 
     expect(await searchBooks({ title: "zzzz" })).toEqual([]);
   });

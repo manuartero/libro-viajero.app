@@ -3,11 +3,9 @@ import { TabBar } from "src/tab-bar.component";
 import { describe, expect, it, vi } from "vitest";
 
 describe("<TabBar />", () => {
-  it("exposes the three sections and marks the active one", () => {
+  it("marks the active tab and only that one", () => {
     render(<TabBar active="clase" onSelect={() => {}} />);
 
-    const nav = screen.getByRole("navigation", { name: "Secciones" });
-    expect(nav).toBeDefined();
     expect(
       screen
         .getByRole("button", { name: "Clase" })

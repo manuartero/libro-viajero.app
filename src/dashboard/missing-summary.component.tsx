@@ -5,7 +5,7 @@ import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./missing-summary.module.css";
 
 type MissingSummaryProps = {
-  missing: { child: Child; book: Book | undefined }[];
+  missing: { child: Child; book: Book }[];
 };
 
 const reminderMessage = ({ tag, title }: { tag: string; title: string }) =>
@@ -27,7 +27,7 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
     book,
   }: MissingSummaryProps["missing"][number]) => {
     await navigator.clipboard.writeText(
-      reminderMessage({ tag: child.tag, title: book?.title ?? "su libro" }),
+      reminderMessage({ tag: child.tag, title: book.title }),
     );
     setCopiedChildId(child.id);
     setTimeout(
@@ -51,9 +51,7 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
                 size="tiny"
               />
               {child.tag}
-              <span className={styles.bookTitle}>
-                {book ? book.title : "sin libro"}
-              </span>
+              <span className={styles.bookTitle}>{book.title}</span>
             </span>
             <button
               type="button"

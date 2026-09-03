@@ -14,6 +14,12 @@ const project = (overrides?: Partial<Project>): Project => ({
 });
 
 describe("<ClassroomScreen />", () => {
+  it("counts the class in the dateline", () => {
+    render(<ClassroomScreen project={project()} onUpdate={() => true} />);
+
+    expect(screen.getByText("La clase · 1 peque")).toBeDefined();
+  });
+
   it("adds a child to the live project", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);

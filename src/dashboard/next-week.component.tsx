@@ -14,8 +14,9 @@ const shiftSuggestions = ({
   project,
   returnedChildIds,
 }: NextWeekPanelProps) => {
+  const returnedIds = new Set(returnedChildIds);
   const returned = project.currentAssignments.filter((a) =>
-    returnedChildIds.includes(a.childId),
+    returnedIds.has(a.childId),
   );
   return returned.map((assignment, i) => ({
     bookId: assignment.bookId,

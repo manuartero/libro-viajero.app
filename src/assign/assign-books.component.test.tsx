@@ -20,6 +20,22 @@ const project = (overrides?: Partial<Project>): Project => ({
 });
 
 describe("<AssignBooks />", () => {
+  it("tracks reparto progress in the dateline", () => {
+    render(
+      <AssignBooks
+        project={project()}
+        onConfirm={() => {}}
+        onBack={() => {}}
+      />,
+    );
+
+    expect(screen.getByText("El reparto · 0 de 2 con libro")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+
+    expect(screen.getByText("El reparto · 1 de 2 con libro")).toBeDefined();
+  });
+
   it("assigns tray books to children in order and saves them", () => {
     const onConfirm = vi.fn();
     render(
