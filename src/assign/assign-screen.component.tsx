@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useId } from "react";
 import type { AssignmentPairs, Project } from "src/project/project.model";
-import { pairsFrom } from "src/project/project.model";
+import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./assign-screen.module.css";
+import { useAssignmentDraft } from "./assignment-draft.hook";
 import { AssignmentRow } from "./assignment-row.component";
 import { BookTray } from "./book-tray.component";
 
@@ -17,73 +18,51 @@ export function AssignScreen({
   onBack,
 }: AssignScreenProps) {
   const childList = project.children;
-  const bookList = project.books;
+  const titleId = useId();
 
-  const [pairs, setPairs] = useState(() =>
-    pairsFrom(project.currentAssignments),
-  );
-  const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
-
-  const firstUnassignedId =
-    childList.find((child) => !pairs[child.id])?.id ?? null;
-  const activeChildId = selectedChildId ?? firstUnassignedId;
-
-  const assignedBookIds = new Set(Object.values(pairs));
-  const trayBooks = bookList.filter((book) => !assignedBookIds.has(book.id));
-  const bookById = new Map(bookList.map((book) => [book.id, book]));
-
-  const assignedCount = childList.filter((child) => pairs[child.id]).length;
-
-  const assignToActive = (bookId: string) => {
-    if (activeChildId === null) {
-      return;
-    }
-    setPairs((prev) => {
-      const next = { ...prev };
-      // One book, one child: strip the book from any other pairing.
-      for (const childId of Object.keys(next)) {
-        if (next[childId] === bookId) {
-          delete next[childId];
-        }
-      }
-      next[activeChildId] = bookId;
-      return next;
-    });
-    setSelectedChildId(null); // advance to the next unassigned child
-  };
-
-  const unassign = (childId: string) => {
-    setPairs((prev) => {
-      const next = { ...prev };
-      delete next[childId];
-      return next;
-    });
-  };
+  const {
+    pairs,
+    activeChildId,
+    trayBooks,
+    bookById,
+    assignedCount,
+    assignToActive,
+    unassign,
+    toggleSelected,
+  } = useAssignmentDraft({
+    children: childList,
+    books: project.books,
+    currentAssignments: project.currentAssignments,
+  });
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <button
-          type="button"
-          className={styles.back}
-          aria-label="Volver a la semana"
-          onClick={onBack}
-        >
-          ←
-        </button>
-        <div className={styles.mastheadBlock}>
-          <p className={styles.masthead}>{project.name}</p>
-          <p className={styles.dateline}>
+      <ProjectHeading
+        name={project.name}
+        // Live: this count is the only feedback that a tap landed, and it
+        // changes without the teacher's focus moving anywhere near it.
+        dateline={
+          <span aria-live="polite">
             El reparto · {assignedCount} de {childList.length} con libro
-          </p>
-        </div>
-      </header>
+          </span>
+        }
+        before={
+          <button
+            type="button"
+            className={styles.back}
+            aria-label="Volver a la semana"
+            onClick={onBack}
+          >
+            ←
+          </button>
+        }
+      />
 
       <main className={styles.main}>
         <BookTray books={trayBooks} onAssign={assignToActive} />
 
-        <section className={styles.assignments} aria-labelledby="assign-title">
-          <h2 id="assign-title" className={styles.sectionTitle}>
+        <section className={styles.assignments} aria-labelledby={titleId}>
+          <h2 id={titleId} className={styles.sectionTitle}>
             ¿Quién se lleva cada libro?
           </h2>
           <ul className={styles.childList}>
@@ -93,11 +72,7 @@ export function AssignScreen({
                 child={child}
                 book={bookById.get(pairs[child.id])}
                 active={child.id === activeChildId}
-                onSelect={() =>
-                  setSelectedChildId((prev) =>
-                    prev === child.id ? null : child.id,
-                  )
-                }
+                onSelect={() => toggleSelected(child.id)}
                 onUnassign={() => unassign(child.id)}
               />
             ))}

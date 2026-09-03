@@ -5,6 +5,7 @@ import { BookSearch } from "src/library/book-search.component";
 import { Bookshelf } from "src/library/bookshelf.component";
 import type { Project } from "src/project/project.model";
 import { addBook, removeBook } from "src/project/project.model";
+import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./library-screen.module.css";
 
 type LibraryScreenProps = {
@@ -37,14 +38,10 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
-        <div className={styles.mastheadBlock}>
-          <p className={styles.masthead}>{project.name}</p>
-          <p className={styles.dateline}>
-            La biblioteca · {pluralLibros(project.books.length)}
-          </p>
-        </div>
-      </header>
+      <ProjectHeading
+        name={project.name}
+        dateline={`La biblioteca · ${pluralLibros(project.books.length)}`}
+      />
 
       <main className={styles.main}>
         {confirmingRemove && (
