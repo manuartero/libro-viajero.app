@@ -31,13 +31,17 @@ Planned, not built yet: confirming/saving a week, the history view, the real rot
 
 ```bash
 pnpm install
-pnpm dev         # Vite dev server at http://localhost:5173
-pnpm test        # Vitest
-pnpm build       # TypeScript check + Vite production build
-pnpm blue-ball   # lint + test + build — run before pushing
+pnpm dev               # Vite dev server at http://localhost:5173
+pnpm test              # Vitest, both suites
+pnpm test:unit         # modules in isolation (*.test.ts(x))
+pnpm test:integration  # full flows through <App /> (*.integration.test.tsx)
+pnpm build             # TypeScript check + Vite production build
+pnpm blue-ball         # lint + test + build — run before pushing
 ```
 
 No environment variables, no API keys.
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the unit and integration suites as separate jobs on every pull request to `main`.
 
 ---
 
