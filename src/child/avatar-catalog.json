@@ -1,0 +1,82 @@
+{
+  "panels": [
+    {
+      "id": "animales",
+      "label": "Animales",
+      "emojis": [
+        { "emoji": "🐸", "name": "Rana" },
+        { "emoji": "🦊", "name": "Zorro" },
+        { "emoji": "🐼", "name": "Panda" },
+        { "emoji": "🐯", "name": "Tigre" },
+        { "emoji": "🦁", "name": "León" },
+        { "emoji": "🐰", "name": "Conejo" },
+        { "emoji": "🦉", "name": "Búho" },
+        { "emoji": "🦕", "name": "Dino" },
+        { "emoji": "🐙", "name": "Pulpo" },
+        { "emoji": "🐢", "name": "Tortuga" },
+        { "emoji": "🦋", "name": "Mariposa" },
+        { "emoji": "🐝", "name": "Abeja" },
+        { "emoji": "🐬", "name": "Delfín" },
+        { "emoji": "🐘", "name": "Elefante" },
+        { "emoji": "🦒", "name": "Jirafa" },
+        { "emoji": "🐨", "name": "Koala" },
+        { "emoji": "🐺", "name": "Lobo" },
+        { "emoji": "🦔", "name": "Erizo" },
+        { "emoji": "🐌", "name": "Caracol" },
+        { "emoji": "🦜", "name": "Loro" }
+      ]
+    },
+    {
+      "id": "naturaleza",
+      "label": "Naturaleza",
+      "emojis": [
+        { "emoji": "🌞", "name": "Sol" },
+        { "emoji": "🌙", "name": "Luna" },
+        { "emoji": "⭐", "name": "Estrella" },
+        { "emoji": "🍓", "name": "Fresa" },
+        { "emoji": "🌈", "name": "Arcoíris" },
+        { "emoji": "🌻", "name": "Girasol" },
+        { "emoji": "🌵", "name": "Cactus" },
+        { "emoji": "🍄", "name": "Seta" },
+        { "emoji": "🌊", "name": "Ola" },
+        { "emoji": "❄️", "name": "Copo" },
+        { "emoji": "🌲", "name": "Pino" },
+        { "emoji": "🍁", "name": "Hoja" },
+        { "emoji": "🌸", "name": "Flor" },
+        { "emoji": "🍀", "name": "Trébol" },
+        { "emoji": "🌋", "name": "Volcán" },
+        { "emoji": "⛅", "name": "Nube" },
+        { "emoji": "🍒", "name": "Cereza" },
+        { "emoji": "🍉", "name": "Sandía" },
+        { "emoji": "⚡", "name": "Rayo" },
+        { "emoji": "🐚", "name": "Concha" }
+      ]
+    },
+    {
+      "id": "objetos",
+      "label": "Objetos",
+      "emojis": [
+        { "emoji": "🚀", "name": "Cohete" },
+        { "emoji": "🤖", "name": "Robot" },
+        { "emoji": "🧸", "name": "Osito" },
+        { "emoji": "🎈", "name": "Globo" },
+        { "emoji": "🎨", "name": "Pincel" },
+        { "emoji": "📚", "name": "Libro" },
+        { "emoji": "✏️", "name": "Lápiz" },
+        { "emoji": "🎸", "name": "Guitarra" },
+        { "emoji": "🚲", "name": "Bici" },
+        { "emoji": "⚽", "name": "Balón" },
+        { "emoji": "🪁", "name": "Cometa" },
+        { "emoji": "🚂", "name": "Tren" },
+        { "emoji": "⛵", "name": "Barco" },
+        { "emoji": "🧩", "name": "Puzle" },
+        { "emoji": "🎩", "name": "Sombrero" },
+        { "emoji": "🔑", "name": "Llave" },
+        { "emoji": "🎁", "name": "Regalo" },
+        { "emoji": "⏰", "name": "Reloj" },
+        { "emoji": "🪀", "name": "Yoyó" },
+        { "emoji": "🎪", "name": "Circo" }
+      ]
+    }
+  ]
+}

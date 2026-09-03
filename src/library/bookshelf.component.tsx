@@ -13,9 +13,11 @@ export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
       <h2 id="bookshelf-title" className={styles.title}>
         La estantería
       </h2>
-      {bookList.length === 0 ? (
+      {bookList.length === 0 && (
         <p className={styles.empty}>Aquí irán apareciendo los libros</p>
-      ) : (
+      )}
+
+      {bookList.length > 0 && (
         <ul className={styles.list}>
           {bookList.map((book) => (
             <li key={book.id} className={styles.row}>
@@ -26,9 +28,9 @@ export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
               />
               <span className={styles.text}>
                 <span className={styles.bookTitle}>{book.title}</span>
-                {book.author ? (
+                {book.author && (
                   <span className={styles.author}>{book.author}</span>
-                ) : null}
+                )}
               </span>
               <button
                 type="button"

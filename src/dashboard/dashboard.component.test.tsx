@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import type { AppTab } from "src/app.model";
+import type { AppTab } from "src/app/app.model";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it, vi } from "vitest";

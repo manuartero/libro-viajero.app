@@ -15,7 +15,7 @@ export function ReturnCounter({ returned, total }: ReturnCounterProps) {
     >
       <span className={allBack ? styles.done : styles.count}>{returned}</span>
       <span className={styles.total}>/{total}</span>
-      {allBack ? <span aria-hidden="true"> 🎉</span> : null}
+      {allBack && <span aria-hidden="true"> 🎉</span>}
     </p>
   );
 }

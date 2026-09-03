@@ -1,0 +1,54 @@
+.confirmPanel {
+  padding: 0.75rem;
+  border: 2px solid var(--missing);
+  background: var(--paper);
+}
+
+.confirmPanel:focus {
+  outline: 3px double var(--missing);
+  outline-offset: 2px;
+}
+
+.confirmText {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.confirmRemove {
+  flex: 1;
+  min-height: 2.75rem;
+  border: 2px solid var(--missing);
+  border-radius: 0;
+  background: var(--missing);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.confirmRemove:active {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.confirmCancel {
+  flex: 1;
+  min-height: 2.75rem;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.confirmCancel:active {
+  background: var(--paper-dark);
+}

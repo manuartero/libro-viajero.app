@@ -22,7 +22,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 - Tokens in `src/styles/globals.css`: `--paper`/`--paper-dark` (ground), `--ink`/`--ink-soft` (text/borders), `--returned`/`--returned-dark` (green), `--missing` (red), `--font-body` (Helvetica), `--font-display` (Besley serif, 700).
 - Hard 2–3px `--ink` borders, `border-radius: 0` on buttons, uppercase letter-spaced datelines. No shadows, no gradients.
-- Two 12-color palettes exist on purpose: `AVATAR_COLORS` (child domain) and `COVER_PLACEHOLDER_COLORS` (book domain) — same hues, owned separately so domains don't cross-import.
+- One 12-color palette for the whole app: `PALETTE` in `src/palette/palette.data.ts`, sorted by hue (warm → cool → neutral). The order is load-bearing — `nextUnusedColor()` walks it front-to-back, and `coverColorFor()` indexes it with a stride coprime with its length so similar titles get far-apart hues.
 
 ### Dependencies
 
@@ -51,6 +51,9 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 - Functional only.
 - Props type immediately above the component, named `{ComponentName}Props`. No `React.FC<>`.
+- **No ternaries in JSX.** Render with guards — `{cond && (…)}` for one branch, two sibling guards (`{empty && …}` / `{!empty && …}`) for both. Never `? … : null`, never a chained `? … : … ? …`. Numbers need an explicit test (`list.length > 0 &&`), or React renders the `0`.
+- Branching that picks a *string* (a label, an `aria-label`) goes in a named helper above the component with early returns — not inline in the markup.
+- A component that outgrows one screenful splits: lift the repeated row or the self-contained panel into its own `.component.tsx` + `.module.css` beside it.
 
 ### CSS
 
@@ -60,7 +63,9 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 ### Folder layout
 
 - No `utils/`, `types/`, `helpers/` catch-alls — and no `types.ts` either. Name folders by domain; every type lives in its domain module (`src/project/project.model.ts` defines `Project`), even if that means more files.
-- Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `data/`.
+- Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `palette/`.
+- `src/` root holds **only** `main.tsx`. The app shell — `App`, `AppView`, `useAppData`, `AppErrorBoundary`, `TabBar` — lives in `src/app/`.
+- Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`). Nothing else imports the JSON.
 
 ### Testing
 

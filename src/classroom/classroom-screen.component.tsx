@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { Child } from "src/child/child.model";
+import { pluralPeques } from "src/child/child.model";
 import { ChildBuilder } from "src/classroom/child-builder.component";
+import { RemoveChildConfirm } from "src/classroom/remove-child-confirm.component";
 import { Roster } from "src/classroom/roster.component";
 import type { Project } from "src/project/project.model";
 import { addChild, removeChild, saveChild } from "src/project/project.model";
@@ -8,27 +10,13 @@ import styles from "./classroom-screen.module.css";
 
 type ClassroomScreenProps = {
   project: Project;
-  // Returns whether the update persisted; on false the screen keeps its
-  // transient UI (form, confirm panel) so nothing typed is lost.
   onUpdate: (project: Project) => boolean;
 };
-
-const pluralPeques = (count: number) =>
-  count === 1 ? "1 peque" : `${count} peques`;
 
 export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   // A child with a book at home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Child | null>(null);
-
-  // The alertdialog contract: focus moves into the panel when it opens —
-  // which also scrolls it into view, since the trigger sits far below it.
-  const confirmRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (confirmingRemove) {
-      confirmRef.current?.focus();
-    }
-  }, [confirmingRemove]);
 
   const childList = project.children;
   const editing = childList.find((child) => child.id === editingId) ?? null;
@@ -58,40 +46,14 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
       </header>
 
       <main className={styles.main}>
-        {confirmingRemove ? (
-          <div
-            ref={confirmRef}
-            tabIndex={-1}
-            className={styles.confirmPanel}
-            role="alertdialog"
-            aria-label={`Quitar a ${confirmingRemove.tag}`}
-          >
-            <p className={styles.confirmText}>
-              «{confirmingRemove.tag}» tiene un libro en casa. Si lo quitas, el
-              libro vuelve a la biblioteca.
-            </p>
-            <div className={styles.confirmActions}>
-              <button
-                type="button"
-                className={styles.confirmRemove}
-                onClick={() => remove(confirmingRemove.id)}
-              >
-                Sí, quitarlo
-              </button>
-              <button
-                type="button"
-                className={styles.confirmCancel}
-                onClick={() => setConfirmingRemove(null)}
-              >
-                No, mantenerlo
-              </button>
-            </div>
-          </div>
-        ) : null}
+        {confirmingRemove && (
+          <RemoveChildConfirm
+            child={confirmingRemove}
+            onConfirm={() => remove(confirmingRemove.id)}
+            onCancel={() => setConfirmingRemove(null)}
+          />
+        )}
 
-        {/* The key remounts the builder: ChildBuilder seeds its state from
-            `editing` once, so a fresh form per add / reload per edit depends
-            on this remount. */}
         <ChildBuilder
           key={editing?.id ?? `new-${childList.length}`}
           usedEmojis={usedEmojis}

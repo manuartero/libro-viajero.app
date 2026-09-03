@@ -1,5 +1,6 @@
+import { PALETTE_COLORS } from "src/palette/palette.data";
 import { describe, expect, it } from "vitest";
-import { COVER_PLACEHOLDER_COLORS, coverColorFor } from "./book.model";
+import { coverColorFor } from "./book.model";
 
 describe("coverColorFor()", () => {
   it("is deterministic for the same title", () => {
@@ -9,9 +10,14 @@ describe("coverColorFor()", () => {
   });
 
   it("always returns a palette color", () => {
-    const colors: readonly string[] = COVER_PLACEHOLDER_COLORS;
-    expect(colors).toContain(coverColorFor("Elmer"));
-    expect(colors).toContain(coverColorFor(""));
-    expect(colors).toContain(coverColorFor("🐛 La pequeña oruga glotona"));
+    expect(PALETTE_COLORS).toContain(coverColorFor("Elmer"));
+    expect(PALETTE_COLORS).toContain(coverColorFor(""));
+    expect(PALETTE_COLORS).toContain(
+      coverColorFor("🐛 La pequeña oruga glotona"),
+    );
+  });
+
+  it("spreads titles one character apart across distant hues", () => {
+    expect(coverColorFor("Elmer")).not.toBe(coverColorFor("Elmes"));
   });
 });

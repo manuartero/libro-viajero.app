@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import { useAppData } from "src/app-data.hook";
+import { useAppData } from "src/app/app-data.hook";
 import type { Project } from "src/project/project.model";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 

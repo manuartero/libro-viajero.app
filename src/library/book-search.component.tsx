@@ -20,6 +20,15 @@ type BookSearchProps = {
   onAdd: (draft: BookDraft) => void;
 };
 
+// After a search that found nothing, the manual route is the obvious next
+// step rather than a hint.
+function manualToggleLabel(status: SearchState["status"]) {
+  if (status === "empty" || status === "error") {
+    return "Añadirlo a mano";
+  }
+  return "¿No lo encuentras? Añádelo a mano";
+}
+
 export function BookSearch({ onAdd }: BookSearchProps) {
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState<SearchState>({ status: "idle" });
@@ -111,13 +120,13 @@ export function BookSearch({ onAdd }: BookSearchProps) {
         </div>
       </form>
 
-      {search.status === "searching" ? (
+      {search.status === "searching" && (
         <p className={styles.status} role="status">
           Buscando…
         </p>
-      ) : null}
+      )}
 
-      {search.status === "results" ? (
+      {search.status === "results" && (
         <ul className={styles.results}>
           {search.results.map(({ key, draft }) => (
             <li key={key}>
@@ -136,21 +145,21 @@ export function BookSearch({ onAdd }: BookSearchProps) {
                 />
                 <span className={styles.resultText}>
                   <span className={styles.resultTitle}>{draft.title}</span>
-                  {draft.author ? (
+                  {draft.author && (
                     <span className={styles.resultAuthor}>{draft.author}</span>
-                  ) : null}
+                  )}
                 </span>
               </button>
             </li>
           ))}
         </ul>
-      ) : null}
+      )}
 
-      {search.status === "empty" ? (
+      {search.status === "empty" && (
         <p className={styles.status}>No hemos encontrado «{search.query}»</p>
-      ) : null}
+      )}
 
-      {search.status === "error" ? (
+      {search.status === "error" && (
         <div className={styles.errorBox} role="alert">
           <p className={styles.status}>
             No se pudo buscar. Comprueba tu conexión.
@@ -159,9 +168,9 @@ export function BookSearch({ onAdd }: BookSearchProps) {
             Reintentar
           </button>
         </div>
-      ) : null}
+      )}
 
-      {manualOpen ? (
+      {manualOpen && (
         <form
           className={styles.manualForm}
           onSubmit={(event) => {
@@ -212,15 +221,15 @@ export function BookSearch({ onAdd }: BookSearchProps) {
             </button>
           </div>
         </form>
-      ) : (
+      )}
+
+      {!manualOpen && (
         <button
           type="button"
           className={styles.manualToggle}
           onClick={openManual}
         >
-          {search.status === "empty" || search.status === "error"
-            ? "Añadirlo a mano"
-            : "¿No lo encuentras? Añádelo a mano"}
+          {manualToggleLabel(search.status)}
         </button>
       )}
     </div>

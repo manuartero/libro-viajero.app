@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { App } from "src/app.component";
+import { App } from "src/app/app.component";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const createClass = (name: string) => {
