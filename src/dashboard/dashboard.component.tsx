@@ -1,4 +1,5 @@
-import type { AppTab } from "src/app.model";
+import type { AppTab } from "src/app/app.model";
+import { pluralPeques } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import { ChildCard } from "src/dashboard/child-card.component";
 import { MissingSummary } from "src/dashboard/missing-summary.component";
@@ -108,12 +109,10 @@ export function Dashboard({
       </header>
 
       <main className={styles.main}>
-        {unassignedCount > 0 ? (
+        {unassignedCount > 0 && (
           <div className={styles.repartirBanner}>
             <p className={styles.repartirText}>
-              {unassignedCount === 1
-                ? "1 peque sin libro"
-                : `${unassignedCount} peques sin libro`}
+              {pluralPeques(unassignedCount)} sin libro
             </p>
             <button
               type="button"
@@ -123,7 +122,7 @@ export function Dashboard({
               Repartir libros
             </button>
           </div>
-        ) : null}
+        )}
 
         <ul className={styles.grid}>
           {withBook.map((child) => (
@@ -138,7 +137,7 @@ export function Dashboard({
           ))}
         </ul>
 
-        {bookless.length > 0 ? (
+        {bookless.length > 0 && (
           <section className={styles.bookless} aria-labelledby="bookless-title">
             <h2 id="bookless-title" className={styles.booklessTitle}>
               Sin libro esta semana
@@ -156,13 +155,13 @@ export function Dashboard({
               ))}
             </ul>
           </section>
-        ) : null}
+        )}
 
         <MissingSummary missing={missing} />
 
         <NextWeekPanel project={project} returnedChildIds={returnedChildIds} />
 
-        {unassignedCount === 0 ? (
+        {unassignedCount === 0 && (
           <button
             type="button"
             className={styles.repartirAgain}
@@ -170,7 +169,7 @@ export function Dashboard({
           >
             Repartir libros
           </button>
-        ) : null}
+        )}
       </main>
 
       <footer className={styles.footer}>

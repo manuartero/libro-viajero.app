@@ -60,7 +60,7 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
       </header>
 
       <main className={styles.main}>
-        {confirmingRemove ? (
+        {confirmingRemove && (
           <div
             ref={confirmRef}
             tabIndex={-1}
@@ -90,7 +90,7 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
               </button>
             </div>
           </div>
-        ) : null}
+        )}
 
         <BookSearch onAdd={(draft) => onUpdate(addBook({ project, draft }))} />
 

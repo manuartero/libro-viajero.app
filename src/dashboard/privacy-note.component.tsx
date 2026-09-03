@@ -77,7 +77,7 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
         ?
       </button>
 
-      {open ? (
+      {open && (
         <div className={styles.backdrop}>
           <section
             ref={panelRef}
@@ -121,7 +121,7 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
             </button>
           </section>
         </div>
-      ) : null}
+      )}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { TabBar } from "src/tab-bar.component";
+import { TabBar } from "src/app/tab-bar.component";
 import { describe, expect, it, vi } from "vitest";
 
 describe("<TabBar />", () => {

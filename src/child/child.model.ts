@@ -7,3 +7,10 @@ export type Child = {
 
 // A child being composed in the setup flow: identity is assigned on creation.
 export type ChildDraft = Omit<Child, "id">;
+
+export function pluralPeques(count: number) {
+  if (count === 1) {
+    return "1 peque";
+  }
+  return `${count} peques`;
+}

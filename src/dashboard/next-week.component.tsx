@@ -37,11 +37,13 @@ export function NextWeekPanel({
       <h2 id="next-week-title" className={styles.title}>
         Próxima semana
       </h2>
-      {suggestions.length === 0 ? (
+      {suggestions.length === 0 && (
         <p className={styles.empty}>
           Marca los libros devueltos para ver la sugerencia
         </p>
-      ) : (
+      )}
+
+      {suggestions.length > 0 && (
         <ul className={styles.list}>
           {suggestions.map(({ bookId, childId }) => {
             const child = childById.get(childId);

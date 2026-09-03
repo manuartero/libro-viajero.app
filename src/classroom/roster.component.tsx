@@ -14,9 +14,11 @@ export function Roster({ childList, editingId, onSelect }: RosterProps) {
       <h2 id="roster-title" className={styles.title}>
         La lista de clase
       </h2>
-      {childList.length === 0 ? (
+      {childList.length === 0 && (
         <p className={styles.empty}>Aquí irán apareciendo tus peques</p>
-      ) : (
+      )}
+
+      {childList.length > 0 && (
         <ul className={styles.list}>
           {childList.map((child) => (
             <li key={child.id}>

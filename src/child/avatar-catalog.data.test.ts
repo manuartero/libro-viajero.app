@@ -1,22 +1,22 @@
 import {
-  AVATAR_COLORS,
   CURATED_EMOJIS,
   type CuratedEmoji,
   EMOJI_PANELS,
   nextUnusedColor,
 } from "src/child/avatar-catalog.data";
+import { PALETTE_COLORS } from "src/palette/palette.data";
 import { describe, expect, it } from "vitest";
-
-const palette = AVATAR_COLORS.map(({ color }) => color);
 
 describe("nextUnusedColor()", () => {
   it("returns the first color not yet in use", () => {
-    expect(nextUnusedColor([palette[0]])).toBe(palette[1]);
+    expect(nextUnusedColor([PALETTE_COLORS[0]])).toBe(PALETTE_COLORS[1]);
   });
 
   it("wraps to a valid palette color when every color is used", () => {
-    expect(palette).toContain(nextUnusedColor(palette));
-    expect(palette).toContain(nextUnusedColor([...palette, ...palette]));
+    expect(PALETTE_COLORS).toContain(nextUnusedColor(PALETTE_COLORS));
+    expect(PALETTE_COLORS).toContain(
+      nextUnusedColor([...PALETTE_COLORS, ...PALETTE_COLORS]),
+    );
   });
 });
 

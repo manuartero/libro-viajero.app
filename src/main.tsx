@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "src/app.component";
-import { AppErrorBoundary } from "src/app-error-boundary.component";
+import { App } from "src/app/app.component";
+import { AppErrorBoundary } from "src/app/app-error-boundary.component";
 import "@fontsource/besley/700.css";
 import "src/styles/globals.css";
 

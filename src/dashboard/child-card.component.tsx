@@ -20,7 +20,7 @@ export function ChildCard({ child, book, returned, onToggle }: ChildCardProps) {
       onClick={() => onToggle(child.id)}
     >
       <ChildAvatar emoji={child.emoji} color={child.color}>
-        {returned ? <span className={styles.stamp}>✓</span> : null}
+        {returned && <span className={styles.stamp}>✓</span>}
       </ChildAvatar>
       <span className={styles.tag}>{child.tag}</span>
       <span className={styles.book}>{book ? book.title : "sin libro"}</span>

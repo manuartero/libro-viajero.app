@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { AssignBooks } from "src/assign/assign-books.component";
+import { AssignScreen } from "src/assign/assign-screen.component";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it, vi } from "vitest";
 
@@ -19,11 +19,11 @@ const project = (overrides?: Partial<Project>): Project => ({
   ...overrides,
 });
 
-describe("<AssignBooks />", () => {
+describe("<AssignScreen />", () => {
   it("assigns tray books to children in order and saves them", () => {
     const onConfirm = vi.fn();
     render(
-      <AssignBooks
+      <AssignScreen
         project={project()}
         onConfirm={onConfirm}
         onBack={() => {}}
@@ -43,7 +43,7 @@ describe("<AssignBooks />", () => {
   it("seeds from the live assignments so re-entering only adjusts", () => {
     const onConfirm = vi.fn();
     render(
-      <AssignBooks
+      <AssignScreen
         project={project({
           currentAssignments: [
             { childId: "c1", bookId: "b1", weekStart: "2026-08-24" },
@@ -69,7 +69,7 @@ describe("<AssignBooks />", () => {
   it("assigns the tapped book to an explicitly selected child", () => {
     const onConfirm = vi.fn();
     render(
-      <AssignBooks
+      <AssignScreen
         project={project()}
         onConfirm={onConfirm}
         onBack={() => {}}
@@ -94,7 +94,7 @@ describe("<AssignBooks />", () => {
   it("allows saving a partial reparto but not an empty one", () => {
     const onConfirm = vi.fn();
     render(
-      <AssignBooks
+      <AssignScreen
         project={project()}
         onConfirm={onConfirm}
         onBack={() => {}}
@@ -113,7 +113,7 @@ describe("<AssignBooks />", () => {
 
   it("unassigns a child's book back to the tray", () => {
     render(
-      <AssignBooks
+      <AssignScreen
         project={project({
           currentAssignments: [
             { childId: "c1", bookId: "b1", weekStart: "2026-08-24" },
@@ -138,7 +138,11 @@ describe("<AssignBooks />", () => {
     const onBack = vi.fn();
     const onConfirm = vi.fn();
     render(
-      <AssignBooks project={project()} onConfirm={onConfirm} onBack={onBack} />,
+      <AssignScreen
+        project={project()}
+        onConfirm={onConfirm}
+        onBack={onBack}
+      />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Volver a la semana" }));

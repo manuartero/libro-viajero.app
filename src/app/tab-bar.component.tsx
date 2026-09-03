@@ -1,4 +1,4 @@
-import type { AppTab } from "src/app.model";
+import type { AppTab } from "src/app/app.model";
 import styles from "./tab-bar.module.css";
 
 const TABS: { tab: AppTab; label: string }[] = [

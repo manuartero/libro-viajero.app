@@ -1,14 +1,14 @@
 import { useState } from "react";
-import type { AppView } from "src/app.model";
-import { useAppData } from "src/app-data.hook";
-import { AssignBooks } from "src/assign/assign-books.component";
+import type { AppView } from "src/app/app.model";
+import { useAppData } from "src/app/app-data.hook";
+import { TabBar } from "src/app/tab-bar.component";
+import { AssignScreen } from "src/assign/assign-screen.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import { LibraryScreen } from "src/library/library-screen.component";
 import { distributeBooks } from "src/project/project.model";
 import { downloadAppData } from "src/services/export.service";
 import { CreateClass } from "src/setup/create-class.component";
-import { TabBar } from "src/tab-bar.component";
 import styles from "./app.module.css";
 
 export function App() {
@@ -28,12 +28,12 @@ export function App() {
     );
   };
 
-  const saveError = saveFailed ? (
+  const saveError = saveFailed && (
     <p role="alert" className={styles.saveError}>
       No se pudo guardar los cambios. Libera espacio o sal del modo privado y
       vuelve a intentarlo.
     </p>
-  ) : null;
+  );
 
   if (!activeProject) {
     return (
@@ -48,7 +48,7 @@ export function App() {
     <div className={styles.shell}>
       {saveError}
       <div className={styles.content}>
-        {view === "semana" ? (
+        {view === "semana" && (
           <Dashboard
             project={activeProject}
             returnedChildIds={returnedChildIds}
@@ -57,12 +57,18 @@ export function App() {
             onRepartir={() => setView("repartir")}
             onDownloadData={() => downloadAppData(appData)}
           />
-        ) : view === "clase" ? (
+        )}
+
+        {view === "clase" && (
           <ClassroomScreen project={activeProject} onUpdate={updateProject} />
-        ) : view === "biblioteca" ? (
+        )}
+
+        {view === "biblioteca" && (
           <LibraryScreen project={activeProject} onUpdate={updateProject} />
-        ) : (
-          <AssignBooks
+        )}
+
+        {view === "repartir" && (
+          <AssignScreen
             project={activeProject}
             onConfirm={(pairs) => {
               // Leave the reparto only when it actually persisted; on a
@@ -79,7 +85,8 @@ export function App() {
           />
         )}
       </div>
-      {view !== "repartir" ? <TabBar active={view} onSelect={setView} /> : null}
+
+      {view !== "repartir" && <TabBar active={view} onSelect={setView} />}
     </div>
   );
 }

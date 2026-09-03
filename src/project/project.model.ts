@@ -9,6 +9,19 @@ export type Assignment = {
   weekStart: string; // ISO date of that week's Monday
 };
 
+// A reparto in progress: childId -> bookId, before it becomes assignments.
+export type AssignmentPairs = Record<string, string>;
+
+// The inverse of distributeBooks(): flattens live assignments back into the
+// editable shape, so re-entering the reparto starts from the current state.
+export function pairsFrom(assignments: readonly Assignment[]): AssignmentPairs {
+  const pairs: AssignmentPairs = {};
+  for (const { childId, bookId } of assignments) {
+    pairs[childId] = bookId;
+  }
+  return pairs;
+}
+
 export type WeeklySession = {
   weekStart: string;
   returnedChildIds: string[];
@@ -100,7 +113,7 @@ export function distributeBooks({
   pairs,
 }: {
   project: Project;
-  pairs: Record<string, string>;
+  pairs: AssignmentPairs;
 }): Project {
   const weekStartOf = new Map(
     project.currentAssignments.map((a) => [
