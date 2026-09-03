@@ -1,7 +1,6 @@
 {
   "panels": [
     {
-      "id": "animales",
       "label": "Animales",
       "emojis": [
         { "emoji": "🐸", "name": "Rana" },
@@ -27,7 +26,6 @@
       ]
     },
     {
-      "id": "naturaleza",
       "label": "Naturaleza",
       "emojis": [
         { "emoji": "🌞", "name": "Sol" },
@@ -53,7 +51,6 @@
       ]
     },
     {
-      "id": "objetos",
       "label": "Objetos",
       "emojis": [
         { "emoji": "🚀", "name": "Cohete" },
