@@ -1,3 +1,4 @@
+import { isoDate } from "src/lib/week";
 import type { AppData } from "src/project/project.model";
 
 // "Descargar mis datos": the teacher's own copy of everything the app knows.
@@ -5,9 +6,8 @@ import type { AppData } from "src/project/project.model";
 // year's teacher. No server involved — the browser writes the file.
 
 export function buildExport({ data, today }: { data: AppData; today: Date }) {
-  const stamp = today.toISOString().slice(0, 10);
   return {
-    filename: `libro-viajero-${stamp}.json`,
+    filename: `libro-viajero-${isoDate(today)}.json`,
     content: JSON.stringify(data, null, 2),
   };
 }

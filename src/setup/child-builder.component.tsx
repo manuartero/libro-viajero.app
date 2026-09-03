@@ -84,7 +84,8 @@ export function ChildBuilder({
               </label>
               <input
                 id="child-tag"
-                ref={(input) => input?.focus()}
+                // biome-ignore lint/a11y/noAutofocus: the field only mounts after a deliberate "Cambiar apodo" tap
+                autoFocus
                 className={styles.tagInput}
                 type="text"
                 value={tag}

@@ -21,12 +21,13 @@ const data: AppData = {
 describe("downloadAppData()", () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     vi.useRealTimers();
   });
 
   it("hands the browser a JSON file named after the day", async () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-09-04T15:00:00Z"));
+    vi.setSystemTime(new Date(2026, 8, 4, 15, 0));
     const createObjectURL = vi.fn((_blob: Blob) => "blob:libro-viajero");
     const revokeObjectURL = vi.fn();
     vi.stubGlobal("URL", { ...URL, createObjectURL, revokeObjectURL });
@@ -47,15 +48,15 @@ describe("downloadAppData()", () => {
     expect(revokeObjectURL).not.toHaveBeenCalled();
     vi.runAllTimers();
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:libro-viajero");
-    vi.unstubAllGlobals();
   });
 });
 
 describe("buildExport()", () => {
-  it("names the file after the app and the day", () => {
+  it("names the file after the app and the teacher's local day", () => {
+    // Half past midnight local time: the UTC date would still be the 3rd.
     const { filename } = buildExport({
       data,
-      today: new Date("2026-09-04T15:00:00Z"),
+      today: new Date(2026, 8, 4, 0, 30),
     });
 
     expect(filename).toBe("libro-viajero-2026-09-04.json");

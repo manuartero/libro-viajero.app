@@ -91,7 +91,7 @@
 ### F1: Privacy & Data Ownership
 - No server, no accounts, no login. One phone = one teacher = one localStorage key
 - The only network traffic is the Open Library search (book titles) and cover images
-- Enforced by a Content-Security-Policy `<meta>` injected at build time (`vite.config.ts`): scripts, styles and fonts from the app's own origin only; `connect-src` limited to `openlibrary.org`; images from `covers.openlibrary.org`
+- Enforced by a Content-Security-Policy `<meta>` injected at build time (`src/lib/csp.ts`, via `vite.config.ts`): scripts and fonts from the app's own origin only; stylesheets from the app's origin plus inline `style` attributes (avatar and cover colours); `connect-src` limited to `openlibrary.org`; images from `covers.openlibrary.org`
 - Dashboard header shows a **?** button opening "Tus datos": the promise *"Ningún dato sale de tu teléfono sin que tú lo sepas"*, what does leave (Open Library), and a warning that clearing browser data deletes the class
 - **Descargar mis datos** in that panel downloads `libro-viajero-{YYYY-MM-DD}.json` with the whole `AppData`, straight from the browser
 

@@ -49,6 +49,25 @@ describe("<ChildBuilder />", () => {
     expect(screen.getByText(/Nada de nombres reales/)).toBeDefined();
   });
 
+  it("does not pull focus back into the nickname field on later taps", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={null}
+        {...noHandlers}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    changeNickname();
+    const dino = screen.getByRole("button", { name: "Dino" });
+    dino.focus();
+    fireEvent.click(dino);
+
+    expect(document.activeElement).toBe(dino);
+  });
+
   it("offers to change the nickname only once there is an emoji", () => {
     render(
       <ChildBuilder
