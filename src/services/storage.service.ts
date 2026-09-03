@@ -1,6 +1,7 @@
 import type { AppData } from "src/project/project.model";
 
 // One phone, one teacher, one namespace. There are no accounts to key by.
+// See docs/DATA_MODEL.md § localStorage Schema.
 const STORAGE_KEY = "libro-viajero";
 // Key used while a Google login was still planned; it never shipped.
 const LEGACY_STORAGE_KEY = "libro-viajero:anonymous";

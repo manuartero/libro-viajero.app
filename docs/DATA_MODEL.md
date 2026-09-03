@@ -1,125 +1,6 @@
 # Data Model Reference
 
-Each type lives in its domain module: `src/child/child.model.ts`, `src/book/book.model.ts`, `src/project/project.model.ts` (`Assignment`, `WeeklySession`, `Project`, `AppData`). This document explains the data model, storage schema, and key algorithms.
-
----
-
-## Type Aliases
-
-### `Child`
-
-Represents a child in the classroom. No real names — only a teacher-assigned tag.
-
-```typescript
-type Child = {
-  id: string;      // UUID, generated at creation
-  tag: string;     // nickname/label chosen by teacher, max 20 chars (e.g. "🐸 Verde", "Hermano Mayor")
-  emoji: string;   // single emoji character, chosen from curated picker
-  color: string;   // hex color string (e.g. "#FFD166"), chosen from fixed palette
-};
-```
-
-The avatar is rendered as `emoji` centered on a circle with `color` as background.
-
----
-
-### `Book`
-
-A book in the project's library.
-
-```typescript
-type Book = {
-  id: string;        // UUID, generated at creation
-  title: string;     // book title as entered/found
-  author?: string;   // optional, from Open Library search
-  coverUrl?: string; // optional URL to cover image (Open Library CDN)
-  isbn?: string;     // optional, used for direct cover URL lookup
-};
-```
-
-`coverUrl` is set when a cover is found via Open Library. If absent, the UI renders a color-based placeholder.
-
----
-
-### `Assignment`
-
-Maps one child to one book for a specific week.
-
-```typescript
-type Assignment = {
-  childId: string;   // Child.id
-  bookId: string;    // Book.id
-  weekStart: string; // ISO 8601 date of the Monday of that week (e.g. "2025-09-15")
-};
-```
-
-`weekStart` is always the Monday of the week, normalized on save.
-
----
-
-### `WeeklySession`
-
-A record of what happened in one Friday check-in.
-
-```typescript
-type WeeklySession = {
-  weekStart: string;           // ISO date of that week's Monday
-  returnedChildIds: string[];  // children who returned their book
-  missedChildIds: string[];    // children who did NOT return their book
-  assignments: Assignment[];   // the assignments that were CURRENT going into this session
-                               // (i.e. what each child had this week, not what they got next)
-};
-```
-
-`missedChildIds` is derived from `children.map(c => c.id).filter(id => !returnedChildIds.includes(id))` at confirmation time.
-
----
-
-### `Project`
-
-Everything about one classroom's traveling book initiative.
-
-```typescript
-type Project = {
-  id: string;                       // UUID
-  name: string;                     // classroom name + short school year, e.g. "Clase Caracoles 2026/27"
-  children: Child[];
-  books: Book[];
-  currentAssignments: Assignment[];  // what each child has THIS week
-  history: WeeklySession[];          // past sessions, ordered oldest → newest
-};
-```
-
-**Invariant**: one entry per assigned child. An unreturned book **keeps its current assignment** — the child simply holds it another week; only returned books rotate.
-
----
-
-### `SchoolYear`
-
-`project/school-year.model.ts` — a transient value, derived on demand and **never persisted** (only the `start` year is kept as wizard state).
-
-```typescript
-type SchoolYear = {
-  start: number;   // calendar year the course starts in, e.g. 2026
-  label: string;   // "2026/2027"
-  short: string;   // "2026/27" — appended to Project.name
-};
-```
-
-Constructed via `schoolYearFrom(start)`; `currentSchoolYear(today?)` applies the July cutoff (teachers set up during the summer, so July onwards counts as the upcoming course).
-
----
-
-### `AppData`
-
-The root of what's stored in localStorage.
-
-```typescript
-type AppData = {
-  projects: Project[];
-  activeProjectId: string | null;  // the project currently shown on dashboard
-};
-```
+The types are the source of truth and live in their domain modules (`src/child/child.model.ts`, `src/book/book.model.ts`, `src/project/project.model.ts`, `src/project/school-year.model.ts`) — read them there, invariants included. This document holds only what the types cannot express: the storage schema, the rotation algorithm design, and external-API gotchas.
 
 ---
 
@@ -132,16 +13,9 @@ Value: JSON.stringify(AppData)
 
 One key. There are no accounts, so there is nothing to namespace by: one phone, one teacher.
 
-**Default value** (when nothing is stored):
-```json
-{
-  "projects": [],
-  "activeProjectId": null
-}
-```
+All reads and writes go through `src/services/storage.service.ts`:
 
-All reads and writes go through `services/storage.service.ts`:
-- `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the default value; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned. Data found under the legacy key `libro-viajero:anonymous` (from when a Google login was still planned) is copied to `libro-viajero` on first read; the old key is left in place
+- `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the empty `AppData`; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned. Data found under the legacy key `libro-viajero:anonymous` (from when a Google login was still planned) is copied to `libro-viajero` on first read; the old key is left in place
 - `saveAppData(data)` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
 
 ---
@@ -154,11 +28,12 @@ All reads and writes go through `services/storage.service.ts`:
 
 ---
 
-## Rotation Algorithm
+## Rotation Algorithm (not yet implemented)
 
-`services/rotation.service.ts` — `suggestNextAssignments({ project, returnedBookIds })`
+**Status**: design only. The shipped behavior is the index-shift placeholder in `src/dashboard/next-week.component.tsx`. The real service (`services/rotation.service.ts`, `suggestNextAssignments({ project, returnedBookIds })`) is tracked as a repo issue.
 
 ### Goal
+
 For each book that was returned this week, suggest which child should receive it next week. Ensure no child reads the same book twice, and prioritize children who have been waiting the longest.
 
 ### Algorithm
@@ -179,7 +54,6 @@ For each book that was returned this week, suggest which child should receive it
 
 | Case | Handling |
 |------|----------|
-| Book not returned | Not in suggestions; stays with its current child; teacher sees it in "missing" |
 | Child absent (not part of return, not receiving) | Not yet supported in v1; teacher manually handles via swap |
 | New book added mid-initiative | Treated as if all children have been waiting equally long |
 | New child added mid-initiative | Same as new book — equal priority |
@@ -189,45 +63,6 @@ For each book that was returned this week, suggest which child should receive it
 
 ## Open Library Integration
 
-`services/open-library.service.ts`
+`src/services/open-library.service.ts` — see the code for the exact request (title search, `limit=8`, 8s timeout via `AbortSignal.any`).
 
-### Book search
-
-```
-GET https://openlibrary.org/search.json
-  ?title={encodeURIComponent(title)}
-  &limit=8
-  &fields=title,author_name,cover_i,isbn
-```
-
-Response shape (relevant fields):
-```json
-{
-  "docs": [
-    {
-      "title": "The Very Hungry Caterpillar",
-      "author_name": ["Eric Carle"],
-      "cover_i": 8739161,
-      "isbn": ["0399208534", "9780399208539"]
-    }
-  ]
-}
-```
-
-### Cover URL
-
-```
-https://covers.openlibrary.org/b/id/{cover_i}-M.jpg   ← from search result
-https://covers.openlibrary.org/b/isbn/{isbn}-M.jpg     ← direct from ISBN
-```
-
-Sizes: `S` (small), `M` (medium, use this), `L` (large)
-
-**Important**: a missing cover returns a 1×1 transparent GIF, not a 404. Always use `onError` on `<img>` to detect and replace with a placeholder.
-
-### User-Agent
-
-Send a descriptive `User-Agent` header for the 3 req/sec rate limit tier:
-```
-User-Agent: libro-viajero.app/0.1 (manutero.developer@gmail.com)
-```
+The one non-obvious gotcha: cover URLs must carry `?default=false`. Without it, a missing cover serves a 1×1 placeholder GIF that loads "successfully"; with it, the covers CDN 404s and `<img onError>` can swap in the color placeholder (`BookCover`).

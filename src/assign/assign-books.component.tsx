@@ -1,33 +1,28 @@
 import { useState } from "react";
-import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
-import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
-import styles from "./assign-step.module.css";
+import type { Project } from "src/project/project.model";
+import styles from "./assign-books.module.css";
 
-type AssignStepProps = {
-  classroomName: string;
-  yearShort: string;
-  childList: Child[];
-  bookList: Book[];
-  pairs: Record<string, string>; // childId -> bookId
+type AssignBooksProps = {
+  project: Project;
+  // childId -> bookId; distributeBooks() turns it into assignments.
+  onConfirm: (pairs: Record<string, string>) => void;
   onBack: () => void;
-  onAssign: (input: { childId: string; bookId: string }) => void;
-  onUnassign: (childId: string) => void;
-  onCreate: () => void;
 };
 
-export function AssignStep({
-  classroomName,
-  yearShort,
-  childList,
-  bookList,
-  pairs,
-  onBack,
-  onAssign,
-  onUnassign,
-  onCreate,
-}: AssignStepProps) {
+export function AssignBooks({ project, onConfirm, onBack }: AssignBooksProps) {
+  const childList = project.children;
+  const bookList = project.books;
+
+  // childId -> bookId, seeded from the live assignments so re-entering the
+  // reparto shows the current state and the teacher only adjusts.
+  const [pairs, setPairs] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      project.currentAssignments.map((a) => [a.childId, a.bookId]),
+    ),
+  );
+
   // The active child receives the next tapped book. Defaults to the first
   // child without a book, so the happy path is pure alternating taps.
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
@@ -41,14 +36,31 @@ export function AssignStep({
   const bookById = new Map(bookList.map((book) => [book.id, book]));
 
   const assignedCount = childList.filter((child) => pairs[child.id]).length;
-  const allAssigned = assignedCount === childList.length;
 
   const assignToActive = (bookId: string) => {
     if (activeChildId === null) {
       return;
     }
-    onAssign({ childId: activeChildId, bookId });
+    setPairs((prev) => {
+      const next = { ...prev };
+      // One book, one child: strip the book from any other pairing.
+      for (const childId of Object.keys(next)) {
+        if (next[childId] === bookId) {
+          delete next[childId];
+        }
+      }
+      next[activeChildId] = bookId;
+      return next;
+    });
     setSelectedChildId(null); // advance to the next unassigned child
+  };
+
+  const unassign = (childId: string) => {
+    setPairs((prev) => {
+      const next = { ...prev };
+      delete next[childId];
+      return next;
+    });
   };
 
   return (
@@ -57,16 +69,15 @@ export function AssignStep({
         <button
           type="button"
           className={styles.back}
-          aria-label="Volver a los libros"
+          aria-label="Volver a la semana"
           onClick={onBack}
         >
           ←
         </button>
         <div className={styles.mastheadBlock}>
-          <p className={styles.masthead}>{classroomName}</p>
+          <p className={styles.masthead}>{project.name}</p>
           <p className={styles.dateline}>
-            Paso 4 de 4 · Curso {yearShort} · {assignedCount} de{" "}
-            {childList.length} con libro
+            El reparto · {assignedCount} de {childList.length} con libro
           </p>
         </div>
       </header>
@@ -153,7 +164,7 @@ export function AssignStep({
                       type="button"
                       className={styles.unassign}
                       aria-label={`${child.tag}, quitar libro`}
-                      onClick={() => onUnassign(child.id)}
+                      onClick={() => unassign(child.id)}
                     >
                       ×
                     </button>
@@ -168,11 +179,11 @@ export function AssignStep({
       <footer className={styles.footer}>
         <button
           type="button"
-          className={styles.create}
-          disabled={!allAssigned}
-          onClick={onCreate}
+          className={styles.save}
+          disabled={assignedCount === 0}
+          onClick={() => onConfirm(pairs)}
         >
-          Crear la clase
+          Guardar reparto
         </button>
       </footer>
     </div>

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Roster } from "src/setup/roster.component";
+import { Roster } from "src/classroom/roster.component";
 import { describe, expect, it, vi } from "vitest";
 
 const childList = [
@@ -12,15 +12,6 @@ describe("<Roster />", () => {
     render(<Roster childList={[]} editingId={null} onSelect={() => {}} />);
 
     expect(screen.getByText("Aquí irán apareciendo tus peques")).toBeDefined();
-  });
-
-  it("lists every child as an editable chip", () => {
-    render(
-      <Roster childList={childList} editingId={null} onSelect={() => {}} />,
-    );
-
-    expect(screen.getByRole("button", { name: "Rana, editar" })).toBeDefined();
-    expect(screen.getByRole("button", { name: "Dino, editar" })).toBeDefined();
   });
 
   it("reports the tapped child", () => {

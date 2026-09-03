@@ -2,21 +2,9 @@
 
 > The traveling book dashboard — making Friday handoffs effortless for classroom teachers.
 
----
+**libro-viajero** (Spanish: *traveling book*) is a dashboard for teachers managing the "traveling book" classroom initiative — where each child takes home a different book every week. Open it Friday afternoon, tap through the check-in, confirm next week's assignments.
 
-## What is this?
-
-**libro-viajero** (Spanish: *traveling book*) is a dashboard for teachers managing the "traveling book" classroom initiative — where each child takes home a different book every week.
-
-Every Friday the teacher needs to:
-- Collect returned books
-- Track who didn't bring theirs back
-- Decide which book goes in which backpack for next week
-- Remind parents when needed
-
-This app makes all of that frictionless. Open it Friday afternoon, tap through the check-in, confirm next week's assignments. Done in under 2 minutes.
-
-**Mobile-first**: built for the phone in the teacher's hand (user testing on a Xiaomi Redmi 15C). Desktop just gets the same layout, centered.
+**All data lives in your browser. No server. No accounts. Just you and your classroom.** Mobile-first: built for the phone in the teacher's hand.
 
 ---
 
@@ -31,14 +19,11 @@ This app makes all of that frictionless. Open it Friday afternoon, tap through t
 
 ---
 
-## Features
+## Status
 
-- **Child avatars**: emoji + color, no real names
-- **Book covers**: found automatically via Open Library search, or entered by hand
-- **Friday check-in**: tap to mark returns; see who's missing, with a ready-to-copy parent reminder
-- **Smart rotation**: next week's assignments suggested automatically — every child reads every book
-- **History**: every past week's check-in
-- **Your data, your file**: one-tap download of all app data
+Shipped: class creation, children with emoji+color avatars (no real names), books via Open Library search with covers, the reparto, the Friday check-in dashboard (tap to mark returns, missing summary with a ready-to-copy parent reminder), and the privacy panel with data download.
+
+Planned, not built yet: confirming/saving a week, the history view, the real rotation algorithm (current suggestion is a placeholder), and importing a downloaded data file.
 
 ---
 
@@ -58,10 +43,7 @@ No environment variables, no API keys.
 
 ## Docs
 
-- [VISION.md](VISION.md) — the story behind this project
-- [SPEC.md](SPEC.md) — product spec, user stories, acceptance criteria
-- [AGENTS.md](AGENTS.md) — AI agent working instructions
-- [docs/DATA_MODEL.md](docs/DATA_MODEL.md) — data model reference
+See the index in [AGENTS.md](AGENTS.md) — vision, product spec, data model, and working conventions.
 
 ---
 

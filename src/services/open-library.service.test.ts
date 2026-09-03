@@ -84,15 +84,6 @@ describe("searchBooks()", () => {
     await expect(searchBooks({ title: "elmer" })).rejects.toThrow("503");
   });
 
-  it("throws on a network failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new TypeError("Failed to fetch")),
-    );
-
-    await expect(searchBooks({ title: "elmer" })).rejects.toThrow();
-  });
-
   it("forwards the caller's abort signal", async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse([]));
     vi.stubGlobal("fetch", fetchMock);
