@@ -9,8 +9,12 @@ const noHandlers = {
   onCancel: () => {},
 };
 
+const changeNickname = () => {
+  fireEvent.click(screen.getByRole("button", { name: "Cambiar apodo" }));
+};
+
 describe("<ChildBuilder />", () => {
-  it("suggests the emoji's name as the nickname", () => {
+  it("names the child after the emoji without asking for a nickname", () => {
     render(
       <ChildBuilder
         usedEmojis={[]}
@@ -22,7 +26,60 @@ describe("<ChildBuilder />", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Dino" }));
 
-    expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe("Dino");
+    expect(screen.getByText("Dino")).toBeDefined();
+    expect(screen.queryByLabelText("Apodo")).toBeNull();
+  });
+
+  it("reveals and focuses the nickname field only on purpose", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={null}
+        {...noHandlers}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    changeNickname();
+
+    const input = screen.getByLabelText<HTMLInputElement>("Apodo");
+    expect(input.value).toBe("Rana");
+    expect(document.activeElement).toBe(input);
+    expect(screen.getByText(/Nada de nombres reales/)).toBeDefined();
+  });
+
+  it("does not pull focus back into the nickname field on later taps", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={null}
+        {...noHandlers}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    changeNickname();
+    const dino = screen.getByRole("button", { name: "Dino" });
+    dino.focus();
+    fireEvent.click(dino);
+
+    expect(document.activeElement).toBe(dino);
+  });
+
+  it("offers to change the nickname only once there is an emoji", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={null}
+        {...noHandlers}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: "Cambiar apodo" })).toBeNull();
+    expect(screen.getByText("Toca un emoji")).toBeDefined();
   });
 
   it("does not overwrite a nickname the teacher already typed", () => {
@@ -35,10 +92,12 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    changeNickname();
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Capitana" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Dino" }));
 
     expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe(
       "Capitana",
@@ -85,9 +144,7 @@ describe("<ChildBuilder />", () => {
     fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
     expect(screen.getByText("Naturaleza")).toBeDefined();
     fireEvent.click(screen.getByRole("button", { name: "Girasol" }));
-    expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe(
-      "Girasol",
-    );
+    expect(screen.getByText("Girasol")).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
     expect(screen.getByText("Objetos")).toBeDefined();
@@ -109,6 +166,7 @@ describe("<ChildBuilder />", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    changeNickname();
     // maxLength on the input is advisory — a programmatic/paste value can
     // exceed it, so the boundary enforcement is at submit.
     fireEvent.change(screen.getByLabelText("Apodo"), {
@@ -123,7 +181,7 @@ describe("<ChildBuilder />", () => {
     );
   });
 
-  it("disables adding until there is an emoji and a nickname", () => {
+  it("disables adding until there is an emoji", () => {
     render(
       <ChildBuilder
         usedEmojis={[]}
@@ -140,6 +198,29 @@ describe("<ChildBuilder />", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Rana" }));
     expect(add.disabled).toBe(false);
+  });
+
+  it("disables adding when the teacher empties the nickname", () => {
+    render(
+      <ChildBuilder
+        usedEmojis={[]}
+        usedColors={[]}
+        editing={null}
+        {...noHandlers}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    changeNickname();
+    fireEvent.change(screen.getByLabelText("Apodo"), {
+      target: { value: "   " },
+    });
+
+    expect(
+      screen.getByRole<HTMLButtonElement>("button", {
+        name: "Añadir peque a la clase",
+      }).disabled,
+    ).toBe(true);
   });
 
   it("marks emojis already in use", () => {
@@ -186,6 +267,8 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
+    expect(screen.getByText("Rana")).toBeDefined();
+    changeNickname();
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Ranita" },
     });

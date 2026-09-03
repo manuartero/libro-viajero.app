@@ -1,13 +1,9 @@
 import { useState } from "react";
 import type { AppData, Project } from "src/project/project.model";
-import {
-  ANONYMOUS_USER_ID,
-  getAppData,
-  saveAppData,
-} from "src/services/storage.service";
+import { getAppData, saveAppData } from "src/services/storage.service";
 
 const loadAppData = (): AppData => {
-  const stored = getAppData(ANONYMOUS_USER_ID);
+  const stored = getAppData();
   const hasActive = stored.projects.some(
     (p) => p.id === stored.activeProjectId,
   );
@@ -21,7 +17,7 @@ const loadAppData = (): AppData => {
     ...stored,
     activeProjectId: stored.projects[0].id,
   };
-  saveAppData({ googleId: ANONYMOUS_USER_ID, data: healed });
+  saveAppData(healed);
   return healed;
 };
 
@@ -37,7 +33,7 @@ export function useAppData() {
   // transient UI (forms, dialogs, the reparto) alive instead of tearing it
   // down over a change that never landed.
   const persist = (next: AppData) => {
-    if (!saveAppData({ googleId: ANONYMOUS_USER_ID, data: next })) {
+    if (!saveAppData(next)) {
       setSaveFailed(true);
       return false;
     }
@@ -60,5 +56,7 @@ export function useAppData() {
       ),
     });
 
-  return { activeProject, saveFailed, createProject, updateProject };
+  // `appData` is exposed whole for "Descargar mis datos": the export is the
+  // storage value verbatim, not a view of the active project.
+  return { appData, activeProject, saveFailed, createProject, updateProject };
 }

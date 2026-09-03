@@ -7,16 +7,24 @@ The types are the source of truth and live in their domain modules (`src/child/c
 ## localStorage Schema
 
 ```
-Key:   libro-viajero:{googleId}
+Key:   libro-viajero
 Value: JSON.stringify(AppData)
 ```
 
+One key. There are no accounts, so there is nothing to namespace by: one phone, one teacher.
+
 All reads and writes go through `src/services/storage.service.ts`:
 
-- `getAppData(googleId)` — absent, unparseable, or wrong-shaped entries degrade to the empty `AppData`; an unreadable entry is preserved under `libro-viajero:{googleId}:backup-{timestamp}` before being abandoned
-- `saveAppData({ googleId, data })` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
+- `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the empty `AppData`; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned. Data found under the legacy key `libro-viajero:anonymous` (from when a Google login was still planned) is copied to `libro-viajero` on first read; the old key is left in place
+- `saveAppData(data)` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
 
-**Anonymous namespace (pre-auth)**: until Google auth ships, all data lives under `googleId = "anonymous"` (`ANONYMOUS_USER_ID`). When auth lands, the first login must migrate `libro-viajero:anonymous` into the user's `libro-viajero:{payload.sub}` namespace — otherwise every pre-auth classroom silently disappears.
+---
+
+## Export File
+
+`services/export.service.ts` — `downloadAppData(data)`
+
+"Descargar mis datos" in the dashboard's privacy panel. Writes `libro-viajero-{YYYY-MM-DD}.json` straight from the browser (`Blob` + `<a download>`): the full `AppData`, pretty-printed. Same shape as the storage value, so a future import is just a validated `saveAppData()`.
 
 ---
 

@@ -34,6 +34,7 @@ describe("<ClassroomScreen />", () => {
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cambiar apodo" }));
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Ranita" },
     });
@@ -85,6 +86,7 @@ describe("<ClassroomScreen />", () => {
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cambiar apodo" }));
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Ranita" },
     });

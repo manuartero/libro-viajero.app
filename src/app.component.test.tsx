@@ -54,9 +54,7 @@ describe("<App />", () => {
     expect(
       screen.getByText("Todavía no hay peques en la clase."),
     ).toBeDefined();
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects).toHaveLength(1);
     expect(stored.activeProjectId).toBe(stored.projects[0].id);
   });
@@ -93,9 +91,7 @@ describe("<App />", () => {
     fireEvent.click(screen.getByRole("button", { name: "Clase" }));
     addChild("Rana");
 
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects[0].children).toHaveLength(1);
     expect(stored.projects[0].children[0].tag).toBe("Rana");
   });
@@ -113,9 +109,7 @@ describe("<App />", () => {
 
     expect(screen.getByRole("navigation", { name: "Secciones" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects[0].currentAssignments).toHaveLength(1);
   });
 
@@ -194,7 +188,7 @@ describe("<App />", () => {
 
   it("self-heals a dangling activeProjectId instead of re-running setup", () => {
     localStorage.setItem(
-      "libro-viajero:anonymous",
+      "libro-viajero",
       JSON.stringify({
         projects: [
           {

@@ -31,6 +31,9 @@ export function ChildBuilder({
   const [emoji, setEmoji] = useState<string | null>(editing?.emoji ?? null);
   const [tag, setTag] = useState(editing?.tag ?? "");
   const [tagTouched, setTagTouched] = useState(editing !== null);
+  // The nickname defaults to the emoji's name. Typing one is a deliberate,
+  // secondary action: the happy path never asks for a name at all.
+  const [changingTag, setChangingTag] = useState(false);
   const [pickedColor, setPickedColor] = useState<string | null>(
     editing?.color ?? null,
   );
@@ -83,23 +86,48 @@ export function ChildBuilder({
           </span>
         )}
         <div className={styles.tagField}>
-          <label className={styles.tagLabel} htmlFor="child-tag">
-            Apodo
-          </label>
-          <input
-            id="child-tag"
-            className={styles.tagInput}
-            type="text"
-            value={tag}
-            maxLength={20}
-            placeholder="Toca un emoji"
-            autoComplete="off"
-            onChange={(event) => {
-              setTag(event.target.value);
-              setTagTouched(true);
-            }}
-          />
-          <p className={styles.hint}>Nada de nombres reales</p>
+          {changingTag ? (
+            <>
+              <label className={styles.tagLabel} htmlFor="child-tag">
+                Apodo
+              </label>
+              <input
+                id="child-tag"
+                // biome-ignore lint/a11y/noAutofocus: the field only mounts after a deliberate "Cambiar apodo" tap
+                autoFocus
+                className={styles.tagInput}
+                type="text"
+                value={tag}
+                maxLength={20}
+                autoComplete="off"
+                onChange={(event) => {
+                  setTag(event.target.value);
+                  setTagTouched(true);
+                }}
+              />
+              <p className={styles.hint}>
+                Nada de nombres reales: solo tú sabes quién es.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className={styles.tagLabel}>Apodo</p>
+              {emoji ? (
+                <>
+                  <p className={styles.tagValue}>{tag}</p>
+                  <button
+                    type="button"
+                    className={styles.changeTag}
+                    onClick={() => setChangingTag(true)}
+                  >
+                    Cambiar apodo
+                  </button>
+                </>
+              ) : (
+                <p className={styles.tagEmpty}>Toca un emoji</p>
+              )}
+            </>
+          )}
         </div>
       </div>
 

@@ -30,9 +30,7 @@ describe("useAppData()", () => {
     act(() => result.current.createProject(project("p1")));
 
     expect(result.current.activeProject?.id).toBe("p1");
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.activeProjectId).toBe("p1");
   });
 
@@ -48,9 +46,7 @@ describe("useAppData()", () => {
     );
 
     expect(result.current.activeProject?.name).toBe("Clase renombrada");
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects[0].name).toBe("Clase renombrada");
   });
 
@@ -113,7 +109,7 @@ describe("useAppData()", () => {
 
   it("self-heals a dangling activeProjectId", () => {
     localStorage.setItem(
-      "libro-viajero:anonymous",
+      "libro-viajero",
       JSON.stringify({ projects: [project("p1")], activeProjectId: "gone" }),
     );
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -122,9 +118,7 @@ describe("useAppData()", () => {
 
     expect(result.current.activeProject?.id).toBe("p1");
     // The heal is written back so it doesn't repeat on every boot.
-    const stored = JSON.parse(
-      localStorage.getItem("libro-viajero:anonymous") ?? "null",
-    );
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.activeProjectId).toBe("p1");
     errorLog.mockRestore();
   });

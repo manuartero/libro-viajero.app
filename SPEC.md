@@ -18,8 +18,10 @@
 - Book lending tracking (who has which physical copy beyond the current week)
 - Parent-facing view
 - Any server-side component
+- Accounts or login of any kind — there is nothing to log in to
 - Book ratings, ISBN scanning
 - Grades, attendance, behavior — this is not a classroom management platform
+- Importing a downloaded `libro-viajero-*.json` (new phone, next year's teacher) — future work
 
 ---
 
@@ -27,17 +29,15 @@
 
 Status: ✅ shipped · 🚧 placeholder · ❌ not built.
 
-### Authentication — ❌ not built
+### Privacy & Data Ownership — ✅ shipped
 
-The app currently runs in an anonymous localStorage namespace (`ANONYMOUS_USER_ID`); see docs/DATA_MODEL.md for the migration obligation when auth lands.
+No server, no accounts, no login: one phone = one teacher = one localStorage key (see docs/DATA_MODEL.md). The only network traffic is the Open Library search (book titles) and cover images, and a Content-Security-Policy `<meta>` injected at build time (`src/lib/csp.ts`, via `vite.config.ts`) lets the browser enforce it: scripts and fonts from the app's own origin only; stylesheets from the app's origin plus inline `style` attributes (avatar and cover colours); `connect-src` limited to `openlibrary.org`; images from `covers.openlibrary.org`. The dashboard header shows a **?** button opening "Tus datos": the promise *"Ningún dato sale de tu teléfono sin que tú lo sepas"*, what does leave (Open Library), and a warning that clearing browser data deletes the class. **Descargar mis datos** in that panel downloads `libro-viajero-{YYYY-MM-DD}.json` with the whole `AppData`, straight from the browser.
 
-|   ID   |                                              Story                                               |
-| ------ | ------------------------------------------------------------------------------------------------ |
-| AUTH-1 | As a teacher, I can sign in with my Google account so the app knows who I am and my data is mine |
-| AUTH-2 | As a teacher, I can sign out and be confident my data stays on my device                         |
-| AUTH-3 | As a teacher, signing in again shows me exactly where I left off                                 |
-
-Login is identification only — no server communication, ever.
+|   ID   |                                                 Story                                                  | Status |
+| ------ | ------------------------------------------------------------------------------------------------------ | ------ |
+| PRIV-1 | As a teacher, I can open the app and pick up where I left off, with no account and no sign-in          | ✅     |
+| PRIV-2 | As a teacher, I can read in plain words, from the dashboard, what leaves my phone (nothing I don't know about) | ✅     |
+| PRIV-3 | As a teacher, I can download a copy of all my data as a file, whenever I want                         | ✅     |
 
 ### Project Setup — ✅ shipped
 

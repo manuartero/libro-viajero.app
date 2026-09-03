@@ -43,6 +43,7 @@ const renderDashboard = ({
       onToggleReturned={onToggleReturned}
       onNavigate={onNavigate}
       onRepartir={onRepartir}
+      onDownloadData={() => {}}
     />,
   );
 

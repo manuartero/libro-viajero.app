@@ -6,12 +6,13 @@ import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { Dashboard } from "src/dashboard/dashboard.component";
 import { LibraryScreen } from "src/library/library-screen.component";
 import { distributeBooks } from "src/project/project.model";
+import { downloadAppData } from "src/services/export.service";
 import { CreateClass } from "src/setup/create-class.component";
 import { TabBar } from "src/tab-bar.component";
 import styles from "./app.module.css";
 
 export function App() {
-  const { activeProject, saveFailed, createProject, updateProject } =
+  const { appData, activeProject, saveFailed, createProject, updateProject } =
     useAppData();
   const [view, setView] = useState<AppView>("semana");
   // Check-in progress lives here so it survives tab switches: the views
@@ -54,6 +55,7 @@ export function App() {
             onToggleReturned={toggleReturned}
             onNavigate={setView}
             onRepartir={() => setView("repartir")}
+            onDownloadData={() => downloadAppData(appData)}
           />
         ) : view === "clase" ? (
           <ClassroomScreen project={activeProject} onUpdate={updateProject} />

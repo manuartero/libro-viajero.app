@@ -3,6 +3,7 @@ import { ChildAvatar } from "src/child/child-avatar.component";
 import { ChildCard } from "src/dashboard/child-card.component";
 import { MissingSummary } from "src/dashboard/missing-summary.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
+import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
 import type { Project } from "src/project/project.model";
 import styles from "./dashboard.module.css";
@@ -13,6 +14,7 @@ type DashboardProps = {
   onToggleReturned: (childId: string) => void;
   onNavigate: (tab: AppTab) => void;
   onRepartir: () => void;
+  onDownloadData: () => void;
 };
 
 export function Dashboard({
@@ -21,6 +23,7 @@ export function Dashboard({
   onToggleReturned,
   onNavigate,
   onRepartir,
+  onDownloadData,
 }: DashboardProps) {
   const bookById = new Map(project.books.map((book) => [book.id, book]));
   const bookOfChild = new Map(
@@ -76,6 +79,7 @@ export function Dashboard({
       <div className={styles.screen}>
         <header className={styles.header}>
           <p className={styles.projectName}>{project.name}</p>
+          <PrivacyNote onDownloadData={onDownloadData} />
         </header>
         <main className={styles.main}>
           <div className={styles.emptyCard}>
@@ -97,7 +101,10 @@ export function Dashboard({
     <div className={styles.screen}>
       <header className={styles.header}>
         <p className={styles.projectName}>{project.name}</p>
-        <ReturnCounter returned={returnedCount} total={withBook.length} />
+        <div className={styles.headerTools}>
+          <ReturnCounter returned={returnedCount} total={withBook.length} />
+          <PrivacyNote onDownloadData={onDownloadData} />
+        </div>
       </header>
 
       <main className={styles.main}>

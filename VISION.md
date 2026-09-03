@@ -32,6 +32,6 @@ The overhead is invisible: tracking twenty book-child pairs, remembering who has
 
 **Joy over utility.** This app should feel like a small pleasure to open, not a chore. Satisfying taps, visual books with covers, avatars with personality. A tool that respects the teacher's time also respects her sense of aesthetics.
 
-**Zero infrastructure.** No server. No database. No subscription. No terms of service to read. The teacher's data lives in her browser and nowhere else. Google login is for identification only — it doesn't upload anything. If the app disappeared tomorrow, there's nothing to lose and nothing to protect.
+**Zero infrastructure.** No server. No database. No subscription. No terms of service to read. No login, because there is nothing to log in to. The teacher's data lives in her browser and nowhere else — the same place, and the same protection, as the notes app on her phone. The only thing that ever leaves the phone is a book title, sent to Open Library to find a cover, and the app says so in plain words from the dashboard. She can download a copy of everything whenever she wants. If the app disappeared tomorrow, there's nothing to lose and nothing to protect.
 
 Scope is a feature.
