@@ -12,6 +12,13 @@ type TabBarProps = {
   onSelect: (tab: AppTab) => void;
 };
 
+function currentTab(isActive: boolean) {
+  if (isActive) {
+    return "page";
+  }
+  return undefined;
+}
+
 export function TabBar({ active, onSelect }: TabBarProps) {
   return (
     <nav className={styles.tabBar} aria-label="Secciones">
@@ -21,7 +28,7 @@ export function TabBar({ active, onSelect }: TabBarProps) {
             key={tab}
             type="button"
             className={styles.tab}
-            aria-current={tab === active ? "page" : undefined}
+            aria-current={currentTab(tab === active)}
             onClick={() => onSelect(tab)}
           >
             {label}

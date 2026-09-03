@@ -5,6 +5,13 @@ type ReturnCounterProps = {
   total: number;
 };
 
+function countClass(allBack: boolean) {
+  if (allBack) {
+    return styles.done;
+  }
+  return styles.count;
+}
+
 export function ReturnCounter({ returned, total }: ReturnCounterProps) {
   const allBack = returned === total;
   return (
@@ -13,7 +20,7 @@ export function ReturnCounter({ returned, total }: ReturnCounterProps) {
       role="status"
       aria-label={`${returned} de ${total} libros devueltos`}
     >
-      <span className={allBack ? styles.done : styles.count}>{returned}</span>
+      <span className={countClass(allBack)}>{returned}</span>
       <span className={styles.total}>/{total}</span>
       {allBack && <span aria-hidden="true"> 🎉</span>}
     </p>

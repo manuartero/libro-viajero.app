@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Book } from "src/book/book.model";
+import { type Book, bookTitleOf } from "src/book/book.model";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./missing-summary.module.css";
@@ -10,6 +10,13 @@ type MissingSummaryProps = {
 
 const reminderMessage = ({ tag, title }: { tag: string; title: string }) =>
   `¡Hola! Un recordatorio: el libro «${title}» de ${tag} aún no ha vuelto a clase. Sin agobios — ¡cuando podáis! 📚`;
+
+function copyLabel(copied: boolean) {
+  if (copied) {
+    return "Copiado ✓";
+  }
+  return "Copiar aviso";
+}
 
 export function MissingSummary({ missing }: MissingSummaryProps) {
   const [copiedChildId, setCopiedChildId] = useState<string | null>(null);
@@ -51,16 +58,14 @@ export function MissingSummary({ missing }: MissingSummaryProps) {
                 size="tiny"
               />
               {child.tag}
-              <span className={styles.bookTitle}>
-                {book ? book.title : "sin libro"}
-              </span>
+              <span className={styles.bookTitle}>{bookTitleOf(book)}</span>
             </span>
             <button
               type="button"
               className={styles.copy}
               onClick={() => copyReminder({ child, book })}
             >
-              {copiedChildId === child.id ? "Copiado ✓" : "Copiar aviso"}
+              {copyLabel(copiedChildId === child.id)}
             </button>
           </li>
         ))}

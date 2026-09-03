@@ -1,20 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { BookDraft } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
-import { newId } from "src/lib/id";
-import { searchBooks } from "src/services/open-library.service";
+import { type SearchState, useBookSearch } from "src/library/book-search.hook";
 import styles from "./book-search.module.css";
-
-// Results get a transient key on arrival: drafts have no identity yet and
-// Open Library can legitimately return duplicate titles.
-type SearchResult = { key: string; draft: BookDraft };
-
-type SearchState =
-  | { status: "idle" }
-  | { status: "searching" }
-  | { status: "results"; results: SearchResult[] }
-  | { status: "empty"; query: string }
-  | { status: "error" };
 
 type BookSearchProps = {
   onAdd: (draft: BookDraft) => void;
@@ -29,44 +17,19 @@ function manualToggleLabel(status: SearchState["status"]) {
   return "¿No lo encuentras? Añádelo a mano";
 }
 
+function resultLabel(draft: BookDraft) {
+  if (!draft.author) {
+    return draft.title;
+  }
+  return `${draft.title}, ${draft.author}`;
+}
+
 export function BookSearch({ onAdd }: BookSearchProps) {
   const [query, setQuery] = useState("");
-  const [search, setSearch] = useState<SearchState>({ status: "idle" });
   const [manualOpen, setManualOpen] = useState(false);
   const [manualTitle, setManualTitle] = useState("");
   const [manualAuthor, setManualAuthor] = useState("");
-  const abortRef = useRef<AbortController | null>(null);
-
-  useEffect(() => () => abortRef.current?.abort(), []);
-
-  const runSearch = async () => {
-    const title = query.trim();
-    if (title.length === 0) {
-      return;
-    }
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-    setSearch({ status: "searching" });
-    try {
-      const drafts = await searchBooks({ title, signal: controller.signal });
-      setSearch(
-        drafts.length === 0
-          ? { status: "empty", query: title }
-          : {
-              status: "results",
-              results: drafts.map((draft) => ({ key: newId(), draft })),
-            },
-      );
-    } catch (error) {
-      if (!controller.signal.aborted) {
-        // The UI blames connectivity; keep the real cause reachable in the
-        // console (HTTP status errors and JSON parse failures land here too).
-        console.error("libro-viajero: book search failed", error);
-        setSearch({ status: "error" });
-      }
-    }
-  };
+  const { search, runSearch } = useBookSearch();
 
   const openManual = () => {
     setManualTitle(query.trim());
@@ -92,7 +55,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
         className={styles.form}
         onSubmit={(event) => {
           event.preventDefault();
-          runSearch();
+          runSearch(query);
         }}
       >
         <label className={styles.label} htmlFor="book-query">
@@ -133,9 +96,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
               <button
                 type="button"
                 className={styles.result}
-                aria-label={
-                  draft.author ? `${draft.title}, ${draft.author}` : draft.title
-                }
+                aria-label={resultLabel(draft)}
                 onClick={() => onAdd(draft)}
               >
                 <BookCover
@@ -164,7 +125,11 @@ export function BookSearch({ onAdd }: BookSearchProps) {
           <p className={styles.status}>
             No se pudo buscar. Comprueba tu conexión.
           </p>
-          <button type="button" className={styles.retry} onClick={runSearch}>
+          <button
+            type="button"
+            className={styles.retry}
+            onClick={() => runSearch(query)}
+          >
             Reintentar
           </button>
         </div>

@@ -6,6 +6,13 @@ type ColorPickerProps = {
   onPick: (color: string) => void;
 };
 
+function swatchClass(selected: boolean) {
+  if (selected) {
+    return `${styles.swatch} ${styles.swatchSelected}`;
+  }
+  return styles.swatch;
+}
+
 export function ColorPicker({ selected, onPick }: ColorPickerProps) {
   return (
     <fieldset className={styles.picker}>
@@ -17,11 +24,7 @@ export function ColorPicker({ selected, onPick }: ColorPickerProps) {
             <button
               key={entry.color}
               type="button"
-              className={
-                isSelected
-                  ? `${styles.swatch} ${styles.swatchSelected}`
-                  : styles.swatch
-              }
+              className={swatchClass(isSelected)}
               style={{ background: entry.color }}
               aria-pressed={isSelected}
               aria-label={entry.name}

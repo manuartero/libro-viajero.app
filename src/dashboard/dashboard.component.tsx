@@ -18,6 +18,41 @@ type DashboardProps = {
   onDownloadData: () => void;
 };
 
+// The setup journey lives here as a chain of empty states: first the class
+// needs children, then books, then a first reparto — then the check-in.
+function emptyStateFor({
+  project,
+  onNavigate,
+  onRepartir,
+}: {
+  project: Project;
+  onNavigate: (tab: AppTab) => void;
+  onRepartir: () => void;
+}) {
+  if (project.children.length === 0) {
+    return {
+      text: "Todavía no hay peques en la clase.",
+      cta: "Añadir peques",
+      onCta: () => onNavigate("clase"),
+    };
+  }
+  if (project.books.length === 0) {
+    return {
+      text: "La biblioteca está vacía.",
+      cta: "Añadir libros",
+      onCta: () => onNavigate("biblioteca"),
+    };
+  }
+  if (project.currentAssignments.length === 0) {
+    return {
+      text: "Los libros esperan lector.",
+      cta: "Repartir libros",
+      onCta: onRepartir,
+    };
+  }
+  return null;
+}
+
 export function Dashboard({
   project,
   returnedChildIds,
@@ -52,28 +87,7 @@ export function Dashboard({
 
   const unassignedCount = bookless.length;
 
-  // The setup journey lives here as a chain of empty states: first the class
-  // needs children, then books, then a first reparto — then the check-in.
-  const emptyState =
-    project.children.length === 0
-      ? {
-          text: "Todavía no hay peques en la clase.",
-          cta: "Añadir peques",
-          onCta: () => onNavigate("clase"),
-        }
-      : project.books.length === 0
-        ? {
-            text: "La biblioteca está vacía.",
-            cta: "Añadir libros",
-            onCta: () => onNavigate("biblioteca"),
-          }
-        : project.currentAssignments.length === 0
-          ? {
-              text: "Los libros esperan lector.",
-              cta: "Repartir libros",
-              onCta: onRepartir,
-            }
-          : null;
+  const emptyState = emptyStateFor({ project, onNavigate, onRepartir });
 
   if (emptyState) {
     return (

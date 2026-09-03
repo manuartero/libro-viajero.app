@@ -28,9 +28,12 @@ export function TagField({ tag, hasEmoji, onChange }: TagFieldProps) {
             value={tag}
             maxLength={20}
             autoComplete="off"
+            aria-describedby="child-tag-hint"
             onChange={(event) => onChange(event.target.value)}
           />
-          <p className={styles.hint}>
+          {/* Described by the input, not just placed near it: the privacy rule
+              is the whole point of the field. */}
+          <p id="child-tag-hint" className={styles.hint}>
             Nada de nombres reales: solo tú sabes quién es.
           </p>
         </>
@@ -38,22 +41,31 @@ export function TagField({ tag, hasEmoji, onChange }: TagFieldProps) {
 
       {!changing && (
         <>
-          <p className={styles.tagLabel}>Apodo</p>
+          {/* A term and its value, so "Apodo" labels something here too — in
+              edit mode it is a real <label>, and it should not degrade to a
+              floating paragraph just because the input is gone. */}
+          <dl className={styles.tagPair}>
+            <dt className={styles.tagLabel}>Apodo</dt>
+
+            {hasEmoji && (
+              <dd id="child-tag-value" className={styles.tagValue}>
+                {tag}
+              </dd>
+            )}
+
+            {!hasEmoji && <dd className={styles.tagEmpty}>Toca un emoji</dd>}
+          </dl>
 
           {hasEmoji && (
-            <>
-              <p className={styles.tagValue}>{tag}</p>
-              <button
-                type="button"
-                className={styles.changeTag}
-                onClick={() => setChanging(true)}
-              >
-                Cambiar apodo
-              </button>
-            </>
+            <button
+              type="button"
+              className={styles.changeTag}
+              aria-describedby="child-tag-value"
+              onClick={() => setChanging(true)}
+            >
+              Cambiar apodo
+            </button>
           )}
-
-          {!hasEmoji && <p className={styles.tagEmpty}>Toca un emoji</p>}
         </>
       )}
     </div>
