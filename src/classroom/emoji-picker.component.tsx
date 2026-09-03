@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { type CuratedEmoji, EMOJI_PANELS } from "src/child/avatar-catalog.data";
 import styles from "./emoji-picker.module.css";
 
@@ -25,6 +25,10 @@ function cellLabel({ name, used }: { name: string; used: boolean }) {
   return name;
 }
 
+// Real radios in a real fieldset: the browser gives the grid arrow keys, one
+// tab stop instead of twenty, and "exactly one of these". Each cell is a
+// label wrapping a visually hidden input, because the glyph has to live in
+// markup an input cannot hold.
 export function EmojiPicker({
   selectedEmoji,
   usedEmojis,
@@ -37,6 +41,8 @@ export function EmojiPicker({
     );
     return found === -1 ? 0 : found;
   });
+  const groupName = useId();
+  const gridId = useId();
 
   const panel = EMOJI_PANELS[panelIndex];
 
@@ -44,7 +50,11 @@ export function EmojiPicker({
     <fieldset className={styles.picker}>
       <legend className={styles.pickerLegend}>Elige un emoji</legend>
       <div className={styles.panelBar}>
-        <span className={styles.panelLabel}>
+        {/* Live, because the arrow swaps twenty options while focus stays on
+            the arrow itself — otherwise nothing says the panel changed.
+            aria-live is a property, not a role: this is not a second
+            role="status", which the dashboard asserts it owns exactly one of. */}
+        <span className={styles.panelLabel} aria-live="polite">
           {panel.label}
           <span className={styles.panelCount}>
             {" "}
@@ -55,6 +65,7 @@ export function EmojiPicker({
           type="button"
           className={styles.panelNext}
           aria-label="Más emojis"
+          aria-controls={gridId}
           onClick={() =>
             setPanelIndex((prev) => (prev + 1) % EMOJI_PANELS.length)
           }
@@ -62,21 +73,22 @@ export function EmojiPicker({
           ›
         </button>
       </div>
-      <div className={styles.emojiGrid}>
+      <div id={gridId} className={styles.emojiGrid}>
         {panel.emojis.map((entry) => {
           const selected = selectedEmoji === entry.emoji;
           const used = usedEmojis.includes(entry.emoji);
           return (
-            <button
-              key={entry.emoji}
-              type="button"
-              className={cellClass({ selected, used })}
-              aria-pressed={selected}
-              aria-label={cellLabel({ name: entry.name, used })}
-              onClick={() => onPick(entry)}
-            >
-              {entry.emoji}
-            </button>
+            <label key={entry.emoji} className={cellClass({ selected, used })}>
+              <input
+                type="radio"
+                name={groupName}
+                className={styles.cellInput}
+                checked={selected}
+                aria-label={cellLabel({ name: entry.name, used })}
+                onChange={() => onPick(entry)}
+              />
+              <span aria-hidden="true">{entry.emoji}</span>
+            </label>
           );
         })}
       </div>

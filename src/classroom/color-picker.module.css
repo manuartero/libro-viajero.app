@@ -20,7 +20,11 @@
   gap: 0.625rem;
 }
 
+/* The radio *is* the swatch: appearance:none strips the dot so the inline
+   background colour and the ink border are all that show. */
 .swatch {
+  appearance: none;
+  margin: 0;
   width: 100%;
   min-height: 2.75rem;
   aspect-ratio: 1;

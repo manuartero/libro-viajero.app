@@ -24,7 +24,7 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Dino" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Dino" }));
 
     expect(screen.getByText("Dino")).toBeDefined();
     expect(screen.queryByLabelText("Apodo")).toBeNull();
@@ -40,7 +40,7 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     changeNickname();
 
     const input = screen.getByLabelText<HTMLInputElement>("Apodo");
@@ -59,9 +59,9 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     changeNickname();
-    const dino = screen.getByRole("button", { name: "Dino" });
+    const dino = screen.getByRole("radio", { name: "Dino" });
     dino.focus();
     fireEvent.click(dino);
 
@@ -92,12 +92,12 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     changeNickname();
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Capitana" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Dino" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Dino" }));
 
     expect(screen.getByLabelText<HTMLInputElement>("Apodo").value).toBe(
       "Capitana",
@@ -116,7 +116,7 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Dino" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Dino" }));
     fireEvent.click(
       screen.getByRole("button", { name: "Añadir peque a la clase" }),
     );
@@ -139,11 +139,11 @@ describe("<ChildBuilder />", () => {
     );
 
     expect(screen.getByText("Animales")).toBeDefined();
-    expect(screen.queryByRole("button", { name: "Girasol" })).toBeNull();
+    expect(screen.queryByRole("radio", { name: "Girasol" })).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
     expect(screen.getByText("Naturaleza")).toBeDefined();
-    fireEvent.click(screen.getByRole("button", { name: "Girasol" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Girasol" }));
     expect(screen.getByText("Girasol")).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
@@ -165,7 +165,7 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     changeNickname();
     // maxLength on the input is advisory — a programmatic/paste value can
     // exceed it, so the boundary enforcement is at submit.
@@ -196,7 +196,7 @@ describe("<ChildBuilder />", () => {
     });
     expect(add.disabled).toBe(true);
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     expect(add.disabled).toBe(false);
   });
 
@@ -210,7 +210,7 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     changeNickname();
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "   " },
@@ -233,7 +233,7 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Rana (en uso)" })).toBeDefined();
+    expect(screen.getByRole("radio", { name: "Rana (en uso)" })).toBeDefined();
   });
 
   it("opens on the panel of the edited child's emoji, shown as selected", () => {
@@ -248,7 +248,7 @@ describe("<ChildBuilder />", () => {
 
     expect(screen.getByText("Naturaleza")).toBeDefined();
     expect(
-      screen.getByRole("button", { name: "Girasol", pressed: true }),
+      screen.getByRole("radio", { name: "Girasol", checked: true }),
     ).toBeDefined();
   });
 
