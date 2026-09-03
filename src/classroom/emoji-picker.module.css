@@ -59,8 +59,10 @@
   gap: 0.5rem;
 }
 
-/* The type case: a tray of bordered cells, letterpress style. */
+/* The type case: a tray of bordered cells, letterpress style. Each cell is a
+   label around a hidden radio, so the whole cell is the hit area. */
 .emojiCell {
+  position: relative;
   min-height: 2.75rem;
   aspect-ratio: 1;
   display: grid;
@@ -77,13 +79,38 @@
   background: var(--paper-dark);
 }
 
+/* The radio takes the focus and the clicks; the cell around it does the
+   drawing. Hidden with opacity rather than display:none so it stays
+   focusable and the browser keeps its arrow-key handling. */
+.cellInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  appearance: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Focus lands on the invisible input, so the ring has to be drawn by the
+   cell around it. */
+.emojiCell:has(.cellInput:focus-visible) {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
 .selected {
   background: var(--paper-dark);
   box-shadow: inset 0 0 0 2px var(--ink);
 }
 
+/* Fade the glyph, not the cell. At 0.45 the whole cell took its 2px --ink
+   border down with it, under 3:1 against --paper — and a taken emoji is still
+   a tappable control, so its border has to stay legible. */
 .used {
   position: relative;
+}
+
+.used span {
   opacity: 0.45;
 }
 

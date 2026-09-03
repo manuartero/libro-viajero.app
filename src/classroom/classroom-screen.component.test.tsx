@@ -18,7 +18,7 @@ describe("<ClassroomScreen />", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Zorro" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Zorro" }));
     fireEvent.click(
       screen.getByRole("button", { name: "Añadir peque a la clase" }),
     );

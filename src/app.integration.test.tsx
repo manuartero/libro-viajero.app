@@ -10,7 +10,7 @@ const createClass = (name: string) => {
 };
 
 const addChild = (emojiName: string) => {
-  fireEvent.click(screen.getByRole("button", { name: emojiName }));
+  fireEvent.click(screen.getByRole("radio", { name: emojiName }));
   fireEvent.click(
     screen.getByRole("button", { name: "Añadir peque a la clase" }),
   );
