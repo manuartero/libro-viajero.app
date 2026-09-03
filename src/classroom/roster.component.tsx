@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import styles from "./roster.module.css";
@@ -9,9 +10,11 @@ type RosterProps = {
 };
 
 export function Roster({ childList, editingId, onSelect }: RosterProps) {
+  const titleId = useId();
+
   return (
-    <section className={styles.roster} aria-labelledby="roster-title">
-      <h2 id="roster-title" className={styles.title}>
+    <section className={styles.roster} aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.title}>
         La lista de clase
       </h2>
       {childList.length === 0 && (

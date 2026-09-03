@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { ChildAvatar } from "src/child/child-avatar.component";
 import type { Project } from "src/project/project.model";
 import styles from "./next-week.module.css";
@@ -27,14 +28,16 @@ export function NextWeekPanel({
   project,
   returnedChildIds,
 }: NextWeekPanelProps) {
+  const titleId = useId();
+
   const suggestions = shiftSuggestions({ project, returnedChildIds });
 
   const childById = new Map(project.children.map((child) => [child.id, child]));
   const bookById = new Map(project.books.map((book) => [book.id, book]));
 
   return (
-    <section className={styles.panel} aria-labelledby="next-week-title">
-      <h2 id="next-week-title" className={styles.title}>
+    <section className={styles.panel} aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.title}>
         Próxima semana
       </h2>
       {suggestions.length === 0 && (
