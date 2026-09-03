@@ -2,6 +2,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { describe, expect, it, vi } from "vitest";
 
+// The focus contract — focus into the dialog on open, back to the trigger on
+// close, Tab held inside, Escape cancelling — now belongs to the platform,
+// and jsdom implements none of it (its HTMLDialogElement is an empty stub).
+// Asserting it against the stub in test/setup.ts would only assert the stub,
+// so those four checks live in a real browser instead. What is left here is
+// the part this component still decides.
 const openNote = () => {
   fireEvent.click(
     screen.getByRole("button", { name: "Tus datos y privacidad" }),
@@ -47,52 +53,11 @@ describe("<PrivacyNote />", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("closes with Escape", () => {
+  it("keeps the panel out of reach while it is closed", () => {
     render(<PrivacyNote onDownloadData={() => {}} />);
 
-    openNote();
-    fireEvent.keyDown(document, { key: "Escape" });
-
-    expect(screen.queryByRole("dialog")).toBeNull();
-  });
-
-  it("moves focus to the dialog title when it opens", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
-
-    openNote();
-
-    expect(document.activeElement).toBe(
-      screen.getByRole("heading", { name: "Tus datos" }),
-    );
-  });
-
-  it("returns focus to the trigger when it closes", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
-    const trigger = screen.getByRole("button", {
-      name: "Tus datos y privacidad",
-    });
-
-    openNote();
-    fireEvent.click(screen.getByRole("button", { name: "Cerrar" }));
-    expect(document.activeElement).toBe(trigger);
-
-    openNote();
-    fireEvent.keyDown(document, { key: "Escape" });
-    expect(document.activeElement).toBe(trigger);
-  });
-
-  it("keeps Tab inside the dialog", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
-
-    openNote();
-    const close = screen.getByRole("button", { name: "Cerrar" });
-    close.focus();
-    fireEvent.keyDown(document, { key: "Tab" });
-    expect(document.activeElement).toBe(
-      screen.getByRole("button", { name: "Descargar mis datos" }),
-    );
-
-    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
-    expect(document.activeElement).toBe(close);
+    expect(
+      screen.queryByRole("button", { name: "Descargar mis datos" }),
+    ).toBeNull();
   });
 });
