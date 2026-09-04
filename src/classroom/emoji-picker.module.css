@@ -5,74 +5,93 @@
   min-width: 0;
 }
 
-.pickerLegend {
+/* A real legend, off screen. Not display:none — that would take the group's
+   accessible name with it, which is the whole reason the legend survives. */
+.legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   padding: 0;
-  margin-bottom: 0.625rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* Category masthead of the type case: label left, next-tray arrow right. */
-.panelBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.625rem;
-}
+/* The type case: one frame around sixty compartments divided by shared
+   partitions, not sixty separate squares. Three sides belong to the frame;
+   every cell draws its own bottom rule, and its right rule except in the
+   fifth column where the frame already provides one.
 
-.panelLabel {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-
-.panelCount {
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.8125rem;
-  color: var(--ink-soft);
-}
-
-.panelNext {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--paper);
-  font-size: 1.25rem;
-  cursor: pointer;
-}
-
-.panelNext:active {
-  background: var(--paper-dark);
-}
-
-.emojiGrid {
+   No bottom rule, deliberately: the frame is shorter than its contents, and
+   the row it cuts is what says the drawer keeps going — the way a table cut
+   by a column edge reads in print. Scrolled to the last row, that row's own
+   bottom rule closes the frame. It costs no fade and no shadow, neither of
+   which this design language has. */
+.tray {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.5rem;
+  max-height: clamp(12rem, 36dvh, 19rem);
+  overflow-y: auto;
+  /* The flick that reaches the last row stops there instead of carrying on
+     into the page behind it. */
+  overscroll-behavior: contain;
+  border-top: 2px solid var(--ink);
+  border-left: 2px solid var(--ink);
+  border-right: 2px solid var(--ink);
+  /* The cut row is the affordance, and a native scrollbar would be the one
+     piece of soft grey chrome in the whole app — on the reference phone it is
+     an overlay that fades anyway. Hiding it also hands the five columns the
+     full width, so they divide the frame exactly instead of leaving the
+     scrollbar's 15px stranded outside the last partition. */
+  scrollbar-width: none;
 }
 
-/* The type case: a tray of bordered cells, letterpress style. Each cell is a
-   label around a hidden radio, so the whole cell is the hit area. */
+.tray::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each cell is a label around a hidden radio, so the whole compartment is the
+   hit area: a ~62px square at 360px, and never under 57px, since the
+   narrowest phone still hands each of the five columns a fifth of 288px. */
 .emojiCell {
   position: relative;
-  min-height: 2.75rem;
-  aspect-ratio: 1;
   display: grid;
   place-items: center;
-  border: 2px solid var(--ink);
-  border-radius: 0;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
   background: var(--paper);
   font-size: 1.625rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* The fifth column's right rule is the frame's, so it must not draw its own —
+   two 2px rules side by side read as a 4px seam down the edge. nth-child(5n),
+   not :last-child: it is the column that is special, not the last cell. */
+.emojiCell:nth-child(5n) {
+  border-right: none;
+}
+
+/* aspect-ratio on the cell cannot square it. The cell is a grid item, so the
+   row would have to take its height from a ratio that resolves against the
+   cell's height — circular, and the browser breaks the loop by ignoring the
+   ratio, which collapsed every row to its content and left each cell
+   overpainting the one below, swallowing the horizontal partitions.
+   A zero-width spacer inside the cell breaks the loop instead: percentage
+   padding resolves against the cell's inline size, which the 1fr track has
+   already settled, so the row gets a real height to size to. */
+.emojiCell::before {
+  content: "";
+  grid-area: 1 / 1;
+  width: 0;
+  padding-top: 100%;
+}
+
+/* Same cell, same slot, so the glyph centres over the spacer rather than
+   stacking under it. */
+.emojiCell > span {
+  grid-area: 1 / 1;
 }
 
 .emojiCell:active {
@@ -91,16 +110,19 @@
   cursor: pointer;
 }
 
-/* Focus lands on the invisible input, so the ring has to be drawn by the
-   cell around it. */
+/* Focus lands on the invisible input, so the ring has to be drawn by the cell
+   around it — and inset, because an outset ring on the top row would be
+   clipped by the frame the tray scrolls inside. */
 .emojiCell:has(.cellInput:focus-visible) {
   outline: 3px solid var(--ink);
-  outline-offset: 2px;
+  outline-offset: -3px;
 }
 
+/* Inked and pressed into the tray: the ground carries the signal, so the ring
+   only has to thicken the partitions it shares. */
 .selected {
   background: var(--paper-dark);
-  box-shadow: inset 0 0 0 2px var(--ink);
+  box-shadow: inset 0 0 0 3px var(--ink);
 }
 
 /* Fade the glyph, not the cell. At 0.45 the whole cell took its 2px --ink

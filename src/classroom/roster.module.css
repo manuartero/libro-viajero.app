@@ -1,5 +1,17 @@
+/* The class list is a finished block, so it gets air before whatever follows
+   it. On top of .main's 1rem gap that comes to 2.5rem — comfortably more than
+   the 1.375rem the builder puts between its own fields, which is the point:
+   at a flat 1rem the two sections sat closer together than the fields inside
+   one of them, and a screenful of hard-bordered chips ran straight into the
+   form's dateline.
+
+   Here rather than on the builder, so the remove-confirm panel keeps the
+   adjacency it is placed for: this pushes the roster off all three of the
+   things that can follow it, and leaves the confirm sitting tight against the
+   builder underneath it. */
 .roster {
   min-width: 0;
+  margin-bottom: 1.5rem;
 }
 
 .title {
