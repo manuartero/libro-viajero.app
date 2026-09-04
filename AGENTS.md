@@ -2,7 +2,7 @@
 
 **libro-viajero.app** — 100% client-side React + TypeScript app for teachers running a "traveling book" classroom initiative. Friday check-in: tap who returned their book, see who's missing, confirm next week's assignments. All data in `localStorage`.
 
-Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [docs/DATA_MODEL.md](docs/DATA_MODEL.md) (storage schema, algorithms) · [README.md](README.md) (setup & commands).
+Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [README.md](README.md) (setup & commands). Four docs, and no more — types are the source of truth for shapes, and a design for unwritten code lives in its repo issue, not in a file.
 
 ## Standards
 
@@ -22,7 +22,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 - Tokens in `src/styles/globals.css`: `--paper`/`--paper-dark` (ground), `--ink`/`--ink-soft` (text/borders), `--returned`/`--returned-dark` (green), `--missing` (red), `--font-body` (Helvetica), `--font-display` (Besley serif, 700).
 - Hard 2–3px `--ink` borders, `border-radius: 0` on buttons, uppercase letter-spaced datelines. No shadows, no gradients.
-- One 12-color palette for the whole app: `src/palette/palette.json`, read only by `palette.data.ts`, sorted by hue (warm → cool → neutral). Only its **membership** is load-bearing: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children on a color no swatch matches. Adding one is free, and so is reordering — order only changes which hue `nextUnusedColor()` (in `child.model.ts`) hands out first and which placeholder `coverColorFor()` (in `book.model.ts`) gives a title, neither of which is persisted.
+- One 12-color palette for the whole app: `src/palette/palette.json`, read only by `palette.data.ts`, sorted by hue (warm → cool → neutral). Only its **membership** is load-bearing: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children on a color no swatch matches. Adding or reordering is free — order only picks which hue `nextUnusedColor()` hands out first.
 
 ### Dependencies
 
@@ -60,7 +60,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 ### Platform before ARIA (IMPORTANT)
 
-Reach for the element before the attribute. Both rules below replaced hand-rolled versions that were longer, and in each case the browser's is the one that is correct in a real browser.
+Reach for the element before the attribute. Both rules below replaced hand-rolled versions that were longer and less correct in a real browser.
 
 - **Modals are `<dialog>` + `showModal()`** (`privacy-note.component.tsx`). It brings the focus trap, top-layer inertness, Escape, and focus restoration to the trigger — no `aria-modal`, no `role="dialog"`, no keydown listener, no refs for the trigger. `ConfirmPanel` is the deliberate exception and is *not* a dialog element: it renders inline in document flow with no backdrop, so trapping focus in it would be worse than not. Do not "unify" the two.
 - **Single-select is `<input type="radio">`** in a `fieldset` (`emoji-picker`, `color-picker`), which brings arrow-key navigation, wrap-around and one tab stop per group. `aria-pressed` is for genuine toggles only — `child-card` (returned or not), `roster` (which child is being edited). `role="radio"` on a `<button>` is not the answer; biome's `a11y/useSemanticElements` rejects it, and it makes you write the keyboard handling by hand.
@@ -75,8 +75,8 @@ Reach for the element before the attribute. Both rules below replaced hand-rolle
 
 - No `utils/`, `types/`, `helpers/` catch-alls — and no `types.ts` either. Name folders by domain; every type lives in its domain module (`src/project/project.model.ts` defines `Project`), even if that means more files.
 - Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `palette/`.
-- `src/` root holds the entry point and the composition root it mounts, and nothing else: `main.tsx`, `app.component.tsx`, `app-error-boundary.component.tsx` (plus their CSS and `app.integration.test.tsx`). There is no `src/app/` — a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`. What used to sit there now lives where it belongs: `Tab` / `View` and `TabBar` in `src/navigation/`, `useAppData` in `src/project/` beside the `AppData` type it persists.
-- Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`, `palette.json` → `palette.data.ts`). Nothing else imports the JSON. No exceptions: the palette's invariants are length and membership, which an `as const satisfies` never enforced anyway — `book.model.test.ts` does.
+- `src/` root holds the entry point and the composition root it mounts, and nothing else: `main.tsx`, `app.component.tsx`, `app-error-boundary.component.tsx` (plus their CSS and `app.integration.test.tsx`). There is no `src/app/` — a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`. So `Tab` / `View` and `TabBar` live in `src/navigation/`, and `useAppData` in `src/project/` beside the `AppData` type it persists.
+- Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`, `palette.json` → `palette.data.ts`). Nothing else imports the JSON, and the invariants are enforced by tests (`book.model.test.ts`), not by `as const satisfies`.
 
 ### Testing
 

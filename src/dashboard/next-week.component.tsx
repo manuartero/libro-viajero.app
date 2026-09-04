@@ -10,7 +10,7 @@ type NextWeekPanelProps = {
 
 // Placeholder rotation: shift returned books by one position.
 // The real algorithm (history-aware, greedy with backtracking) is specced
-// in docs/DATA_MODEL.md and tracked as a repo issue.
+// in issue #5, to land as services/rotation.service.ts.
 const shiftSuggestions = ({
   project,
   returnedChildIds,

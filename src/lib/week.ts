@@ -6,7 +6,7 @@ export function isoDate(date: Date): string {
   return `${date.getFullYear()}-${month}-${dayOfMonth}`;
 }
 
-// Assignment.weekStart is the ISO date of that week's Monday (docs/DATA_MODEL.md).
+// Assignment.weekStart is the ISO date of that week's Monday.
 export function mondayOf(date = new Date()): string {
   const monday = new Date(date);
   const day = monday.getDay(); // 0 = Sunday → previous Monday

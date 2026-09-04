@@ -1,7 +1,7 @@
 import type { AppData } from "src/project/project.model";
 
 // One phone, one teacher, one namespace. There are no accounts to key by.
-// See docs/DATA_MODEL.md § localStorage Schema.
+// This module is the storage schema: the whole AppData under this one key.
 const STORAGE_KEY = "libro-viajero";
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
