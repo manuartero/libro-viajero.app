@@ -4,6 +4,9 @@ import type { AppData } from "src/project/project.model";
 // "Descargar mis datos": the teacher's own copy of everything the app knows.
 // A plain JSON file to keep in Drive, send over WhatsApp, or hand to next
 // year's teacher. No server involved — the browser writes the file.
+//
+// The file is the same shape as the stored value, so importing one back is
+// only a validated saveAppData() when we get there.
 
 export function buildExport({ data, today }: { data: AppData; today: Date }) {
   return {

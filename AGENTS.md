@@ -2,7 +2,7 @@
 
 **libro-viajero.app** — 100% client-side React + TypeScript app for teachers running a "traveling book" classroom initiative. Friday check-in: tap who returned their book, see who's missing, confirm next week's assignments. All data in `localStorage`.
 
-Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [docs/DATA_MODEL.md](docs/DATA_MODEL.md) (storage schema, algorithms) · [README.md](README.md) (setup & commands).
+Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [README.md](README.md) (setup & commands). Four docs, and no more — types are the source of truth for shapes, and a design for unwritten code lives in its repo issue, not in a file.
 
 ## Standards
 

@@ -37,7 +37,9 @@ No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/
 
 ## Docs
 
-[VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories and what is built) · [docs/DATA_MODEL.md](docs/DATA_MODEL.md) (storage, algorithms) · [AGENTS.md](AGENTS.md) (conventions).
+[VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories and what is built) · [AGENTS.md](AGENTS.md) (conventions).
+
+There is no data-model doc: the types are the source of truth in their domain modules (`src/*/*.model.ts`), and the storage schema is `src/services/storage.service.ts`.
 
 ---
 

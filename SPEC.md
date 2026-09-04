@@ -25,7 +25,7 @@ Status: ✅ shipped · 🚧 placeholder · ❌ not built.
 
 ### Privacy & Data Ownership — ✅ shipped
 
-One phone = one teacher = one localStorage key (see [docs/DATA_MODEL.md](docs/DATA_MODEL.md)). The only network traffic is the Open Library search and its cover images, enforced by a Content-Security-Policy injected at build time (`src/lib/csp.ts`).
+One phone = one teacher = one localStorage key (`src/services/storage.service.ts`). The only network traffic is the Open Library search and its cover images, enforced by a Content-Security-Policy injected at build time (`src/lib/csp.ts`).
 
 |   ID   |                                                 Story                                                  | Status |
 | ------ | ------------------------------------------------------------------------------------------------------ | ------ |
@@ -62,7 +62,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 | DASH-4  | As a teacher, I can see a live count of how many books have been returned                      | ✅     |
 | DASH-5  | As a teacher, I can see a summary of which children did NOT return their book                  | ✅     |
 | DASH-6  | As a teacher, I can copy a pre-written parent reminder message for each missing child/book     | ✅     |
-| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in docs/DATA_MODEL.md |
+| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in issue #5 |
 | DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
 | DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | ❌     |
 | DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | 🚧 modeled (invariant in `src/project/project.model.ts`), pending DASH-9 |
