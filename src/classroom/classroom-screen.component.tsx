@@ -9,28 +9,41 @@ import { addChild, removeChild, saveChild } from "src/project/project.model";
 import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./classroom-screen.module.css";
 
+// The builder is one surface with three states. A union rather than an
+// `editingId` plus an `adding` flag, because "adding while editing one child"
+// is not a state this screen can be in and two booleans would allow it.
+type BuilderState =
+  | { status: "closed" }
+  | { status: "adding" }
+  | { status: "editing"; childId: string };
+
 type ClassroomScreenProps = {
   project: Project;
   onUpdate: (project: Project) => boolean;
 };
 
 export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [builder, setBuilder] = useState<BuilderState>({ status: "closed" });
   // A child with a book at home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Child | null>(null);
 
   const childList = project.children;
-  const editing = childList.find((child) => child.id === editingId) ?? null;
-  const others = childList.filter((child) => child.id !== editingId);
+  const editing =
+    builder.status === "editing"
+      ? (childList.find((child) => child.id === builder.childId) ?? null)
+      : null;
+  const others = childList.filter((child) => child.id !== editing?.id);
   const usedEmojis = others.map((child) => child.emoji);
   const usedColors = others.map((child) => child.color);
+
+  const close = () => setBuilder({ status: "closed" });
 
   const hasBook = (childId: string) =>
     project.currentAssignments.some((a) => a.childId === childId);
 
   const remove = (childId: string) => {
     if (onUpdate(removeChild({ project, childId }))) {
-      setEditingId(null);
+      close();
       setConfirmingRemove(null);
     }
   };
@@ -43,6 +56,22 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
       />
 
       <main className={styles.main}>
+        <Roster
+          childList={childList}
+          editingId={editing?.id ?? null}
+          onSelect={(childId) => {
+            setConfirmingRemove(null);
+            setBuilder((prev) => {
+              if (prev.status === "editing" && prev.childId === childId) {
+                return { status: "closed" };
+              }
+              return { status: "editing", childId };
+            });
+          }}
+        />
+
+        {/* Directly above the builder, so it opens where the "Quitar" tap was
+            rather than a screenful of chips away from it. */}
         {confirmingRemove && (
           <ConfirmPanel
             label={`Quitar a ${confirmingRemove.tag}`}
@@ -56,36 +85,41 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
           </ConfirmPanel>
         )}
 
-        <ChildBuilder
-          key={editing?.id ?? `new-${childList.length}`}
-          usedEmojis={usedEmojis}
-          usedColors={usedColors}
-          editing={editing}
-          onAdd={(draft) => onUpdate(addChild({ project, draft }))}
-          onSave={(child) => {
-            if (onUpdate(saveChild({ project, child }))) {
-              setEditingId(null);
-            }
-          }}
-          onRemove={(childId) => {
-            if (hasBook(childId)) {
-              const child = childList.find((c) => c.id === childId) ?? null;
-              setConfirmingRemove(child);
-              return;
-            }
-            remove(childId);
-          }}
-          onCancel={() => setEditingId(null)}
-        />
+        {builder.status === "closed" && (
+          <button
+            type="button"
+            className={styles.addTrigger}
+            onClick={() => setBuilder({ status: "adding" })}
+          >
+            <span aria-hidden="true">+</span> Añadir un peque
+          </button>
+        )}
 
-        <Roster
-          childList={childList}
-          editingId={editingId}
-          onSelect={(childId) => {
-            setConfirmingRemove(null);
-            setEditingId((prev) => (prev === childId ? null : childId));
-          }}
-        />
+        {builder.status !== "closed" && (
+          <ChildBuilder
+            key={editing?.id ?? `new-${childList.length}`}
+            usedEmojis={usedEmojis}
+            usedColors={usedColors}
+            editing={editing}
+            // Stays in "adding": the setup burst is tap-emoji, tap-añadir,
+            // twenty times over, and reopening the builder per child doubles it.
+            onAdd={(draft) => onUpdate(addChild({ project, draft }))}
+            onSave={(child) => {
+              if (onUpdate(saveChild({ project, child }))) {
+                close();
+              }
+            }}
+            onRemove={(childId) => {
+              if (hasBook(childId)) {
+                const child = childList.find((c) => c.id === childId) ?? null;
+                setConfirmingRemove(child);
+                return;
+              }
+              remove(childId);
+            }}
+            onCancel={close}
+          />
+        )}
       </main>
     </div>
   );

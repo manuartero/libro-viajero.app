@@ -18,3 +18,11 @@ if (typeof HTMLDialogElement.prototype.showModal !== "function") {
     this.dispatchEvent(new Event("close"));
   };
 }
+
+// jsdom implements no layout, so Element.scrollIntoView does not exist and
+// calling it throws. The classroom builder calls it on open; a no-op is enough
+// to let the component render. Where it actually scrolls to is, like the
+// dialog behaviour above, a real-browser check.
+if (typeof Element.prototype.scrollIntoView !== "function") {
+  Element.prototype.scrollIntoView = () => {};
+}
