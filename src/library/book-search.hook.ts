@@ -53,5 +53,12 @@ export function useBookSearch() {
     }
   };
 
-  return { search, runSearch };
+  // Picking a result ends the search: the list has done its job, and a stale
+  // list under a book that is already on the shelf invites a second tap.
+  const clearSearch = () => {
+    abortRef.current?.abort();
+    setSearch({ status: "idle" });
+  };
+
+  return { search, runSearch, clearSearch };
 }

@@ -5,7 +5,9 @@ import { type SearchState, useBookSearch } from "src/library/book-search.hook";
 import styles from "./book-search.module.css";
 
 type BookSearchProps = {
-  onAdd: (draft: BookDraft) => void;
+  // Returns whether the book was saved. On false the search results and the
+  // manual form stay as they are, so the tap stays retryable.
+  onAdd: (draft: BookDraft) => boolean;
 };
 
 // After a search that found nothing, the manual route is the obvious next
@@ -26,10 +28,24 @@ function resultLabel(draft: BookDraft) {
 
 export function BookSearch({ onAdd }: BookSearchProps) {
   const [query, setQuery] = useState("");
+  const [addedTitle, setAddedTitle] = useState<string | null>(null);
   const [manualOpen, setManualOpen] = useState(false);
   const [manualTitle, setManualTitle] = useState("");
   const [manualAuthor, setManualAuthor] = useState("");
-  const { search, runSearch } = useBookSearch();
+  const { search, runSearch, clearSearch } = useBookSearch();
+
+  // The shelf below is the real confirmation, but it grows downwards and is
+  // off-screen on a phone once a few books are on it. This line stays until
+  // the next title is typed, so the tap has a visible ending either way.
+  const add = (draft: BookDraft) => {
+    if (!onAdd(draft)) {
+      return false;
+    }
+    setQuery("");
+    clearSearch();
+    setAddedTitle(draft.title);
+    return true;
+  };
 
   const openManual = () => {
     setManualTitle(query.trim());
@@ -43,7 +59,9 @@ export function BookSearch({ onAdd }: BookSearchProps) {
       return;
     }
     const author = manualAuthor.trim();
-    onAdd({ title, author: author.length > 0 ? author : undefined });
+    if (!add({ title, author: author.length > 0 ? author : undefined })) {
+      return;
+    }
     setManualTitle("");
     setManualAuthor("");
     setManualOpen(false);
@@ -55,6 +73,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
         className={styles.form}
         onSubmit={(event) => {
           event.preventDefault();
+          setAddedTitle(null);
           runSearch(query);
         }}
       >
@@ -67,9 +86,11 @@ export function BookSearch({ onAdd }: BookSearchProps) {
             className={styles.input}
             type="search"
             value={query}
-            placeholder="La pequeña oruga glotona"
             autoComplete="off"
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setAddedTitle(null);
+            }}
           />
           <button
             type="submit"
@@ -82,6 +103,12 @@ export function BookSearch({ onAdd }: BookSearchProps) {
           </button>
         </div>
       </form>
+
+      {addedTitle && (
+        <p className={styles.added} role="status">
+          «{addedTitle}» añadido a la estantería
+        </p>
+      )}
 
       {search.status === "searching" && (
         <p className={styles.status} role="status">
@@ -97,7 +124,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
                 type="button"
                 className={styles.result}
                 aria-label={resultLabel(draft)}
-                onClick={() => onAdd(draft)}
+                onClick={() => add(draft)}
               >
                 <BookCover
                   title={draft.title}
