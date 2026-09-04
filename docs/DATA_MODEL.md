@@ -18,13 +18,7 @@ All reads and writes go through `src/services/storage.service.ts`:
 - `getAppData()` — absent, unparseable, or wrong-shaped entries degrade to the empty `AppData`; an unreadable entry is preserved under `libro-viajero:backup-{timestamp}` before being abandoned
 - `saveAppData(data)` — returns `false` (instead of throwing) when the write fails (quota, blocked storage), so callers can tell the teacher
 
----
-
-## Export File
-
-`services/export.service.ts` — `downloadAppData(data)`
-
-"Descargar mis datos" in the dashboard's privacy panel. Writes `libro-viajero-{YYYY-MM-DD}.json` straight from the browser (`Blob` + `<a download>`): the full `AppData`, pretty-printed. Same shape as the storage value, so a future import is just a validated `saveAppData()`.
+`services/export.service.ts` — `downloadAppData(data)` writes `libro-viajero-{YYYY-MM-DD}.json`, the full `AppData` pretty-printed. Same shape as the storage value, so a future import is just a validated `saveAppData()`.
 
 ---
 
@@ -32,21 +26,16 @@ All reads and writes go through `src/services/storage.service.ts`:
 
 **Status**: design only. The shipped behavior is the index-shift placeholder in `src/dashboard/next-week.component.tsx`. The real service (`services/rotation.service.ts`, `suggestNextAssignments({ project, returnedBookIds })`) is tracked as a repo issue.
 
-### Goal
-
-For each book that was returned this week, suggest which child should receive it next week. Ensure no child reads the same book twice, and prioritize children who have been waiting the longest.
-
-### Algorithm
+For each book that was returned this week, suggest which child should receive it next week: no child reads the same book twice, and children who have been waiting longest go first.
 
 1. **Filter eligible books**: only books in `returnedBookIds` (unreturned books keep their current assignment — same child, another week)
 
 2. **For each eligible book**, find the best next child:
    - Exclude the child who had it this week
-   - Build a score for each other child: how many weeks ago did they last have this book? (or ∞ if never)
-   - Pick the child with the highest score (waited longest)
-   - Among ties, pick the child with the fewest total books received this initiative (ensures even distribution)
+   - Score each other child by how many weeks ago they last had this book (∞ if never)
+   - Pick the highest score (waited longest); among ties, the child with the fewest total books received this initiative
 
-3. **Resolve conflicts**: two books might want the same child. Use a greedy assignment with backtracking — assign book-child pairs in order of "urgency" (how overdue the pairing is)
+3. **Resolve conflicts**: two books might want the same child. Greedy assignment with backtracking — assign pairs in order of how overdue the pairing is
 
 4. **Return** an `Assignment[]` for the next week (next Monday as `weekStart`). On confirmation, unreturned books' assignments carry over unchanged alongside the new ones
 
@@ -54,9 +43,8 @@ For each book that was returned this week, suggest which child should receive it
 
 | Case | Handling |
 |------|----------|
-| Child absent (not part of return, not receiving) | Not yet supported in v1; teacher manually handles via swap |
-| New book added mid-initiative | Treated as if all children have been waiting equally long |
-| New child added mid-initiative | Same as new book — equal priority |
+| Child absent (not part of return, not receiving) | Not supported in v1; teacher handles manually via swap |
+| New book or new child added mid-initiative | Treated as if all children have been waiting equally long |
 | Fewer books than children | Some children get no book that week (handled gracefully in UI) |
 
 ---
