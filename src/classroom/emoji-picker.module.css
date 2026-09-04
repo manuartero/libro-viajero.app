@@ -106,10 +106,6 @@
 /* Fade the glyph, not the cell. At 0.45 the whole cell took its 2px --ink
    border down with it, under 3:1 against --paper — and a taken emoji is still
    a tappable control, so its border has to stay legible. */
-.used {
-  position: relative;
-}
-
 .used span {
   opacity: 0.45;
 }
