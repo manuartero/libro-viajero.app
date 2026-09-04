@@ -18,7 +18,7 @@ describe("<BookSearch />", () => {
   });
 
   it("cannot search with a blank query", () => {
-    render(<BookSearch onAdd={() => {}} />);
+    render(<BookSearch onAdd={() => true} />);
 
     expect(
       screen.getByRole<HTMLButtonElement>("button", { name: "Buscar" })
@@ -37,7 +37,7 @@ describe("<BookSearch />", () => {
           ]),
         ),
     );
-    const onAdd = vi.fn();
+    const onAdd = vi.fn(() => true);
     render(<BookSearch onAdd={onAdd} />);
 
     submitSearch("elmer");
@@ -54,9 +54,65 @@ describe("<BookSearch />", () => {
     });
   });
 
+  it("closes the results and confirms where the book went", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          okResponse([{ title: "Elmer", author_name: ["David McKee"] }]),
+        ),
+    );
+    render(<BookSearch onAdd={() => true} />);
+
+    submitSearch("elmer");
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Elmer, David McKee" }),
+    );
+
+    expect(
+      screen.queryByRole("button", { name: "Elmer, David McKee" }),
+    ).toBeNull();
+    expect(screen.getByText("«Elmer» añadido a la estantería")).toBeDefined();
+    expect(
+      screen.getByLabelText<HTMLInputElement>("Busca un libro por título")
+        .value,
+    ).toBe("");
+  });
+
+  it("keeps the confirmation until the next title is typed", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(okResponse([{ title: "Elmer" }])),
+    );
+    render(<BookSearch onAdd={() => true} />);
+
+    submitSearch("elmer");
+    fireEvent.click(await screen.findByRole("button", { name: "Elmer" }));
+    fireEvent.change(screen.getByLabelText("Busca un libro por título"), {
+      target: { value: "g" },
+    });
+
+    expect(screen.queryByText("«Elmer» añadido a la estantería")).toBeNull();
+  });
+
+  it("keeps the results open when the book could not be saved", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(okResponse([{ title: "Elmer" }])),
+    );
+    render(<BookSearch onAdd={() => false} />);
+
+    submitSearch("elmer");
+    fireEvent.click(await screen.findByRole("button", { name: "Elmer" }));
+
+    expect(screen.getByRole("button", { name: "Elmer" })).toBeDefined();
+    expect(screen.queryByText("«Elmer» añadido a la estantería")).toBeNull();
+  });
+
   it("offers manual entry when nothing is found", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(okResponse([])));
-    const onAdd = vi.fn();
+    const onAdd = vi.fn(() => true);
     render(<BookSearch onAdd={onAdd} />);
 
     submitSearch("libro rarísimo");
@@ -86,7 +142,7 @@ describe("<BookSearch />", () => {
       "fetch",
       vi.fn().mockRejectedValue(new TypeError("Failed to fetch")),
     );
-    render(<BookSearch onAdd={() => {}} />);
+    render(<BookSearch onAdd={() => true} />);
 
     submitSearch("elmer");
 
@@ -98,7 +154,7 @@ describe("<BookSearch />", () => {
   });
 
   it("adds a manual book without searching", () => {
-    const onAdd = vi.fn();
+    const onAdd = vi.fn(() => true);
     render(<BookSearch onAdd={onAdd} />);
 
     fireEvent.click(
@@ -116,5 +172,24 @@ describe("<BookSearch />", () => {
       title: "El libro de la abuela",
       author: "Abuela",
     });
+    expect(
+      screen.getByText("«El libro de la abuela» añadido a la estantería"),
+    ).toBeDefined();
+  });
+
+  it("keeps the manual form filled in when the book could not be saved", () => {
+    render(<BookSearch onAdd={() => false} />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "¿No lo encuentras? Añádelo a mano" }),
+    );
+    fireEvent.change(screen.getByLabelText("Título"), {
+      target: { value: "El libro de la abuela" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Añadir libro" }));
+
+    expect(screen.getByLabelText<HTMLInputElement>("Título").value).toBe(
+      "El libro de la abuela",
+    );
   });
 });
