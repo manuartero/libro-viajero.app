@@ -14,3 +14,32 @@
   gap: 1rem;
   padding: 1rem;
 }
+
+/* One more slot at the end of the list: a roster chip's 2px ink border, so it
+   reads as "another peque goes here" rather than as a toolbar. Outlined and
+   not solid on purpose — solid ink is what "Añadir" and "Guardar" mean, and
+   opening a form is not a commit. */
+.addTrigger {
+  /* On a short class it drops to the bottom of the screen, under the thumb,
+     instead of floating mid-page. Collapses to 0 once the builder opens. */
+  margin-top: auto;
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.addTrigger:active {
+  background: var(--paper-dark);
+}

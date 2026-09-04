@@ -1,3 +1,23 @@
+/* The builder is a titled section like the roster above it, so the outline
+   below the h1 is "La lista de clase" then this. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  /* The screen's header is sticky, so scrolling this panel to the top of the
+     scrollport parks its title underneath it. Clearing the header (~64px) plus
+     a little air is the platform's own job — no offset maths in the ref. */
+  scroll-margin-top: 4.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .builder {
   display: flex;
   flex-direction: column;
@@ -68,8 +88,7 @@
   cursor: pointer;
 }
 
-.cancel {
-  grid-column: 1 / -1;
+.leave {
   min-height: 2.75rem;
   border: none;
   border-radius: 0;

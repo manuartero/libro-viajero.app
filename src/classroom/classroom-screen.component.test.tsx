@@ -18,6 +18,7 @@ describe("<ClassroomScreen />", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
+    fireEvent.click(screen.getByRole("button", { name: "Añadir un peque" }));
     fireEvent.click(screen.getByRole("radio", { name: "Zorro" }));
     fireEvent.click(
       screen.getByRole("button", { name: "Añadir peque a la clase" }),
@@ -27,6 +28,39 @@ describe("<ClassroomScreen />", () => {
     const next = onUpdate.mock.calls[0][0];
     expect(next.children).toHaveLength(2);
     expect(next.children[1].tag).toBe("Zorro");
+  });
+
+  it("shows the class list, not the form, on arrival", () => {
+    render(<ClassroomScreen project={project()} onUpdate={() => true} />);
+
+    expect(screen.getByRole("button", { name: "Rana, editar" })).toBeDefined();
+    expect(screen.queryAllByRole("radio")).toHaveLength(0);
+  });
+
+  it("stays open for the next child after an add", () => {
+    const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
+    render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Añadir un peque" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Zorro" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Añadir peque a la clase" }),
+    );
+
+    // Two taps per child, twenty children: reopening the builder for each one
+    // is the whole reason this is a disclosure and not a dialog.
+    expect(
+      screen.getByRole("button", { name: "Añadir peque a la clase" }),
+    ).toBeDefined();
+  });
+
+  it("shuts the builder from Listo", () => {
+    render(<ClassroomScreen project={project()} onUpdate={() => true} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Añadir un peque" }));
+    fireEvent.click(screen.getByRole("button", { name: "Listo" }));
+
+    expect(screen.queryAllByRole("radio")).toHaveLength(0);
   });
 
   it("edits an existing child", () => {

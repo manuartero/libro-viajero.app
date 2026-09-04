@@ -39,6 +39,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 
 - The school year is stamped from the calendar (`currentSchoolYear()`, July onwards counts as the upcoming course), never chosen by the teacher.
 - The project starts empty and the dashboard's empty states drive first-time setup: añadir peques → añadir libros → repartir libros.
+- The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child.
 - The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
 

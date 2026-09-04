@@ -10,6 +10,7 @@ const createClass = (name: string) => {
 };
 
 const addChild = (emojiName: string) => {
+  fireEvent.click(screen.getByRole("button", { name: "Añadir un peque" }));
   fireEvent.click(screen.getByRole("radio", { name: emojiName }));
   fireEvent.click(
     screen.getByRole("button", { name: "Añadir peque a la clase" }),
@@ -94,6 +95,25 @@ describe("<App />", () => {
     const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects[0].children).toHaveLength(1);
     expect(stored.projects[0].children[0].tag).toBe("Rana");
+  });
+
+  it("adds several peques without reopening the builder", () => {
+    render(<App />);
+    createClass("Los Caracoles");
+    fireEvent.click(screen.getByRole("button", { name: "Clase" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Añadir un peque" }));
+    for (const emojiName of ["Rana", "Zorro", "Panda"]) {
+      fireEvent.click(screen.getByRole("radio", { name: emojiName }));
+      fireEvent.click(
+        screen.getByRole("button", { name: "Añadir peque a la clase" }),
+      );
+    }
+
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
+    expect(
+      stored.projects[0].children.map((c: { tag: string }) => c.tag),
+    ).toEqual(["Rana", "Zorro", "Panda"]);
   });
 
   it("distributes books from the dashboard and returns to the check-in", () => {

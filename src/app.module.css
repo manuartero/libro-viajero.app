@@ -14,6 +14,15 @@
   flex-direction: column;
 }
 
+/* The classroom builder scrolls itself into view when it opens. CSS owns the
+   motion — scrollIntoView({ block: "start" }) states the intent and nothing
+   else — so honouring reduced motion costs no JS and no matchMedia. */
+@media (prefers-reduced-motion: no-preference) {
+  .content {
+    scroll-behavior: smooth;
+  }
+}
+
 .saveError {
   position: sticky;
   top: 0;

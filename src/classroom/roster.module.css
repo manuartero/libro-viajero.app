@@ -1,6 +1,5 @@
 .roster {
-  border-top: 1px solid var(--ink);
-  padding-top: 0.75rem;
+  min-width: 0;
 }
 
 .title {
