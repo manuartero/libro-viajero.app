@@ -5,13 +5,17 @@
   min-width: 0;
 }
 
-.pickerLegend {
+/* A real legend, off screen. Not display:none — that would take the group's
+   accessible name with it, which is the whole reason the legend survives. */
+.legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   padding: 0;
-  margin-bottom: 0.625rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .colorRow {

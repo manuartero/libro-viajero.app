@@ -62,25 +62,15 @@ describe("<EmojiPicker />", () => {
     expect(onPick).toHaveBeenCalledWith({ emoji: "🦊", name: "Zorro" });
   });
 
-  it("opens on the panel holding the chosen emoji", () => {
-    renderPicker({ selectedEmoji: "🌻" });
-
-    expect(
-      screen.getByRole("radio", { name: "Girasol", checked: true }),
-    ).toBeDefined();
-    expect(screen.queryByRole("radio", { name: "Rana" })).toBeNull();
-  });
-
-  it("cycles panels with the next arrow and wraps around", () => {
+  // Which row an emoji lands on, and whether opening on a chosen one scrolls
+  // the tray to it, are layout — jsdom has none, and setup.ts stubs
+  // scrollIntoView to a no-op. Checked in a real browser instead.
+  it("puts every emoji in one tray, with no panel to page through", () => {
     renderPicker();
 
-    expect(screen.queryByRole("radio", { name: "Girasol" })).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
-    expect(screen.getByRole("radio", { name: "Girasol" })).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
-    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
     expect(screen.getByRole("radio", { name: "Rana" })).toBeDefined();
+    expect(screen.getByRole("radio", { name: "Girasol" })).toBeDefined();
+    expect(screen.getByRole("radio", { name: "Cohete" })).toBeDefined();
+    expect(screen.queryByRole("button")).toBeNull();
   });
 });

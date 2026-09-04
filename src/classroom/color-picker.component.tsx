@@ -22,7 +22,11 @@ export function ColorPicker({ selected, onPick }: ColorPickerProps) {
 
   return (
     <fieldset className={styles.picker}>
-      <legend className={styles.pickerLegend}>Elige un color</legend>
+      {/* Off screen, not gone: the avatar above already previews the colour,
+          and the swatches are the one thing on this screen that could not be
+          anything else. The real <legend> stays so the radio group keeps its
+          accessible name. */}
+      <legend className={styles.legend}>Elige un color</legend>
       <div className={styles.colorRow}>
         {PALETTE.map((entry) => (
           <input

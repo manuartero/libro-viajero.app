@@ -128,31 +128,6 @@ describe("<ChildBuilder />", () => {
     });
   });
 
-  it("cycles emoji panels with the next arrow and wraps around", () => {
-    render(
-      <ChildBuilder
-        usedEmojis={[]}
-        usedColors={[]}
-        editing={null}
-        {...noHandlers}
-      />,
-    );
-
-    expect(screen.getByText("Animales")).toBeDefined();
-    expect(screen.queryByRole("radio", { name: "Girasol" })).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
-    expect(screen.getByText("Naturaleza")).toBeDefined();
-    fireEvent.click(screen.getByRole("radio", { name: "Girasol" }));
-    expect(screen.getByText("Girasol")).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
-    expect(screen.getByText("Objetos")).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Más emojis" }));
-    expect(screen.getByText("Animales")).toBeDefined();
-  });
-
   it("truncates the nickname to 20 characters on submit", () => {
     const onAdd = vi.fn();
     render(
@@ -236,7 +211,7 @@ describe("<ChildBuilder />", () => {
     expect(screen.getByRole("radio", { name: "Rana (en uso)" })).toBeDefined();
   });
 
-  it("opens on the panel of the edited child's emoji, shown as selected", () => {
+  it("hands the edited child's emoji to the picker as the selected one", () => {
     render(
       <ChildBuilder
         usedEmojis={[]}
@@ -246,7 +221,6 @@ describe("<ChildBuilder />", () => {
       />,
     );
 
-    expect(screen.getByText("Naturaleza")).toBeDefined();
     expect(
       screen.getByRole("radio", { name: "Girasol", checked: true }),
     ).toBeDefined();
