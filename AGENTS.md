@@ -16,7 +16,7 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 ### Language
 
-- **UI copy is Spanish; docs, code, and comments are English.** Parent-facing strings (e.g. the reminder message) are Spanish too.
+- **UI copy is Spanish; docs, code, and comments are English.**
 
 ### Design language ("raw newsprint")
 
