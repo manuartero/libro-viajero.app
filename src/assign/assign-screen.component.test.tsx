@@ -37,7 +37,10 @@ describe("<AssignScreen />", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
     expect(onConfirm).toHaveBeenCalledTimes(1);
-    expect(onConfirm.mock.calls[0][0]).toEqual({ c1: "b1", c2: "b2" });
+    expect(onConfirm.mock.calls[0][0]).toEqual({
+      pairs: { c1: "b1", c2: "b2" },
+      loanWeeks: 1,
+    });
   });
 
   it("seeds from the live assignments so re-entering only adjusts", () => {
@@ -63,7 +66,10 @@ describe("<AssignScreen />", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
-    expect(onConfirm.mock.calls[0][0]).toEqual({ c1: "b1", c2: "b2" });
+    expect(onConfirm.mock.calls[0][0]).toEqual({
+      pairs: { c1: "b1", c2: "b2" },
+      loanWeeks: 1,
+    });
   });
 
   it("assigns the tapped book to an explicitly selected child", () => {
@@ -88,7 +94,7 @@ describe("<AssignScreen />", () => {
     ).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
-    expect(onConfirm.mock.calls[0][0]).toEqual({ c2: "b1" });
+    expect(onConfirm.mock.calls[0][0].pairs).toEqual({ c2: "b1" });
   });
 
   it("allows saving a partial reparto but not an empty one", () => {
@@ -108,7 +114,7 @@ describe("<AssignScreen />", () => {
     expect(save.hasAttribute("disabled")).toBe(false);
 
     fireEvent.click(save);
-    expect(Object.keys(onConfirm.mock.calls[0][0])).toHaveLength(1);
+    expect(Object.keys(onConfirm.mock.calls[0][0].pairs)).toHaveLength(1);
   });
 
   it("unassigns a child's book back to the tray", () => {
@@ -132,6 +138,38 @@ describe("<AssignScreen />", () => {
     expect(
       screen.getByRole("button", { name: "Elmer, asignar" }),
     ).toBeDefined();
+  });
+
+  it("saves the loan length chosen for the whole class with the reparto", () => {
+    const onConfirm = vi.fn();
+    render(
+      <AssignScreen
+        project={project()}
+        onConfirm={onConfirm}
+        onBack={() => {}}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("radio", { name: "2 semanas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
+
+    expect(onConfirm.mock.calls[0][0].loanWeeks).toBe(2);
+  });
+
+  it("starts from the loan length the class already runs on", () => {
+    render(
+      <AssignScreen
+        project={project({ loanWeeks: 2 })}
+        onConfirm={() => {}}
+        onBack={() => {}}
+      />,
+    );
+
+    expect(
+      (screen.getByRole("radio", { name: "2 semanas" }) as HTMLInputElement)
+        .checked,
+    ).toBe(true);
   });
 
   it("goes back without saving", () => {

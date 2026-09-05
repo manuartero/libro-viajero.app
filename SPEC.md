@@ -42,6 +42,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 - The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child.
 - The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
+- A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/project/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
 
 |   ID    |                                                Story                                                 | Status |
 | ------- | ---------------------------------------------------------------------------------------------------- | ------ |
@@ -52,16 +53,17 @@ Decisions worth knowing, since they are not obvious from the stories:
 | SETUP-5 | As a teacher, the app automatically finds and displays the book cover when I search                  | ✅     |
 | SETUP-6 | As a teacher, I can distribute books to children from the dashboard ("Repartir libros"), at the start and mid-course | ✅     |
 | SETUP-7 | As a teacher, I can run the class with fewer books than children — the children without a book wait for the next rotation | ✅     |
+| SETUP-8 | As a teacher, I can choose whether the class keeps a book one week or two, and the dashboard judges returns by it | ✅     |
 
 ### Friday Check-in (Dashboard)
 
 |   ID    |                                             Story                                              | Status |
 | ------- | ---------------------------------------------------------------------------------------------- | ------ |
-| DASH-1  | As a teacher, I can open the dashboard and see all children with their current book assignment | ✅     |
+| DASH-1  | As a teacher, I can open the dashboard and see all children with their current book assignment, its cover, and how long they have had it — grouped by whether it is late, due this Friday, or still out | ✅     |
 | DASH-2  | As a teacher, I can tap a child's avatar to mark that they returned their book                 | ✅     |
 | DASH-3  | As a teacher, I can tap again to undo a return mark                                            | ✅     |
 | DASH-4  | As a teacher, I can see a live count of how many books have been returned                      | ✅     |
-| DASH-5  | As a teacher, I can see a summary of which children did NOT return their book                  | ✅     |
+| DASH-5  | As a teacher, I can see a summary of which children did NOT return a book that was due, and when the rest are due | ✅     |
 | DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in issue #5 |
 | DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
 | DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | ❌     |

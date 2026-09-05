@@ -124,6 +124,7 @@ describe("<App />", () => {
     // The repartir flow is full-screen: the tab bar is gone.
     expect(screen.queryByRole("navigation")).toBeNull();
 
+    fireEvent.click(screen.getByRole("radio", { name: "2 semanas" }));
     fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
@@ -131,6 +132,7 @@ describe("<App />", () => {
     expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
     const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
     expect(stored.projects[0].currentAssignments).toHaveLength(1);
+    expect(stored.projects[0].loanWeeks).toBe(2);
   });
 
   it("keeps the reparto mounted when saving fails, so the taps survive a retry", () => {
@@ -175,13 +177,20 @@ describe("<App />", () => {
     fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
+    // The book went out today, so Rana is still reading and nothing is due:
+    // the tap still marks the card, it just counts towards no Friday.
+    const pressed = () =>
+      screen
+        .getByRole("button", { name: "Rana — Elmer" })
+        .getAttribute("aria-pressed");
+    expect(screen.queryByRole("status")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Rana — Elmer" }));
-    expect(screen.getByRole("status").textContent).toContain("1/1");
+    expect(pressed()).toBe("true");
 
     fireEvent.click(screen.getByRole("button", { name: "Clase" }));
     fireEvent.click(screen.getByRole("button", { name: "Semana" }));
 
-    expect(screen.getByRole("status").textContent).toContain("1/1");
+    expect(pressed()).toBe("true");
   });
 
   it("keeps the create screen mounted and warns when saving fails", () => {

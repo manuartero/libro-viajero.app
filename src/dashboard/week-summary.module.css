@@ -1,0 +1,91 @@
+.panel {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.lead {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.allBack {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--returned);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-top: 2px solid var(--ink);
+}
+
+.who {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.bookTitle {
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.alarm {
+  color: var(--missing);
+  font-weight: 700;
+}
+
+.upcoming {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.upcomingRow {
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}

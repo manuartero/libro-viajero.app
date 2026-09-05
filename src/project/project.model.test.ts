@@ -1,4 +1,3 @@
-import { mondayOf } from "src/lib/week";
 import type { Project } from "src/project/project.model";
 import {
   addBook,
@@ -7,6 +6,7 @@ import {
   removeBook,
   removeChild,
   saveChild,
+  setLoanWeeks,
 } from "src/project/project.model";
 import { describe, expect, it } from "vitest";
 
@@ -89,10 +89,13 @@ describe("addBook()", () => {
 });
 
 describe("distributeBooks()", () => {
-  it("keeps the weekStart of an unchanged pair and stamps Monday on a new one", () => {
+  const friday = new Date(2026, 8, 4); // Fri 4 Sep, week of Mon 31 Aug
+
+  it("keeps an unchanged pair as it was and dates a new one from today", () => {
     const next = distributeBooks({
       project: baseProject(),
       pairs: { c1: "b1", c2: "b2" },
+      today: friday,
     });
     expect(next.currentAssignments).toEqual([
       { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
@@ -102,10 +105,21 @@ describe("distributeBooks()", () => {
     const swapped = distributeBooks({
       project: baseProject(),
       pairs: { c1: "b2", c2: "b1" },
+      today: friday,
     });
     expect(swapped.currentAssignments).toEqual([
-      { childId: "c1", bookId: "b2", weekStart: mondayOf() },
-      { childId: "c2", bookId: "b1", weekStart: mondayOf() },
+      {
+        childId: "c1",
+        bookId: "b2",
+        weekStart: "2026-08-31",
+        since: "2026-09-04",
+      },
+      {
+        childId: "c2",
+        bookId: "b1",
+        weekStart: "2026-08-31",
+        since: "2026-09-04",
+      },
     ]);
   });
 
@@ -113,9 +127,15 @@ describe("distributeBooks()", () => {
     const next = distributeBooks({
       project: baseProject(),
       pairs: { c2: "b1" },
+      today: friday,
     });
     expect(next.currentAssignments).toEqual([
-      { childId: "c2", bookId: "b1", weekStart: mondayOf() },
+      {
+        childId: "c2",
+        bookId: "b1",
+        weekStart: "2026-08-31",
+        since: "2026-09-04",
+      },
     ]);
   });
 
@@ -142,6 +162,15 @@ describe("distributeBooks()", () => {
     const next = distributeBooks({ project, pairs: { c1: "b2" } });
     expect(next.history).toBe(project.history);
     expect(project.currentAssignments).toHaveLength(2);
+  });
+});
+
+describe("setLoanWeeks()", () => {
+  it("records the class-wide loan length and nothing else", () => {
+    const next = setLoanWeeks({ project: baseProject(), loanWeeks: 2 });
+
+    expect(next.loanWeeks).toBe(2);
+    expect(next.currentAssignments).toEqual(baseProject().currentAssignments);
   });
 });
 
