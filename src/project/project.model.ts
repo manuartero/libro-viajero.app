@@ -1,12 +1,17 @@
 import type { Book, BookDraft } from "src/book/book.model";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { newId } from "src/lib/id";
-import { mondayOf } from "src/lib/week";
+import { isoDate, mondayOf } from "src/lib/week";
+import type { LoanWeeks } from "src/project/loan.model";
 
 export type Assignment = {
   childId: string;
   bookId: string;
   weekStart: string; // ISO date of that week's Monday
+  // ISO date of the day the book actually went home, for "4 días en casa".
+  // weekStart is the rotation's key and is Monday-normalised, so it can be
+  // up to six days early. Missing on assignments saved before it existed.
+  since?: string;
 };
 
 // A reparto in progress: childId -> bookId, before it becomes assignments.
@@ -21,13 +26,6 @@ export function pairsFrom(assignments: readonly Assignment[]): AssignmentPairs {
   }
   return pairs;
 }
-
-// A child paired with the book they took home and have not returned. `book`
-// is optional because an assignment can outlive the book it points at.
-export type MissingBook = {
-  child: Child;
-  book: Book | undefined;
-};
 
 export type WeeklySession = {
   weekStart: string;
@@ -47,6 +45,10 @@ export type Project = {
   // books rotate.
   currentAssignments: Assignment[];
   history: WeeklySession[]; // past sessions, ordered oldest → newest
+  // How many Fridays a book stays out, for every child alike. Optional
+  // because projects saved before it existed have none; read it through
+  // loanWeeksOf(), never directly.
+  loanWeeks?: LoanWeeks;
 };
 
 export type AppData = {
@@ -112,21 +114,20 @@ export function addBook({
 // Replaces currentAssignments from a childId → bookId mapping (a reparto).
 // Guarantees the assignment invariants regardless of where `pairs` came from:
 // only live children and books, one book per child and one child per book
-// (first child in class order wins), and an unchanged pair keeps its
-// weekStart so rotation scoring stays honest — a new or changed pair starts
-// counting from this week's Monday.
+// (first child in class order wins), and an unchanged pair keeps its dates
+// so rotation scoring and "días en casa" stay honest — a new or changed pair
+// starts counting from today.
 export function distributeBooks({
   project,
   pairs,
+  today = new Date(),
 }: {
   project: Project;
   pairs: AssignmentPairs;
+  today?: Date;
 }): Project {
-  const weekStartOf = new Map(
-    project.currentAssignments.map((a) => [
-      `${a.childId}:${a.bookId}`,
-      a.weekStart,
-    ]),
+  const existing = new Map(
+    project.currentAssignments.map((a) => [`${a.childId}:${a.bookId}`, a]),
   );
   const liveBookIds = new Set(project.books.map((b) => b.id));
   const takenBookIds = new Set<string>();
@@ -136,15 +137,30 @@ export function distributeBooks({
       return [];
     }
     takenBookIds.add(bookId);
+    const kept = existing.get(`${child.id}:${bookId}`);
+    if (kept) {
+      return [kept];
+    }
     return [
       {
         childId: child.id,
         bookId,
-        weekStart: weekStartOf.get(`${child.id}:${bookId}`) ?? mondayOf(),
+        weekStart: mondayOf(today),
+        since: isoDate(today),
       },
     ];
   });
   return { ...project, currentAssignments };
+}
+
+export function setLoanWeeks({
+  project,
+  loanWeeks,
+}: {
+  project: Project;
+  loanWeeks: LoanWeeks;
+}): Project {
+  return { ...project, loanWeeks };
 }
 
 export function removeBook({

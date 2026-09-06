@@ -6,7 +6,7 @@ import { LibraryScreen } from "src/library/library-screen.component";
 import type { View } from "src/navigation/navigation.model";
 import { TabBar } from "src/navigation/tab-bar.component";
 import { useAppData } from "src/project/app-data.hook";
-import { distributeBooks } from "src/project/project.model";
+import { distributeBooks, setLoanWeeks } from "src/project/project.model";
 import { downloadAppData } from "src/services/export.service";
 import { CreateClass } from "src/setup/create-class.component";
 import styles from "./app.module.css";
@@ -70,14 +70,14 @@ export function App() {
         {view === "repartir" && (
           <AssignScreen
             project={activeProject}
-            onConfirm={(pairs) => {
+            onConfirm={({ pairs, loanWeeks }) => {
               // Leave the reparto only when it actually persisted; on a
               // failed save the flow stays mounted so no tap is lost.
-              if (
-                updateProject(
-                  distributeBooks({ project: activeProject, pairs }),
-                )
-              ) {
+              const next = setLoanWeeks({
+                project: distributeBooks({ project: activeProject, pairs }),
+                loanWeeks,
+              });
+              if (updateProject(next)) {
                 setView("semana");
               }
             }}

@@ -1,14 +1,23 @@
-import { useId } from "react";
+import { useId, useState } from "react";
+import { type LoanWeeks, loanWeeksOf } from "src/project/loan.model";
 import type { AssignmentPairs, Project } from "src/project/project.model";
 import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./assign-screen.module.css";
 import { useAssignmentDraft } from "./assignment-draft.hook";
 import { AssignmentRow } from "./assignment-row.component";
 import { BookTray } from "./book-tray.component";
+import { LoanWeeksPicker } from "./loan-weeks-picker.component";
+
+// A reparto is the pairs plus the class-wide loan length, saved together:
+// the loan length is asked here because handing books out is when it matters.
+export type Reparto = {
+  pairs: AssignmentPairs;
+  loanWeeks: LoanWeeks;
+};
 
 type AssignScreenProps = {
   project: Project;
-  onConfirm: (pairs: AssignmentPairs) => void;
+  onConfirm: (reparto: Reparto) => void;
   onBack: () => void;
 };
 
@@ -19,6 +28,7 @@ export function AssignScreen({
 }: AssignScreenProps) {
   const childList = project.children;
   const titleId = useId();
+  const [loanWeeks, setLoanWeeks] = useState(() => loanWeeksOf(project));
 
   const {
     pairs,
@@ -59,6 +69,8 @@ export function AssignScreen({
       />
 
       <main className={styles.main}>
+        <LoanWeeksPicker value={loanWeeks} onChange={setLoanWeeks} />
+
         <BookTray books={trayBooks} onAssign={assignToActive} />
 
         <section className={styles.assignments} aria-labelledby={titleId}>
@@ -85,7 +97,7 @@ export function AssignScreen({
           type="button"
           className={styles.save}
           disabled={assignedCount === 0}
-          onClick={() => onConfirm(pairs)}
+          onClick={() => onConfirm({ pairs, loanWeeks })}
         >
           Guardar reparto
         </button>

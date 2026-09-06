@@ -1,23 +1,29 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ChildCard } from "src/dashboard/child-card.component";
+import type { Loan } from "src/project/loan.model";
 import { describe, expect, it, vi } from "vitest";
 
 const child = { id: "c1", tag: "Verde", emoji: "🐸", color: "#8ac926" };
 const book = { id: "b1", title: "La oruga glotona" };
+const loan: Loan = { status: "due", dueFriday: "2026-09-11", daysAtHome: 4 };
 
 describe("<ChildCard />", () => {
-  it("exposes the child and their book as the accessible name", () => {
+  it("names the card by child and book, and describes it by time at home", () => {
     render(
       <ChildCard
         child={child}
         book={book}
+        loan={loan}
         returned={false}
         onToggle={() => {}}
       />,
     );
 
     expect(
-      screen.getByRole("button", { name: "Verde — La oruga glotona" }),
+      screen.getByRole("button", {
+        name: "Verde — La oruga glotona",
+        description: "4 días en casa",
+      }),
     ).toBeDefined();
   });
 
@@ -27,6 +33,7 @@ describe("<ChildCard />", () => {
       <ChildCard
         child={child}
         book={book}
+        loan={loan}
         returned={false}
         onToggle={onToggle}
       />,
@@ -37,20 +44,21 @@ describe("<ChildCard />", () => {
     expect(onToggle).toHaveBeenCalledWith("c1");
   });
 
-  it("marks the returned state via aria-pressed", () => {
+  it("marks the returned state via aria-pressed and says so", () => {
     render(
       <ChildCard
         child={child}
         book={book}
+        loan={loan}
         returned={true}
         onToggle={() => {}}
       />,
     );
 
-    expect(
-      screen
-        .getByRole("button", { name: /Verde/ })
-        .getAttribute("aria-pressed"),
-    ).toBe("true");
+    const card = screen.getByRole("button", {
+      name: /Verde/,
+      description: "devuelto",
+    });
+    expect(card.getAttribute("aria-pressed")).toBe("true");
   });
 });
