@@ -60,21 +60,21 @@ Decisions worth knowing, since they are not obvious from the stories:
 |   ID    |                                             Story                                              | Status |
 | ------- | ---------------------------------------------------------------------------------------------- | ------ |
 | DASH-1  | As a teacher, I can open the dashboard and see all children with their current book assignment, its cover, and how long they have had it — grouped by whether it is late, due this Friday, or still out | ✅     |
-| DASH-2  | As a teacher, I can tap a child's avatar to mark that they returned their book                 | ✅     |
+| DASH-2  | As a teacher, I can tap a child's avatar to mark that they returned their book, and it is saved on the spot — on time or late with one tap, early (the book is not due yet) after a confirm | ✅     |
 | DASH-3  | As a teacher, I can tap again to undo a return mark                                            | ✅     |
 | DASH-4  | As a teacher, I can see a live count of how many books have been returned                      | ✅     |
 | DASH-5  | As a teacher, I can see a summary of which children did NOT return a book that was due, and when the rest are due | ✅     |
 | DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in issue #5 |
 | DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
-| DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | ❌     |
-| DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | 🚧 modeled (invariant in `src/project/project.model.ts`), pending DASH-9 |
+| DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | dropped — a return saves itself (DASH-2), and the reparto (SETUP-6) is what moves the books on |
+| DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | ✅ the reparto seeds only from books still out; a returned one waits on the tray |
 
 ### History
 
-`Project.history` is modeled but only ever written as `[]` until DASH-9 lands. The one history view that exists reads it anyway: tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/project/loan-log.model.ts`), which folds the confirmed sessions and the live assignment into one dated line per book. Today that is the current book alone; it fills in on its own once sessions are confirmed. The edit form moved behind the card's pencil.
+There is no weekly session: a loan is the unit. Tapping a card writes `returnedOn` on the live assignment, and the next reparto closes every returned or replaced assignment into `Project.history` (`distributeBooks()` in `src/project/project.model.ts`), as does removing a child or a book. Tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/project/loan-log.model.ts`): one dated line per book, from history plus the live assignment. The edit form is behind the card's pencil.
 
 |   ID   |                                Story                                | Status |
 | ------ | ------------------------------------------------------------------- | ------ |
 | HIST-1 | As a teacher, I can see a log of all past weekly sessions           | ❌     |
 | HIST-2 | As a teacher, I can see which child had which book in any past week | ❌     |
-| HIST-3 | As a teacher, I can tap a child in the class list and see every book they have taken home, with dates and whether it came back | ✅ (reads `history`, which nothing writes yet) |
+| HIST-3 | As a teacher, I can tap a child in the class list and see every book they have taken home, with dates and whether it came back | ✅     |

@@ -15,7 +15,7 @@ const records: LoanRecord[] = [
     book: { id: "b1", title: "El monstruo de colores" },
     since: "2026-09-04",
     status: "returned",
-    returnedFriday: "2026-09-11",
+    returnedOn: "2026-09-11",
   },
   { book: undefined, since: "2026-08-28", status: "unreturned" },
 ];

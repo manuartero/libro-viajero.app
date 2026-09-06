@@ -3,10 +3,13 @@ import {
   addBook,
   addChild,
   distributeBooks,
+  markReturned,
+  pairsFrom,
   removeBook,
   removeChild,
   saveChild,
   setLoanWeeks,
+  undoReturn,
 } from "src/project/project.model";
 import { describe, expect, it } from "vitest";
 
@@ -25,15 +28,16 @@ const baseProject = (): Project => ({
     { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
     { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
   ],
-  history: [
-    {
-      weekStart: "2026-08-24",
-      returnedChildIds: ["c1"],
-      missedChildIds: ["c2"],
-      assignments: [{ childId: "c1", bookId: "b2", weekStart: "2026-08-24" }],
-    },
-  ],
+  history: [closedLoan],
 });
+
+// Caracol had Elmer the week before and brought it back on the Friday.
+const closedLoan = {
+  childId: "c1",
+  bookId: "b2",
+  weekStart: "2026-08-24",
+  returnedOn: "2026-08-28",
+};
 
 describe("addChild()", () => {
   it("appends the draft with a fresh id", () => {
@@ -69,10 +73,12 @@ describe("removeChild()", () => {
     ]);
   });
 
-  it("leaves history untouched", () => {
-    const project = baseProject();
-    const next = removeChild({ project, childId: "c1" });
-    expect(next.history).toBe(project.history);
+  it("closes their loan into history as one that never came back", () => {
+    const next = removeChild({ project: baseProject(), childId: "c1" });
+    expect(next.history).toEqual([
+      closedLoan,
+      { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+    ]);
   });
 });
 
@@ -157,11 +163,51 @@ describe("distributeBooks()", () => {
     ]);
   });
 
-  it("leaves history and the input project untouched", () => {
+  it("closes every pairing it replaces into history, and leaves the input alone", () => {
     const project = baseProject();
     const next = distributeBooks({ project, pairs: { c1: "b2" } });
-    expect(next.history).toBe(project.history);
+
+    // Zorro's Elmer goes to Caracol, so both old loans end with no return
+    // recorded: Caracol's Grúfalo was dropped, Zorro's Elmer was taken.
+    expect(next.history).toEqual([
+      closedLoan,
+      { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+      { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
+    ]);
     expect(project.currentAssignments).toHaveLength(2);
+    expect(project.history).toHaveLength(1);
+  });
+
+  it("starts a returned book over as a new loan, even with the same child", () => {
+    const project = markReturned({
+      project: baseProject(),
+      childId: "c1",
+      today: friday,
+    });
+    const next = distributeBooks({
+      project,
+      pairs: { c1: "b1", c2: "b2" },
+      today: friday,
+    });
+
+    expect(next.currentAssignments).toEqual([
+      {
+        childId: "c1",
+        bookId: "b1",
+        weekStart: "2026-08-31",
+        since: "2026-09-04",
+      },
+      { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
+    ]);
+    expect(next.history).toEqual([
+      closedLoan,
+      {
+        childId: "c1",
+        bookId: "b1",
+        weekStart: "2026-08-31",
+        returnedOn: "2026-09-04",
+      },
+    ]);
   });
 });
 
@@ -183,9 +229,68 @@ describe("removeBook()", () => {
     ]);
   });
 
-  it("leaves history untouched", () => {
-    const project = baseProject();
+  it("closes its loan into history, keeping a return already recorded", () => {
+    const project = markReturned({
+      project: baseProject(),
+      childId: "c1",
+      today: new Date(2026, 8, 11),
+    });
     const next = removeBook({ project, bookId: "b1" });
-    expect(next.history).toBe(project.history);
+    expect(next.history).toEqual([
+      closedLoan,
+      {
+        childId: "c1",
+        bookId: "b1",
+        weekStart: "2026-08-31",
+        returnedOn: "2026-09-11",
+      },
+    ]);
+  });
+});
+
+describe("markReturned()", () => {
+  it("dates the child's live assignment as returned today", () => {
+    const next = markReturned({
+      project: baseProject(),
+      childId: "c2",
+      today: new Date(2026, 8, 11),
+    });
+
+    expect(next.currentAssignments).toEqual([
+      { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+      {
+        childId: "c2",
+        bookId: "b2",
+        weekStart: "2026-08-31",
+        returnedOn: "2026-09-11",
+      },
+    ]);
+    expect(next.history).toEqual([closedLoan]);
+  });
+});
+
+describe("undoReturn()", () => {
+  it("puts the book back in the child's hands", () => {
+    const returned = markReturned({ project: baseProject(), childId: "c2" });
+    const next = undoReturn({ project: returned, childId: "c2" });
+
+    expect(next.currentAssignments).toEqual(baseProject().currentAssignments);
+    expect(next.currentAssignments[1]).not.toHaveProperty("returnedOn");
+  });
+});
+
+describe("pairsFrom()", () => {
+  it("pairs the books still out and leaves a returned one off", () => {
+    const pairs = pairsFrom([
+      { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+      {
+        childId: "c2",
+        bookId: "b2",
+        weekStart: "2026-08-31",
+        returnedOn: "2026-09-11",
+      },
+    ]);
+
+    expect(pairs).toEqual({ c1: "b1" });
   });
 });

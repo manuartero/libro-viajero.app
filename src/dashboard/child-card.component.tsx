@@ -10,12 +10,11 @@ type ChildCardProps = {
   child: Child;
   book: Book;
   loan: Loan;
-  returned: boolean;
-  onToggle: (childId: string) => void;
+  onToggle: () => void;
 };
 
-function cardClass({ returned, loan }: { returned: boolean; loan: Loan }) {
-  if (returned) {
+function cardClass(loan: Loan) {
+  if (loan.returnedOn) {
     return `${styles.card} ${styles.returned}`;
   }
   if (loan.status === "overdue") {
@@ -24,32 +23,27 @@ function cardClass({ returned, loan }: { returned: boolean; loan: Loan }) {
   return styles.card;
 }
 
-function metaLabel({ returned, loan }: { returned: boolean; loan: Loan }) {
-  if (returned) {
+function metaLabel(loan: Loan) {
+  if (loan.returnedOn) {
     return "devuelto";
   }
   return daysAtHomeLabel(loan.daysAtHome);
 }
 
-// One tap toggles "came back today". The name stays child + book so it reads
-// the same in every state; how long the book has been out is the description.
-export function ChildCard({
-  child,
-  book,
-  loan,
-  returned,
-  onToggle,
-}: ChildCardProps) {
+// One tap toggles "came back". The name stays child + book so it reads the
+// same in every state; how long the book has been out is the description.
+export function ChildCard({ child, book, loan, onToggle }: ChildCardProps) {
   const metaId = useId();
+  const returned = Boolean(loan.returnedOn);
 
   return (
     <button
       type="button"
-      className={cardClass({ returned, loan })}
+      className={cardClass(loan)}
       aria-pressed={returned}
       aria-label={`${child.tag} — ${book.title}`}
       aria-describedby={metaId}
-      onClick={() => onToggle(child.id)}
+      onClick={onToggle}
     >
       {/* The child holding the book: the cover sits behind the avatar's lower
           edge, and the returned stamp lands on the cover — it is the book
@@ -68,7 +62,7 @@ export function ChildCard({
       <span className={styles.tag}>{child.tag}</span>
       <span className={styles.book}>{book.title}</span>
       <span id={metaId} className={styles.meta}>
-        {metaLabel({ returned, loan })}
+        {metaLabel(loan)}
       </span>
     </button>
   );

@@ -157,7 +157,8 @@ describe("<ClassroomScreen />", () => {
     const next = onUpdate.mock.calls[0][0];
     expect(next.children).toHaveLength(0);
     expect(next.currentAssignments).toHaveLength(0);
-    expect(next.history).toBe(withBook.history);
+    // The loan ends with the book still out, on record rather than lost.
+    expect(next.history).toEqual(withBook.currentAssignments);
     expect(screen.queryByText(/tiene un libro en casa/)).toBeNull();
   });
 

@@ -34,27 +34,30 @@ const overdue = { childId: "c3", bookId: "b3", weekStart: "2026-08-24" };
 
 const renderDashboard = ({
   overrides,
-  returnedChildIds = [],
-  onToggleReturned = () => {},
+  onUpdate = () => true,
   onNavigate = () => {},
   onRepartir = () => {},
 }: {
   overrides?: Partial<Project>;
-  returnedChildIds?: string[];
-  onToggleReturned?: (childId: string) => void;
+  onUpdate?: (project: Project) => boolean;
   onNavigate?: (tab: Tab) => void;
   onRepartir?: () => void;
 }) =>
   render(
     <DashboardScreen
       project={project(overrides)}
-      returnedChildIds={returnedChildIds}
-      onToggleReturned={onToggleReturned}
+      onUpdate={onUpdate}
       onNavigate={onNavigate}
       onRepartir={onRepartir}
       onDownloadData={() => {}}
     />,
   );
+
+// The assignments the screen asked to save, from the last onUpdate call.
+const savedAssignments = (onUpdate: ReturnType<typeof vi.fn>) => {
+  const [saved] = onUpdate.mock.lastCall as [Project];
+  return saved.currentAssignments;
+};
 
 describe("<DashboardScreen />", () => {
   beforeEach(() => {
@@ -137,12 +140,62 @@ describe("<DashboardScreen />", () => {
     ).toBeDefined();
   });
 
-  it("counts a return only when the book was expected", () => {
-    const onToggleReturned = vi.fn();
+  it("records a return that was due with one tap, dated today", () => {
+    const onUpdate = vi.fn(() => true);
+    renderDashboard({
+      overrides: { children, books, currentAssignments: [due, overdue] },
+      onUpdate,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana — Elmer" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Búho — La oruga glotona" }),
+    );
+
+    // Late or on time alike: the teacher has the book in hand, no questions.
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+    expect(onUpdate).toHaveBeenCalledTimes(2);
+    expect(savedAssignments(onUpdate)).toContainEqual({
+      ...overdue,
+      returnedOn: "2026-09-11",
+    });
+  });
+
+  it("asks before recording a return that comes early", () => {
+    const onUpdate = vi.fn(() => true);
     renderDashboard({
       overrides: { children, books, currentAssignments: [due, reading] },
-      returnedChildIds: ["c2"],
-      onToggleReturned,
+      onUpdate,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Zorro — El Grúfalo" }));
+
+    const panel = screen.getByRole("alertdialog", {
+      name: "Devolución anticipada de Zorro",
+    });
+    expect(panel.textContent).toContain("hasta el viernes 18 de septiembre");
+    expect(onUpdate).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "No, sigue leyendo" }));
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+    expect(onUpdate).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Zorro — El Grúfalo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sí, lo devuelve" }));
+
+    expect(savedAssignments(onUpdate)).toContainEqual({
+      ...reading,
+      returnedOn: "2026-09-11",
+    });
+  });
+
+  it("counts a return only when the book was expected", () => {
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [due, { ...reading, returnedOn: "2026-09-11" }],
+      },
     });
 
     // Zorro brought the book back early: the card shows it, the count does not.
@@ -152,10 +205,29 @@ describe("<DashboardScreen />", () => {
         .getAttribute("aria-pressed"),
     ).toBe("true");
     expect(screen.getByRole("status").textContent).toContain("0/1");
+  });
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana — Elmer" }));
+  it("undoes a return with a second tap, whatever the section", () => {
+    const onUpdate = vi.fn(() => true);
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { ...due, returnedOn: "2026-09-11" },
+          { ...reading, returnedOn: "2026-09-11" },
+        ],
+      },
+      onUpdate,
+    });
 
-    expect(onToggleReturned).toHaveBeenCalledWith("c1");
+    fireEvent.click(screen.getByRole("button", { name: "Zorro — El Grúfalo" }));
+
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+    expect(savedAssignments(onUpdate)).toEqual([
+      { ...due, returnedOn: "2026-09-11" },
+      reading,
+    ]);
   });
 
   it("shows nothing to check in while everybody is still reading", () => {
@@ -180,8 +252,14 @@ describe("<DashboardScreen />", () => {
 
   it("celebrates once everything expected is back", () => {
     renderDashboard({
-      overrides: { children, books, currentAssignments: [due, overdue] },
-      returnedChildIds: ["c1", "c3"],
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { ...due, returnedOn: "2026-09-11" },
+          { ...overdue, returnedOn: "2026-09-11" },
+        ],
+      },
     });
 
     expect(screen.getByRole("status").textContent).toContain("2/2");
