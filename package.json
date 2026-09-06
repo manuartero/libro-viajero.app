@@ -15,7 +15,9 @@
     "test:integration": "vitest run --project integration",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "blue-ball": "pnpm lint && pnpm test && pnpm build"
+    "blue-ball": "pnpm lint && pnpm test && pnpm build",
+    "test:e2e": "playwright test --config e2e/playwright.config.ts",
+    "test:e2e:docker": "docker compose -f e2e/docker-compose.yml run --rm --build tests"
   },
   "repository": {
     "type": "git",
@@ -34,7 +36,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
+    "@playwright/test": "1.63.0",
     "@testing-library/react": "16.3.2",
+    "@types/node": "22.20.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.4",
