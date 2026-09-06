@@ -37,6 +37,22 @@ No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/
 
 ---
 
+## Releasing
+
+Merging to `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): **blue ball** (`pnpm blue-ball` — lint + test + build) and the **e2e** suite run in parallel, and only if both pass does **deploy (production)** build with the Vercel CLI and promote to production. A red check stops the chain: nothing ships.
+
+Vercel's own auto-deploy for `main` is switched off in [`vercel.json`](vercel.json) (`git.deploymentEnabled`) precisely so that the workflow is the only thing that can ship to production — otherwise Vercel would deploy on push, before the checks had a chance to run. Preview deploys for pull requests are unaffected.
+
+### Versioning
+
+The `version` in `package.json` is bumped by hand, in the PR that earns it. No tooling reads it; it is a label for humans.
+
+### One-time setup
+
+Three secrets under **Settings → Secrets and variables → Actions**, none of which can be committed: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. The two IDs come from `.vercel/project.json` after a local `vercel link`.
+
+---
+
 ## Docs
 
 [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories and what is built) · [AGENTS.md](AGENTS.md) (conventions).

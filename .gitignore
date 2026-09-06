@@ -142,6 +142,5 @@ vite.config.ts.timestamp-*
 # Claude Code worktrees & session files
 .claude/
 
-# Playwright
-e2e/test-results/
-e2e/playwright-report/
+# vercel
+.vercel
