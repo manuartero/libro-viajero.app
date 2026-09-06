@@ -1,5 +1,5 @@
 import { loanLogOf } from "src/project/loan-log.model";
-import type { Project, WeeklySession } from "src/project/project.model";
+import type { Project } from "src/project/project.model";
 import { describe, expect, it } from "vitest";
 
 const elmer = { id: "b1", title: "Elmer" };
@@ -22,19 +22,12 @@ const elmerLoan = {
   weekStart: "2026-08-31",
   since: "2026-09-04",
 };
-
-const session = ({
-  weekStart,
-  returned,
-}: {
-  weekStart: string;
-  returned: boolean;
-}): WeeklySession => ({
-  weekStart,
-  returnedChildIds: returned ? ["c1"] : [],
-  missedChildIds: returned ? [] : ["c1"],
-  assignments: [elmerLoan],
-});
+const monstruoLoan = {
+  childId: "c1",
+  bookId: "b2",
+  weekStart: "2026-09-14",
+  since: "2026-09-18",
+};
 
 describe("loanLogOf()", () => {
   it("is empty for a child who never took a book home", () => {
@@ -52,88 +45,64 @@ describe("loanLogOf()", () => {
     ]);
   });
 
-  it("dates a return by the Friday of the session that checked it in", () => {
-    const log = loanLogOf({
-      project: project({
-        history: [session({ weekStart: "2026-09-07", returned: true })],
-      }),
-      childId: "c1",
-    });
-
-    expect(log).toEqual([
+  it("dates a return by the day the book was checked in, closed or not", () => {
+    const returned = { ...elmerLoan, returnedOn: "2026-09-11" };
+    const expected = [
       {
         book: elmer,
         since: "2026-09-04",
         status: "returned",
-        returnedFriday: "2026-09-11",
+        returnedOn: "2026-09-11",
       },
-    ]);
-  });
+    ];
 
-  it("folds a book carried over unreturned into one loan", () => {
-    const log = loanLogOf({
-      project: project({
-        history: [
-          session({ weekStart: "2026-09-07", returned: false }),
-          session({ weekStart: "2026-09-14", returned: true }),
-        ],
+    // Checked in and waiting for the next reparto...
+    expect(
+      loanLogOf({
+        project: project({ currentAssignments: [returned] }),
+        childId: "c1",
       }),
-      childId: "c1",
-    });
-
-    expect(log).toHaveLength(1);
-    expect(log[0].status).toBe("returned");
-    expect(log[0].returnedFriday).toBe("2026-09-18");
-  });
-
-  it("keeps a book that is still out at the top, however old its loan", () => {
-    const log = loanLogOf({
-      project: project({
-        history: [session({ weekStart: "2026-09-07", returned: false })],
-        currentAssignments: [elmerLoan],
-      }),
-      childId: "c1",
-    });
-
-    expect(log).toEqual([
-      { book: elmer, since: "2026-09-04", status: "reading" },
-    ]);
+    ).toEqual(expected);
+    // ...reads the same once the reparto has closed it.
+    expect(
+      loanLogOf({ project: project({ history: [returned] }), childId: "c1" }),
+    ).toEqual(expected);
   });
 
   it("orders newest first and marks a loan that ended without a return", () => {
-    const monstruoLoan = {
-      childId: "c1",
-      bookId: "b2",
-      weekStart: "2026-09-14",
-      since: "2026-09-18",
-    };
     const log = loanLogOf({
       project: project({
-        history: [
-          session({ weekStart: "2026-09-07", returned: false }),
-          {
-            weekStart: "2026-09-21",
-            returnedChildIds: ["c1"],
-            missedChildIds: [],
-            assignments: [monstruoLoan],
-          },
+        history: [elmerLoan, { ...monstruoLoan, returnedOn: "2026-09-25" }],
+        currentAssignments: [
+          { childId: "c1", bookId: "b1", weekStart: "2026-09-28" },
         ],
       }),
       childId: "c1",
     });
 
-    expect(log.map((record) => record.book?.title)).toEqual([
-      "El monstruo de colores",
-      "Elmer",
+    expect(log.map((record) => [record.book?.title, record.status])).toEqual([
+      ["Elmer", "reading"],
+      ["El monstruo de colores", "returned"],
+      ["Elmer", "unreturned"],
     ]);
-    expect(log[1].status).toBe("unreturned");
+  });
+
+  it("leaves other children's loans out", () => {
+    const log = loanLogOf({
+      project: project({
+        history: [{ ...elmerLoan, childId: "c2", returnedOn: "2026-09-11" }],
+      }),
+      childId: "c1",
+    });
+
+    expect(log).toEqual([]);
   });
 
   it("keeps the line when the book has since left the library", () => {
     const log = loanLogOf({
       project: project({
         books: [],
-        history: [session({ weekStart: "2026-09-07", returned: true })],
+        history: [{ ...elmerLoan, returnedOn: "2026-09-11" }],
       }),
       childId: "c1",
     });

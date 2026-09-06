@@ -170,27 +170,45 @@ describe("<App />", () => {
     expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
   });
 
-  it("keeps check-in progress across tab switches", () => {
-    render(<App />);
+  it("persists a return and hands the book back to the reparto", () => {
+    const { unmount } = render(<App />);
     setupClassWithRanaAndElmer();
     fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
     fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
 
     // The book went out today, so Rana is still reading and nothing is due:
-    // the tap still marks the card, it just counts towards no Friday.
-    const pressed = () =>
-      screen
-        .getByRole("button", { name: "Rana — Elmer" })
-        .getAttribute("aria-pressed");
+    // bringing it back is early, and the app asks before writing it down.
     expect(screen.queryByRole("status")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Rana — Elmer" }));
-    expect(pressed()).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Sí, lo devuelve" }));
+    expect(
+      screen.getByRole("button", { name: "Rana — Elmer", pressed: true }),
+    ).toBeDefined();
 
-    fireEvent.click(screen.getByRole("button", { name: "Clase" }));
-    fireEvent.click(screen.getByRole("button", { name: "Semana" }));
+    // Saved, not held in memory: a fresh boot shows the same card.
+    unmount();
+    render(<App />);
+    expect(
+      screen.getByRole("button", { name: "Rana — Elmer", pressed: true }),
+    ).toBeDefined();
 
-    expect(pressed()).toBe("true");
+    // The next reparto starts with Elmer on the tray and Rana without a book;
+    // saving it closes the returned loan into history.
+    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+    expect(
+      screen.getByRole("button", { name: "Rana, sin libro" }),
+    ).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
+
+    expect(
+      screen.getByRole("button", { name: "Rana — Elmer", pressed: false }),
+    ).toBeDefined();
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
+    expect(stored.projects[0].history).toHaveLength(1);
+    expect(stored.projects[0].history[0].returnedOn).toBeDefined();
+    expect(stored.projects[0].currentAssignments[0].returnedOn).toBeUndefined();
   });
 
   it("keeps the create screen mounted and warns when saving fails", () => {

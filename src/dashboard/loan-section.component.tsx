@@ -7,8 +7,7 @@ import styles from "./loan-section.module.css";
 type LoanSectionProps = {
   status: LoanStatus;
   loans: ChildLoan[];
-  returnedChildIds: ReadonlySet<string>;
-  onToggle: (childId: string) => void;
+  onToggle: (childLoan: ChildLoan) => void;
 };
 
 function sectionTitle({
@@ -46,12 +45,7 @@ function titleClass(status: LoanStatus) {
 // One status, one heading, one grid. The status is the structure of the
 // dashboard: the teacher reads the situation from the outline, so an empty
 // status renders no section rather than a heading over nothing.
-export function LoanSection({
-  status,
-  loans,
-  returnedChildIds,
-  onToggle,
-}: LoanSectionProps) {
+export function LoanSection({ status, loans, onToggle }: LoanSectionProps) {
   const titleId = useId();
 
   if (loans.length === 0) {
@@ -65,14 +59,13 @@ export function LoanSection({
         <span className={styles.count}>{pluralLibros(loans.length)}</span>
       </h2>
       <ul className={styles.grid}>
-        {loans.map(({ child, book, loan }) => (
-          <li key={child.id}>
+        {loans.map((childLoan) => (
+          <li key={childLoan.child.id}>
             <ChildCard
-              child={child}
-              book={book}
-              loan={loan}
-              returned={returnedChildIds.has(child.id)}
-              onToggle={onToggle}
+              child={childLoan.child}
+              book={childLoan.book}
+              loan={childLoan.loan}
+              onToggle={() => onToggle(childLoan)}
             />
           </li>
         ))}

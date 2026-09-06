@@ -10,13 +10,7 @@ const loan: Loan = { status: "due", dueFriday: "2026-09-11", daysAtHome: 4 };
 describe("<ChildCard />", () => {
   it("names the card by child and book, and describes it by time at home", () => {
     render(
-      <ChildCard
-        child={child}
-        book={book}
-        loan={loan}
-        returned={false}
-        onToggle={() => {}}
-      />,
+      <ChildCard child={child} book={book} loan={loan} onToggle={() => {}} />,
     );
 
     expect(
@@ -27,21 +21,15 @@ describe("<ChildCard />", () => {
     ).toBeDefined();
   });
 
-  it("reports the return toggle for the tapped child", () => {
+  it("reports the tap", () => {
     const onToggle = vi.fn();
     render(
-      <ChildCard
-        child={child}
-        book={book}
-        loan={loan}
-        returned={false}
-        onToggle={onToggle}
-      />,
+      <ChildCard child={child} book={book} loan={loan} onToggle={onToggle} />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Verde/ }));
 
-    expect(onToggle).toHaveBeenCalledWith("c1");
+    expect(onToggle).toHaveBeenCalledTimes(1);
   });
 
   it("marks the returned state via aria-pressed and says so", () => {
@@ -49,8 +37,7 @@ describe("<ChildCard />", () => {
       <ChildCard
         child={child}
         book={book}
-        loan={loan}
-        returned={true}
+        loan={{ ...loan, returnedOn: "2026-09-11" }}
         onToggle={() => {}}
       />,
     );

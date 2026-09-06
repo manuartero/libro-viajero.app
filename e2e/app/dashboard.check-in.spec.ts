@@ -11,7 +11,7 @@ import { globalSetup } from "../integration/global.setup";
 globalSetup();
 
 test.describe("dashboard: check-in", () => {
-  test("marks a book as returned with one tap and undoes it with another", async ({
+  test("marks a book as returned with one tap, keeps it across a reload, and undoes it with another", async ({
     page,
     dashboardPage,
   }) => {
@@ -45,6 +45,12 @@ test.describe("dashboard: check-in", () => {
     await expect
       .soft(dashboardPage.returnCounter)
       .toHaveAccessibleName("1 de 1 libros devueltos");
+
+    // The return is saved on the spot, not held until some later confirm.
+    await page.reload();
+    await expect(
+      dashboardPage.loanCard({ tag: "Rana", title: "Elmer", pressed: true }),
+    ).toBeVisible();
 
     await card.click();
     await expect

@@ -44,6 +44,11 @@ export type Loan = {
   // Whole days since the book went home. Older assignments have no `since`
   // and count from their Monday, the closest thing on record.
   daysAtHome: number;
+  // ISO date the book came back, once it has. Status and days are then
+  // judged on that day, not today: a book that came back late stays late,
+  // and one that came back early stays early, however long the card lingers
+  // before the next reparto.
+  returnedOn?: string;
 };
 
 // An assignment resolved for the screen: who, which book, and where the loan
@@ -67,16 +72,20 @@ export function loanOf({
     iso: assignment.weekStart,
     days: 7 * loanWeeks,
   });
+  const judgedOn = assignment.returnedOn
+    ? parseIsoDate(assignment.returnedOn)
+    : today;
   return {
-    status: loanStatusOf({ dueWeekStart, thisWeekStart: mondayOf(today) }),
+    status: loanStatusOf({ dueWeekStart, thisWeekStart: mondayOf(judgedOn) }),
     dueFriday: addDays({ iso: dueWeekStart, days: 4 }),
     daysAtHome: Math.max(
       0,
       daysBetween({
         from: assignment.since ?? assignment.weekStart,
-        to: isoDate(today),
+        to: isoDate(judgedOn),
       }),
     ),
+    returnedOn: assignment.returnedOn,
   };
 }
 

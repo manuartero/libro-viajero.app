@@ -15,18 +15,6 @@ export function App() {
   const { appData, activeProject, saveFailed, createProject, updateProject } =
     useAppData();
   const [view, setView] = useState<View>("semana");
-  // Check-in progress lives here so it survives tab switches: the views
-  // below are mutually exclusive branches and DashboardScreen unmounts on
-  // navigation. Persisting it arrives with "Confirmar semana".
-  const [returnedChildIds, setReturnedChildIds] = useState<string[]>([]);
-
-  const toggleReturned = (childId: string) => {
-    setReturnedChildIds((prev) =>
-      prev.includes(childId)
-        ? prev.filter((id) => id !== childId)
-        : [...prev, childId],
-    );
-  };
 
   const saveError = saveFailed && (
     <p role="alert" className={styles.saveError}>
@@ -51,8 +39,7 @@ export function App() {
         {view === "semana" && (
           <DashboardScreen
             project={activeProject}
-            returnedChildIds={returnedChildIds}
-            onToggleReturned={toggleReturned}
+            onUpdate={updateProject}
             onNavigate={setView}
             onRepartir={() => setView("repartir")}
             onDownloadData={() => downloadAppData(appData)}

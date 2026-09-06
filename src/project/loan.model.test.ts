@@ -52,6 +52,21 @@ describe("loanOf()", () => {
     expect(loan.status).toBe("overdue");
   });
 
+  it("judges a returned book by the day it came back, not by today", () => {
+    const loan = loanOf({
+      assignment: { ...assignment, returnedOn: "2026-09-11" },
+      loanWeeks: 1,
+      today: new Date(2026, 8, 21), // Mon 21 Sep, would be overdue by now
+    });
+
+    expect(loan).toEqual({
+      status: "due",
+      dueFriday: "2026-09-11",
+      daysAtHome: 11,
+      returnedOn: "2026-09-11",
+    });
+  });
+
   it("pushes the due Friday out with a two-week loan", () => {
     const loan = loanOf({
       assignment,

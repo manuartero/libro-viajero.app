@@ -57,8 +57,8 @@ function titleOf(book: Book | undefined) {
 
 // The dates, in one clause: how long the book was out, or since when.
 function datesLabel(record: LoanRecord) {
-  if (record.status === "returned" && record.returnedFriday) {
-    return `del ${shortDateLabel(record.since)} al ${shortDateLabel(record.returnedFriday)}`;
+  if (record.status === "returned" && record.returnedOn) {
+    return `del ${shortDateLabel(record.since)} al ${shortDateLabel(record.returnedOn)}`;
   }
   if (record.status === "reading") {
     return `en casa desde el ${shortDateLabel(record.since)}`;
