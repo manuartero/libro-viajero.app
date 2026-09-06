@@ -1,0 +1,24 @@
+{
+  "numFound": 3,
+  "start": 0,
+  "numFoundExact": true,
+  "docs": [
+    {
+      "title": "Elmer",
+      "author_name": ["David McKee"],
+      "cover_i": 8739161,
+      "isbn": ["9780007131272"]
+    },
+    {
+      "title": "Elmer y el abuelo Eldo",
+      "author_name": ["David McKee"],
+      "cover_i": 10521763
+    },
+    {
+      "title": "Elmer y Rosa",
+      "author_name": ["David McKee"]
+    }
+  ],
+  "q": "",
+  "offset": null
+}

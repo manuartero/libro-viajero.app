@@ -33,3 +33,21 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm test:${{ matrix.suite }}
+
+  e2e:
+    name: test (e2e)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      # Same image and command as `pnpm test:e2e:docker` locally, so CI and
+      # the host run share one browser environment.
+      - run: docker compose -f e2e/docker-compose.yml run --rm --build tests
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7

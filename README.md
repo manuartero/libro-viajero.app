@@ -27,11 +27,13 @@ pnpm dev               # Vite dev server at http://localhost:5173
 pnpm test              # Vitest, both suites
 pnpm test:unit         # modules in isolation (*.test.ts(x))
 pnpm test:integration  # full flows through <App /> (*.integration.test.tsx)
+pnpm test:e2e          # Playwright in a real browser, Open Library mocked (e2e/)
+pnpm test:e2e:docker   # the same suite inside the official Playwright image
 pnpm build             # TypeScript check + Vite production build
 pnpm blue-ball         # lint + test + build — run before pushing
 ```
 
-No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs both suites as separate jobs on every pull request to `main`.
+No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the three suites as separate jobs on every pull request to `main`; the e2e job runs the same Docker image as `pnpm test:e2e:docker`.
 
 ---
 
