@@ -5,6 +5,7 @@ import {
   loanOf,
   loanWeeksOf,
   returnFridayFor,
+  shortDateLabel,
   upcomingFridays,
 } from "src/project/loan.model";
 import { describe, expect, it } from "vitest";
@@ -136,5 +137,11 @@ describe("daysAtHomeLabel()", () => {
 describe("fridayLabel()", () => {
   it("spells the date out in Spanish without the formatter's comma", () => {
     expect(fridayLabel("2026-09-18")).toBe("viernes 18 de septiembre");
+  });
+});
+
+describe("shortDateLabel()", () => {
+  it("keeps a date to day and month", () => {
+    expect(shortDateLabel("2026-09-04")).toBe("4 sept");
   });
 });

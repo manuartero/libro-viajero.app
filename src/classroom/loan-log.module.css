@@ -1,0 +1,129 @@
+/* A titled section like the roster and the builder, so the outline under the
+   h1 reads "La lista de clase" then the child's name. Bordered like the
+   dashboard's panels — it is a card in the literal sense, the one that sits
+   in a library book's pocket. */
+.card {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  /* The sticky header (~64px) plus a little air, when the chip tap scrolls
+     the card to the top of the scrollport. */
+  scroll-margin-top: 4.75rem;
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.who {
+  flex: 1;
+  min-width: 0;
+}
+
+.tag {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary {
+  margin: 0.125rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+/* Outlined, not solid: opening a form is not a commit (see the add bar). */
+.edit {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.edit:active {
+  background: var(--paper-dark);
+}
+
+/* Ruled lines, one loan each, newest at the top. Numbering is the browser's
+   and stays hidden: the order carries the sequence, the dates carry the when. */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  border-top: 2px solid var(--ink);
+}
+
+.entry {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.bookTitle {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dates {
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The live loan is the one line that is still happening. */
+.reading {
+  background: var(--paper-dark);
+}
+
+.reading .dates {
+  color: var(--ink);
+}
+
+/* Red ink for a book that never came back, like the dashboard's overdue. */
+.unreturned .dates {
+  color: var(--missing);
+  font-weight: 700;
+}
+
+/* The dashboard's returned stamp, sized for a row. */
+.stamp {
+  flex-shrink: 0;
+  width: 1.75rem;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--returned);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+}

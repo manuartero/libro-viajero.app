@@ -2,19 +2,23 @@ import { useState } from "react";
 import type { Child } from "src/child/child.model";
 import { pluralPeques } from "src/child/child.model";
 import { ChildBuilder } from "src/classroom/child-builder.component";
+import { LoanLog } from "src/classroom/loan-log.component";
 import { Roster } from "src/classroom/roster.component";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
+import { loanLogOf } from "src/project/loan-log.model";
 import type { Project } from "src/project/project.model";
 import { addChild, removeChild, saveChild } from "src/project/project.model";
 import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./classroom-screen.module.css";
 
-// The builder is one surface with three states. A union rather than an
-// `editingId` plus an `adding` flag, because "adding while editing one child"
-// is not a state this screen can be in and two booleans would allow it.
-type BuilderState =
+// What sits under the roster is one surface with four states: nothing, the
+// add form, a child's loan card, or that child's edit form. A union rather
+// than a `selectedId` plus flags, because "adding while a card is open" is
+// not a state this screen can be in and separate booleans would allow it.
+type Panel =
   | { status: "closed" }
   | { status: "adding" }
+  | { status: "viewing"; childId: string }
   | { status: "editing"; childId: string };
 
 type ClassroomScreenProps = {
@@ -23,20 +27,23 @@ type ClassroomScreenProps = {
 };
 
 export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
-  const [builder, setBuilder] = useState<BuilderState>({ status: "closed" });
+  const [panel, setPanel] = useState<Panel>({ status: "closed" });
   // A child with a book at home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Child | null>(null);
 
   const childList = project.children;
-  const editing =
-    builder.status === "editing"
-      ? (childList.find((child) => child.id === builder.childId) ?? null)
+  const selected =
+    panel.status === "viewing" || panel.status === "editing"
+      ? (childList.find((child) => child.id === panel.childId) ?? null)
       : null;
+  const editing = panel.status === "editing" ? selected : null;
   const others = childList.filter((child) => child.id !== editing?.id);
   const usedEmojis = others.map((child) => child.emoji);
   const usedColors = others.map((child) => child.color);
 
-  const close = () => setBuilder({ status: "closed" });
+  const close = () => setPanel({ status: "closed" });
+  // Back to the card the edit form was opened from.
+  const view = (childId: string) => setPanel({ status: "viewing", childId });
 
   const hasBook = (childId: string) =>
     project.currentAssignments.some((a) => a.childId === childId);
@@ -58,14 +65,16 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
       <main className={styles.main}>
         <Roster
           childList={childList}
-          editingId={editing?.id ?? null}
+          selectedId={selected?.id ?? null}
           onSelect={(childId) => {
             setConfirmingRemove(null);
-            setBuilder((prev) => {
-              if (prev.status === "editing" && prev.childId === childId) {
-                return { status: "closed" };
+            setPanel((prev) => {
+              if (prev.status !== "adding" && prev.status !== "closed") {
+                if (prev.childId === childId) {
+                  return { status: "closed" };
+                }
               }
-              return { status: "editing", childId };
+              return { status: "viewing", childId };
             });
           }}
         />
@@ -85,17 +94,16 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
           </ConfirmPanel>
         )}
 
-        {builder.status === "closed" && (
-          <button
-            type="button"
-            className={styles.addTrigger}
-            onClick={() => setBuilder({ status: "adding" })}
-          >
-            <span aria-hidden="true">+</span> Añadir un peque
-          </button>
+        {panel.status === "viewing" && selected && (
+          <LoanLog
+            key={selected.id}
+            child={selected}
+            records={loanLogOf({ project, childId: selected.id })}
+            onEdit={() => setPanel({ status: "editing", childId: selected.id })}
+          />
         )}
 
-        {builder.status !== "closed" && (
+        {(panel.status === "adding" || editing) && (
           <ChildBuilder
             key={editing?.id ?? `new-${childList.length}`}
             usedEmojis={usedEmojis}
@@ -106,7 +114,7 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
             onAdd={(draft) => onUpdate(addChild({ project, draft }))}
             onSave={(child) => {
               if (onUpdate(saveChild({ project, child }))) {
-                close();
+                view(child.id);
               }
             }}
             onRemove={(childId) => {
@@ -117,8 +125,26 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
               }
               remove(childId);
             }}
-            onCancel={close}
+            onCancel={() => {
+              if (editing) {
+                view(editing.id);
+                return;
+              }
+              close();
+            }}
           />
+        )}
+
+        {/* Reading a card is not filling a form: the add bar stays put under
+            it, so checking on one peque mid-setup costs no extra tap. */}
+        {(panel.status === "closed" || panel.status === "viewing") && (
+          <button
+            type="button"
+            className={styles.addTrigger}
+            onClick={() => setPanel({ status: "adding" })}
+          >
+            <span aria-hidden="true">+</span> Añadir un peque
+          </button>
         )}
       </main>
     </div>

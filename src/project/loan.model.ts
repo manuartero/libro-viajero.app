@@ -154,3 +154,13 @@ const fridayFormat = new Intl.DateTimeFormat("es-ES", {
 export function fridayLabel(iso: string) {
   return fridayFormat.format(parseIsoDate(iso)).replace(",", "");
 }
+
+const shortDateFormat = new Intl.DateTimeFormat("es-ES", {
+  day: "numeric",
+  month: "short",
+});
+
+// "4 sept" — for a dated list where the weekday would only be noise.
+export function shortDateLabel(iso: string) {
+  return shortDateFormat.format(parseIsoDate(iso));
+}
