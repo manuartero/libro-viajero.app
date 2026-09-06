@@ -33,7 +33,7 @@ describe("<ClassroomScreen />", () => {
   it("shows the class list, not the form, on arrival", () => {
     render(<ClassroomScreen project={project()} onUpdate={() => true} />);
 
-    expect(screen.getByRole("button", { name: "Rana, editar" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Rana" })).toBeDefined();
     expect(screen.queryAllByRole("radio")).toHaveLength(0);
   });
 
@@ -63,11 +63,55 @@ describe("<ClassroomScreen />", () => {
     expect(screen.queryAllByRole("radio")).toHaveLength(0);
   });
 
+  it("opens a child's loan card on a chip tap, not the form", () => {
+    render(
+      <ClassroomScreen
+        project={project({
+          books: [{ id: "b1", title: "Elmer" }],
+          currentAssignments: [
+            { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },
+          ],
+        })}
+        onUpdate={() => true}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+
+    expect(screen.getByText("Elmer")).toBeDefined();
+    expect(screen.queryAllByRole("radio")).toHaveLength(0);
+    // The add bar stays: reading a card should not cost a tap to add.
+    expect(
+      screen.getByRole("button", { name: "Añadir un peque" }),
+    ).toBeDefined();
+  });
+
+  it("closes the card on a second tap of the same chip", () => {
+    render(<ClassroomScreen project={project()} onUpdate={() => true} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+
+    expect(screen.queryByRole("button", { name: "Editar a Rana" })).toBeNull();
+  });
+
+  it("returns to the card when an edit is cancelled", () => {
+    render(<ClassroomScreen project={project()} onUpdate={() => true} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+
+    expect(screen.queryAllByRole("radio")).toHaveLength(0);
+    expect(screen.getByRole("button", { name: "Editar a Rana" })).toBeDefined();
+  });
+
   it("edits an existing child", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
     fireEvent.click(screen.getByRole("button", { name: "Cambiar apodo" }));
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Ranita" },
@@ -82,7 +126,8 @@ describe("<ClassroomScreen />", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
     fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
 
     expect(onUpdate).toHaveBeenCalledTimes(1);
@@ -99,7 +144,8 @@ describe("<ClassroomScreen />", () => {
     });
     render(<ClassroomScreen project={withBook} onUpdate={onUpdate} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
     fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
 
     expect(onUpdate).not.toHaveBeenCalled();
@@ -119,7 +165,8 @@ describe("<ClassroomScreen />", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => false);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
     fireEvent.click(screen.getByRole("button", { name: "Cambiar apodo" }));
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "Ranita" },
@@ -147,7 +194,8 @@ describe("<ClassroomScreen />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
     fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
     fireEvent.click(screen.getByRole("button", { name: "Sí, quitarlo" }));
 
@@ -169,7 +217,8 @@ describe("<ClassroomScreen />", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Rana, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rana" }));
+    fireEvent.click(screen.getByRole("button", { name: "Editar a Rana" }));
     fireEvent.click(screen.getByRole("button", { name: "Quitar" }));
     fireEvent.click(screen.getByRole("button", { name: "No, mantenerlo" }));
 

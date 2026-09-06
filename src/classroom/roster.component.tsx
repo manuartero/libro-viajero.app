@@ -5,11 +5,12 @@ import styles from "./roster.module.css";
 
 type RosterProps = {
   childList: Child[];
-  editingId: string | null;
+  // The child whose card is open below the list, if any.
+  selectedId: string | null;
   onSelect: (childId: string) => void;
 };
 
-export function Roster({ childList, editingId, onSelect }: RosterProps) {
+export function Roster({ childList, selectedId, onSelect }: RosterProps) {
   const titleId = useId();
 
   return (
@@ -28,8 +29,7 @@ export function Roster({ childList, editingId, onSelect }: RosterProps) {
               <button
                 type="button"
                 className={styles.chip}
-                aria-pressed={child.id === editingId}
-                aria-label={`${child.tag}, editar`}
+                aria-pressed={child.id === selectedId}
                 onClick={() => onSelect(child.id)}
               >
                 <ChildAvatar

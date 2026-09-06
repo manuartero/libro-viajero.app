@@ -9,7 +9,7 @@ const childList = [
 
 describe("<Roster />", () => {
   it("invites the teacher when the class is still empty", () => {
-    render(<Roster childList={[]} editingId={null} onSelect={() => {}} />);
+    render(<Roster childList={[]} selectedId={null} onSelect={() => {}} />);
 
     expect(screen.getByText("Aquí irán apareciendo tus peques")).toBeDefined();
   });
@@ -17,10 +17,10 @@ describe("<Roster />", () => {
   it("reports the tapped child", () => {
     const onSelect = vi.fn();
     render(
-      <Roster childList={childList} editingId={null} onSelect={onSelect} />,
+      <Roster childList={childList} selectedId={null} onSelect={onSelect} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Dino, editar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Dino" }));
 
     expect(onSelect).toHaveBeenCalledWith("c2");
   });

@@ -39,7 +39,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 
 - The school year is stamped from the calendar (`currentSchoolYear()`, July onwards counts as the upcoming course), never chosen by the teacher.
 - The project starts empty and the dashboard's empty states drive first-time setup: añadir peques → añadir libros → repartir libros.
-- The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child.
+- The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child. Tapping a child opens their loan card, not the form — editing is the pencil on the card.
 - The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
 - A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/project/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
@@ -69,11 +69,12 @@ Decisions worth knowing, since they are not obvious from the stories:
 | DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | ❌     |
 | DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | 🚧 modeled (invariant in `src/project/project.model.ts`), pending DASH-9 |
 
-### History — ❌ not built
+### History
 
-`Project.history` is modeled but only ever written as `[]`; there is no history UI yet.
+`Project.history` is modeled but only ever written as `[]` until DASH-9 lands. The one history view that exists reads it anyway: tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/project/loan-log.model.ts`), which folds the confirmed sessions and the live assignment into one dated line per book. Today that is the current book alone; it fills in on its own once sessions are confirmed. The edit form moved behind the card's pencil.
 
-|   ID   |                                Story                                |
-| ------ | ------------------------------------------------------------------- |
-| HIST-1 | As a teacher, I can see a log of all past weekly sessions           |
-| HIST-2 | As a teacher, I can see which child had which book in any past week |
+|   ID   |                                Story                                | Status |
+| ------ | ------------------------------------------------------------------- | ------ |
+| HIST-1 | As a teacher, I can see a log of all past weekly sessions           | ❌     |
+| HIST-2 | As a teacher, I can see which child had which book in any past week | ❌     |
+| HIST-3 | As a teacher, I can tap a child in the class list and see every book they have taken home, with dates and whether it came back | ✅ (reads `history`, which nothing writes yet) |
