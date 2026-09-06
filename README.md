@@ -33,7 +33,7 @@ pnpm build             # TypeScript check + Vite production build
 pnpm blue-ball         # lint + test + build — run before pushing
 ```
 
-No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the unit and integration suites as separate jobs on every pull request to `main`.
+No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the three suites as separate jobs on every pull request to `main`; the e2e job runs the same Docker image as `pnpm test:e2e:docker`.
 
 ---
 
