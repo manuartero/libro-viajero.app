@@ -2,6 +2,7 @@ import type { Project } from "src/project/project.model";
 import {
   addBook,
   addChild,
+  createProject,
   distributeBooks,
   markReturned,
   pairsFrom,
@@ -11,7 +12,24 @@ import {
   setLoanWeeks,
   undoReturn,
 } from "src/project/project.model";
+import { schoolYearFrom } from "src/project/school-year.model";
 import { describe, expect, it } from "vitest";
+
+describe("createProject", () => {
+  it("names the class after the trimmed name and the short course, with nothing in it", () => {
+    const project = createProject({
+      classroomName: "  Los Caracoles  ",
+      year: schoolYearFrom(2026),
+    });
+
+    expect(project.name).toBe("Los Caracoles 2026/27");
+    expect(project.id).toBeTruthy();
+    expect(project.children).toEqual([]);
+    expect(project.books).toEqual([]);
+    expect(project.currentAssignments).toEqual([]);
+    expect(project.history).toEqual([]);
+  });
+});
 
 const baseProject = (): Project => ({
   id: "p1",

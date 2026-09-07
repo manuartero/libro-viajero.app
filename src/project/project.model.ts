@@ -2,7 +2,8 @@ import type { Book, BookDraft } from "src/book/book.model";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { newId } from "src/lib/id";
 import { isoDate, mondayOf } from "src/lib/week";
-import type { LoanWeeks } from "src/project/loan.model";
+import type { LoanWeeks } from "src/loan/loan.model";
+import type { SchoolYear } from "src/project/school-year.model";
 
 // One loan: a book at one child's home. Live while it sits in
 // currentAssignments; closed once it moves to history.
@@ -59,10 +60,24 @@ export type Project = {
   loanWeeks?: LoanWeeks;
 };
 
-export type AppData = {
-  projects: Project[];
-  activeProjectId: string | null;
-};
+// A classroom's first state: named after the class and the running course,
+// with nothing in it yet. The only way a Project is born.
+export function createProject({
+  classroomName,
+  year,
+}: {
+  classroomName: string;
+  year: SchoolYear;
+}): Project {
+  return {
+    id: newId(),
+    name: `${classroomName.trim()} ${year.short}`,
+    children: [],
+    books: [],
+    currentAssignments: [],
+    history: [],
+  };
+}
 
 // Pure mutations. Each returns a new Project; `history` is an append-only
 // log — an assignment leaving currentAssignments for any reason is closed

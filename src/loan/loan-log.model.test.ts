@@ -1,4 +1,4 @@
-import { loanLogOf } from "src/project/loan-log.model";
+import { loanLogOf } from "src/loan/loan-log.model";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it } from "vitest";
 

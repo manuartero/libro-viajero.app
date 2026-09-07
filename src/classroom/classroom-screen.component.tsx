@@ -5,10 +5,10 @@ import { ChildBuilder } from "src/classroom/child-builder.component";
 import { LoanLog } from "src/classroom/loan-log.component";
 import { Roster } from "src/classroom/roster.component";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
-import { loanLogOf } from "src/project/loan-log.model";
+import { loanLogOf } from "src/loan/loan-log.model";
+import { Masthead } from "src/masthead/masthead.component";
 import type { Project } from "src/project/project.model";
 import { addChild, removeChild, saveChild } from "src/project/project.model";
-import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./classroom-screen.module.css";
 
 // What sits under the roster is one surface with four states: nothing, the
@@ -94,7 +94,7 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
 
   return (
     <div className={styles.screen}>
-      <ProjectHeading
+      <Masthead
         name={project.name}
         dateline={`La clase · ${pluralPeques(childList.length)}`}
       />

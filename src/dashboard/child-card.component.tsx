@@ -3,7 +3,7 @@ import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
-import { daysAtHomeLabel, type Loan } from "src/project/loan.model";
+import { daysAtHomeLabel, type Loan } from "src/loan/loan.model";
 import styles from "./child-card.module.css";
 
 type ChildCardProps = {

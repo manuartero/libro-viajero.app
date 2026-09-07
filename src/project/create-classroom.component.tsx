@@ -1,14 +1,13 @@
 import { type FormEvent, useState } from "react";
-import { newId } from "src/lib/id";
-import type { Project } from "src/project/project.model";
+import { createProject, type Project } from "src/project/project.model";
 import { currentSchoolYear } from "src/project/school-year.model";
-import styles from "./create-class.module.css";
+import styles from "./create-classroom.module.css";
 
-type CreateClassProps = {
+type CreateClassroomProps = {
   onCreate: (project: Project) => void;
 };
 
-export function CreateClass({ onCreate }: CreateClassProps) {
+export function CreateClassroom({ onCreate }: CreateClassroomProps) {
   const [classroomName, setClassroomName] = useState("");
 
   // The course is not a choice: a class is created for the one running now.
@@ -20,14 +19,7 @@ export function CreateClass({ onCreate }: CreateClassProps) {
     if (!canCreate) {
       return;
     }
-    onCreate({
-      id: newId(),
-      name: `${classroomName.trim()} ${year.short}`,
-      children: [],
-      books: [],
-      currentAssignments: [],
-      history: [],
-    });
+    onCreate(createProject({ classroomName, year }));
   };
 
   return (

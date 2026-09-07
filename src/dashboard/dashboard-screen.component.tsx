@@ -13,7 +13,6 @@ import {
 } from "src/dashboard/repartir-banner.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
 import { WeekSummary } from "src/dashboard/week-summary.component";
-import type { Tab } from "src/navigation/navigation.model";
 import {
   type ChildLoan,
   fridayLabel,
@@ -22,13 +21,14 @@ import {
   loanOf,
   loanWeeksOf,
   upcomingFridays,
-} from "src/project/loan.model";
+} from "src/loan/loan.model";
+import { Masthead } from "src/masthead/masthead.component";
+import type { Tab } from "src/navigation/navigation.model";
 import {
   markReturned,
   type Project,
   undoReturn,
 } from "src/project/project.model";
-import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./dashboard-screen.module.css";
 
 type DashboardScreenProps = {
@@ -86,7 +86,7 @@ export function DashboardScreen({
   if (emptyState) {
     return (
       <div className={styles.screen}>
-        <ProjectHeading
+        <Masthead
           name={project.name}
           after={<PrivacyNote onDownloadData={onDownloadData} />}
         />
@@ -139,7 +139,7 @@ export function DashboardScreen({
 
   return (
     <div className={styles.screen}>
-      <ProjectHeading
+      <Masthead
         name={project.name}
         after={
           <div className={styles.headerTools}>

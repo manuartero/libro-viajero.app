@@ -3,9 +3,9 @@ import { type Book, pluralLibros } from "src/book/book.model";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BookSearch } from "src/library/book-search.component";
 import { Bookshelf } from "src/library/bookshelf.component";
+import { Masthead } from "src/masthead/masthead.component";
 import type { Project } from "src/project/project.model";
 import { addBook, removeBook } from "src/project/project.model";
-import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./library-screen.module.css";
 
 type LibraryScreenProps = {
@@ -47,7 +47,7 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
 
   return (
     <div className={styles.screen}>
-      <ProjectHeading
+      <Masthead
         name={project.name}
         dateline={`La biblioteca · ${pluralLibros(project.books.length)}`}
       />

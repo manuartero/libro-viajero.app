@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ChildCard } from "src/dashboard/child-card.component";
-import type { Loan } from "src/project/loan.model";
+import type { Loan } from "src/loan/loan.model";
 import { describe, expect, it, vi } from "vitest";
 
 const child = { id: "c1", tag: "Verde", emoji: "🐸", color: "#8ac926" };

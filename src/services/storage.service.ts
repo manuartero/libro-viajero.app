@@ -1,4 +1,4 @@
-import type { AppData } from "src/project/project.model";
+import type { AppData } from "src/app-data/app-data.model";
 
 // One phone, one teacher, one namespace. There are no accounts to key by.
 // This module is the storage schema: the whole AppData under this one key.

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { WeekSummary } from "src/dashboard/week-summary.component";
-import type { ChildLoan } from "src/project/loan.model";
+import type { ChildLoan } from "src/loan/loan.model";
 import { describe, expect, it } from "vitest";
 
 const rana: ChildLoan = {

@@ -4,7 +4,7 @@ import {
   LOAN_WEEKS_OPTIONS,
   type LoanWeeks,
   returnFridayFor,
-} from "src/project/loan.model";
+} from "src/loan/loan.model";
 import styles from "./loan-weeks-picker.module.css";
 
 type LoanWeeksPickerProps = {

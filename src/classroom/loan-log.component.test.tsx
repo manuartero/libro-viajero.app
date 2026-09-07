@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { LoanLog } from "src/classroom/loan-log.component";
-import type { LoanRecord } from "src/project/loan-log.model";
+import type { LoanRecord } from "src/loan/loan-log.model";
 import { describe, expect, it, vi } from "vitest";
 
 const child = { id: "c1", tag: "Rana", emoji: "🐸", color: "#8ac926" };

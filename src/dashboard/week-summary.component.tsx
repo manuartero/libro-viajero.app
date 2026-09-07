@@ -7,7 +7,7 @@ import {
   fridayLabel,
   type LoanStatus,
   type UpcomingFriday,
-} from "src/project/loan.model";
+} from "src/loan/loan.model";
 import styles from "./week-summary.module.css";
 
 type WeekSummaryProps = {

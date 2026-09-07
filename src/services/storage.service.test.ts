@@ -1,4 +1,4 @@
-import type { AppData } from "src/project/project.model";
+import type { AppData } from "src/app-data/app-data.model";
 import { getAppData, saveAppData } from "src/services/storage.service";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
