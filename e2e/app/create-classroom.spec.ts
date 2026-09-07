@@ -3,15 +3,15 @@ import { globalSetup } from "../integration/global.setup";
 
 globalSetup();
 
-test.describe("setup: create class", () => {
+test.describe("create classroom", () => {
   test("names the class, stamps the school year and lands on the dashboard", async ({
-    setupPage,
+    createClassroomPage,
     dashboardPage,
   }) => {
-    await setupPage.goto();
+    await createClassroomPage.goto();
 
-    await setupPage.nameField.fill("Los Caracoles");
-    await setupPage.createButton.click();
+    await createClassroomPage.nameField.fill("Los Caracoles");
+    await createClassroomPage.createButton.click();
 
     // Precondition for the rest: the class exists and the dashboard is up.
     await expect(dashboardPage.heading).toHaveText(

@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
-import { type LoanWeeks, loanWeeksOf } from "src/project/loan.model";
+import { type LoanWeeks, loanWeeksOf } from "src/loan/loan.model";
+import { Masthead } from "src/masthead/masthead.component";
 import type { AssignmentPairs, Project } from "src/project/project.model";
-import { ProjectHeading } from "src/project/project-heading.component";
 import styles from "./assign-screen.module.css";
 import { useAssignmentDraft } from "./assignment-draft.hook";
 import { AssignmentRow } from "./assignment-row.component";
@@ -47,7 +47,7 @@ export function AssignScreen({
 
   return (
     <div className={styles.screen}>
-      <ProjectHeading
+      <Masthead
         name={project.name}
         // Live: this count is the only feedback that a tap landed, and it
         // changes without the teacher's focus moving anywhere near it.

@@ -1,4 +1,4 @@
-import type { AppData } from "src/project/project.model";
+import type { AppData } from "src/app-data/app-data.model";
 import { buildExport, downloadAppData } from "src/services/export.service";
 import { afterEach, describe, expect, it, vi } from "vitest";
 

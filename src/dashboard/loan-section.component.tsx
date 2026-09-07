@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { pluralLibros } from "src/book/book.model";
 import { ChildCard } from "src/dashboard/child-card.component";
-import type { ChildLoan, LoanStatus } from "src/project/loan.model";
+import type { ChildLoan, LoanStatus } from "src/loan/loan.model";
 import styles from "./loan-section.module.css";
 
 type LoanSectionProps = {

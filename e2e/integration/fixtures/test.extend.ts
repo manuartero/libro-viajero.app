@@ -4,13 +4,16 @@ import { test as base } from "@playwright/test";
 import { type ApiRoutes, createApiRoutes } from "../api.routes";
 import { type AssignPage, createAssignPage } from "../assign.page";
 import { type ClassroomPage, createClassroomPage } from "../classroom.page";
+import {
+  type CreateClassroomPage,
+  createCreateClassroomPage,
+} from "../create-classroom.page";
 import { createDashboardPage, type DashboardPage } from "../dashboard.page";
 import { createLibraryPage, type LibraryPage } from "../library.page";
-import { createSetupPage, type SetupPage } from "../setup.page";
 
 type CustomFixtures = {
   apiRoutes: ApiRoutes;
-  setupPage: SetupPage;
+  createClassroomPage: CreateClassroomPage;
   dashboardPage: DashboardPage;
   classroomPage: ClassroomPage;
   libraryPage: LibraryPage;
@@ -30,8 +33,8 @@ export const test = base.extend<CustomFixtures>({
     },
     { auto: true },
   ],
-  setupPage: async ({ page }, use) => {
-    await use(createSetupPage(page));
+  createClassroomPage: async ({ page }, use) => {
+    await use(createCreateClassroomPage(page));
   },
   dashboardPage: async ({ page }, use) => {
     await use(createDashboardPage(page));

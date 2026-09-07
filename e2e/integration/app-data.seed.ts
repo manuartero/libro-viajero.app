@@ -2,10 +2,11 @@
 // before the app on every navigation but only writes when the key is absent,
 // so a second goto() keeps what the app itself persisted in between.
 import type { Page } from "@playwright/test";
+import type { AppData } from "src/app-data/app-data.model";
 import type { Book } from "src/book/book.model";
 import type { Child } from "src/child/child.model";
 import { isoDate, mondayOf } from "src/lib/week";
-import type { AppData, Assignment, Project } from "src/project/project.model";
+import type { Assignment, Project } from "src/project/project.model";
 
 const STORAGE_KEY = "libro-viajero";
 

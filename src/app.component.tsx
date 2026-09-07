@@ -1,14 +1,14 @@
 import { useState } from "react";
+import { useAppData } from "src/app-data/app-data.hook";
 import { AssignScreen, type Reparto } from "src/assign/assign-screen.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { DashboardScreen } from "src/dashboard/dashboard-screen.component";
 import { LibraryScreen } from "src/library/library-screen.component";
 import type { View } from "src/navigation/navigation.model";
 import { TabBar } from "src/navigation/tab-bar.component";
-import { useAppData } from "src/project/app-data.hook";
+import { CreateClassroom } from "src/project/create-classroom.component";
 import { distributeBooks, setLoanWeeks } from "src/project/project.model";
 import { downloadAppData } from "src/services/export.service";
-import { CreateClass } from "src/setup/create-class.component";
 import styles from "./app.module.css";
 
 export function App() {
@@ -42,7 +42,7 @@ export function App() {
     return (
       <>
         {saveError}
-        <CreateClass onCreate={createProject} />
+        <CreateClassroom onCreate={createProject} />
       </>
     );
   }

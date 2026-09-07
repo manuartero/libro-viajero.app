@@ -38,7 +38,7 @@ Reach for the element before the attribute. Both rules replaced hand-rolled vers
 ### Folder layout
 
 - No `utils/`, `types/`, `helpers/` catch-alls, and no `types.ts`. Name folders by domain; every type lives in its domain module, even if that means more files.
-- `src/` root holds only the entry point and the composition root it mounts. There is no `src/app/`: a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`.
+- `src/` root holds only the entry point, the composition root it mounts and the error boundary around it. There is no `src/app/`: a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`.
 
 ### Testing
 

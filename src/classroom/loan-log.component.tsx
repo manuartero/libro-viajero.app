@@ -3,8 +3,8 @@ import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
-import { shortDateLabel } from "src/project/loan.model";
-import type { LoanRecord } from "src/project/loan-log.model";
+import { shortDateLabel } from "src/loan/loan.model";
+import type { LoanRecord } from "src/loan/loan-log.model";
 import styles from "./loan-log.module.css";
 
 type LoanLogProps = {

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import styles from "./project-heading.module.css";
+import styles from "./masthead.module.css";
 
-type ProjectHeadingProps = {
+type MastheadProps = {
   name: string;
   // "La clase · 12 peques", "El reparto · 3 de 12 con libro". Its own element,
   // so a screen can make it a live region when the numbers move under a tap.
@@ -18,12 +18,7 @@ type ProjectHeadingProps = {
 // Every screen's masthead. It carries the h1 — until this existed each screen
 // titled itself with a <p> while its sections used <h2>, so every document
 // outline in the app started at level 2 with nothing above it.
-export function ProjectHeading({
-  name,
-  dateline,
-  before,
-  after,
-}: ProjectHeadingProps) {
+export function Masthead({ name, dateline, before, after }: MastheadProps) {
   return (
     <header className={styles.header}>
       {before}

@@ -7,7 +7,7 @@ import {
   returnFridayFor,
   shortDateLabel,
   upcomingFridays,
-} from "src/project/loan.model";
+} from "src/loan/loan.model";
 import { describe, expect, it } from "vitest";
 
 // Week of Mon 31 Aug 2026; the following Friday is 11 Sep.

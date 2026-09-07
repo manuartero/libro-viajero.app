@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { AppData, Project } from "src/project/project.model";
+import type { AppData } from "src/app-data/app-data.model";
+import type { Project } from "src/project/project.model";
 import { getAppData, saveAppData } from "src/services/storage.service";
 
 const loadAppData = (): AppData => {

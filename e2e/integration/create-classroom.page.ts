@@ -1,8 +1,8 @@
-// The create-class screen: what a fresh install boots into (src/setup/).
+// The create-classroom screen: what a fresh install boots into (src/project/).
 // Describes the page — locators and intent-level helpers. No assertions here.
 import type { Page } from "@playwright/test";
 
-export function createSetupPage(page: Page) {
+export function createCreateClassroomPage(page: Page) {
   return {
     nameField: page.getByLabel("¿Cómo se llama tu clase?"),
     createButton: page.getByRole("button", { name: "Crear la clase" }),
@@ -12,4 +12,4 @@ export function createSetupPage(page: Page) {
   };
 }
 
-export type SetupPage = ReturnType<typeof createSetupPage>;
+export type CreateClassroomPage = ReturnType<typeof createCreateClassroomPage>;

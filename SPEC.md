@@ -42,7 +42,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 - The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child. Tapping a child opens their loan card, not the form — editing is the pencil on the card.
 - The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
-- A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/project/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
+- A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/loan/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
 
 |   ID    |                                                Story                                                 | Status |
 | ------- | ---------------------------------------------------------------------------------------------------- | ------ |
@@ -71,7 +71,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 
 ### History
 
-There is no weekly session: a loan is the unit. Tapping a card writes `returnedOn` on the live assignment, and the next reparto closes every returned or replaced assignment into `Project.history` (`distributeBooks()` in `src/project/project.model.ts`), as does removing a child or a book. Tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/project/loan-log.model.ts`): one dated line per book, from history plus the live assignment. The edit form is behind the card's pencil.
+There is no weekly session: a loan is the unit. Tapping a card writes `returnedOn` on the live assignment, and the next reparto closes every returned or replaced assignment into `Project.history` (`distributeBooks()` in `src/project/project.model.ts`), as does removing a child or a book. Tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/loan/loan-log.model.ts`): one dated line per book, from history plus the live assignment. The edit form is behind the card's pencil.
 
 |   ID   |                                Story                                | Status |
 | ------ | ------------------------------------------------------------------- | ------ |
