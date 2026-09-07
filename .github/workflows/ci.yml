@@ -13,13 +13,9 @@ concurrency:
 
 jobs:
   test:
-    name: test (${{ matrix.suite }})
+    name: test (unit)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        suite: [unit, integration]
     steps:
       - uses: actions/checkout@v5
 
@@ -32,7 +28,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm test:${{ matrix.suite }}
+      - run: pnpm test
 
   e2e:
     name: test (e2e)

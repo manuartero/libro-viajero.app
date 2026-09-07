@@ -26,10 +26,8 @@ Live at **[libro-viajero.app](https://libro-viajero.app)**.
 ```bash
 pnpm install
 pnpm dev               # Vite dev server at http://localhost:5173
-pnpm test              # Vitest, both suites
-pnpm test:unit         # modules in isolation (*.test.ts(x))
-pnpm test:integration  # full flows through <App /> (*.integration.test.tsx)
-pnpm test:e2e          # Playwright in a real browser, Open Library mocked (e2e/)
+pnpm test              # Vitest unit tests, one module at a time (src/**/*.test.ts(x))
+pnpm test:e2e          # Playwright flows in a real browser, Open Library mocked (e2e/)
 pnpm test:e2e:docker   # the same suite inside the official Playwright image
 pnpm build             # TypeScript check + Vite production build
 pnpm blue-ball         # lint + test + build — run before pushing

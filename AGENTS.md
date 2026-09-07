@@ -75,11 +75,12 @@ Reach for the element before the attribute. Both rules below replaced hand-rolle
 
 - No `utils/`, `types/`, `helpers/` catch-alls — and no `types.ts` either. Name folders by domain; every type lives in its domain module (`src/project/project.model.ts` defines `Project`), even if that means more files.
 - Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `palette/`.
-- `src/` root holds the entry point and the composition root it mounts, and nothing else: `main.tsx`, `app.component.tsx`, `app-error-boundary.component.tsx` (plus their CSS and `app.integration.test.tsx`). There is no `src/app/` — a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`. So `Tab` / `View` and `TabBar` live in `src/navigation/`, and `useAppData` in `src/project/` beside the `AppData` type it persists.
+- `src/` root holds the entry point and the composition root it mounts, and nothing else: `main.tsx`, `app.component.tsx`, `app-error-boundary.component.tsx` (plus their CSS and `app.component.test.tsx`). There is no `src/app/` — a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`. So `Tab` / `View` and `TabBar` live in `src/navigation/`, and `useAppData` in `src/project/` beside the `AppData` type it persists.
 - Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`, `palette.json` → `palette.data.ts`). Nothing else imports the JSON, and the invariants are enforced by tests (`book.model.test.ts`), not by `as const satisfies`.
 
 ### Testing
 
+- Two layers, no third. **Vitest + jsdom is the unit layer**: one module at a time under `src/`, and `app.component.test.tsx` covers only the composition root's own wiring (which screen the view shows, what a failed save does to it). **Playwright (`e2e/`) is the integration and end-to-end layer**: any flow that crosses screens, hits `localStorage` through the UI, or must survive a reload is a spec there, in a real browser, never a jsdom test.
 - Co-located: `<module>.<role>.test.ts(x)` beside the source.
 - Outer `describe` encodes kind: `describe('foo()')`, `describe('<Foo />')`, `describe('foo{}')`.
 - Query as a user perceives the UI: role + accessible name → label/visible text → `getByTestId` as last resort. Never by CSS class or DOM shape.
