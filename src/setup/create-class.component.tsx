@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { newId } from "src/lib/id";
 import type { Project } from "src/project/project.model";
 import { currentSchoolYear } from "src/project/school-year.model";
@@ -15,24 +15,23 @@ export function CreateClass({ onCreate }: CreateClassProps) {
   const year = currentSchoolYear();
   const canCreate = classroomName.trim().length > 0;
 
+  const createClassroom = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!canCreate) {
+      return;
+    }
+    onCreate({
+      id: newId(),
+      name: `${classroomName.trim()} ${year.short}`,
+      children: [],
+      books: [],
+      currentAssignments: [],
+      history: [],
+    });
+  };
+
   return (
-    <form
-      className={styles.screen}
-      onSubmit={(event) => {
-        event.preventDefault();
-        if (!canCreate) {
-          return;
-        }
-        onCreate({
-          id: newId(),
-          name: `${classroomName.trim()} ${year.short}`,
-          children: [],
-          books: [],
-          currentAssignments: [],
-          history: [],
-        });
-      }}
-    >
+    <form className={styles.screen} onSubmit={createClassroom}>
       <div className={styles.masthead}>
         <p className={styles.eyebrow}>Libro viajero</p>
         <label className={styles.question} htmlFor="classroom-name">

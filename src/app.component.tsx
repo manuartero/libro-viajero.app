@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AssignScreen } from "src/assign/assign-screen.component";
+import { AssignScreen, type Reparto } from "src/assign/assign-screen.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { DashboardScreen } from "src/dashboard/dashboard-screen.component";
 import { LibraryScreen } from "src/library/library-screen.component";
@@ -15,6 +15,21 @@ export function App() {
   const { appData, activeProject, saveFailed, createProject, updateProject } =
     useAppData();
   const [view, setView] = useState<View>("semana");
+
+  // Leave the reparto only when it actually persisted; on a failed save the
+  // flow stays mounted so no tap is lost.
+  const confirmReparto = ({ pairs, loanWeeks }: Reparto) => {
+    if (!activeProject) {
+      return;
+    }
+    const next = setLoanWeeks({
+      project: distributeBooks({ project: activeProject, pairs }),
+      loanWeeks,
+    });
+    if (updateProject(next)) {
+      setView("semana");
+    }
+  };
 
   const saveError = saveFailed && (
     <p role="alert" className={styles.saveError}>
@@ -57,17 +72,7 @@ export function App() {
         {view === "repartir" && (
           <AssignScreen
             project={activeProject}
-            onConfirm={({ pairs, loanWeeks }) => {
-              // Leave the reparto only when it actually persisted; on a
-              // failed save the flow stays mounted so no tap is lost.
-              const next = setLoanWeeks({
-                project: distributeBooks({ project: activeProject, pairs }),
-                loanWeeks,
-              });
-              if (updateProject(next)) {
-                setView("semana");
-              }
-            }}
+            onConfirm={confirmReparto}
             onBack={() => setView("semana")}
           />
         )}
