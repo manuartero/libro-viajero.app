@@ -1,6 +1,7 @@
 {
   "name": "libro-viajero.app",
   "version": "0.1.0",
+  "description": "Dashboard for teachers running the \"traveling book\" classroom initiative: Friday check-in, who returned, who is missing, next week's assignments.",
   "private": true,
   "type": "module",
   "engines": {
@@ -23,14 +24,14 @@
     "type": "git",
     "url": "git+https://github.com/manuartero/libro-viajero.app.git"
   },
-  "author": "Manuel Artero <manutero.developer@gmail.com>",
+  "author": "Manuel Artero Anguita <manutero.developer@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/manuartero/libro-viajero.app/issues"
   },
-  "homepage": "https://github.com/manuartero/libro-viajero.app#readme",
+  "homepage": "https://libro-viajero.app",
   "dependencies": {
-    "@fontsource/besley": "^5.3.0",
+    "@fontsource/besley": "5.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
