@@ -6,6 +6,8 @@
 
 Mobile-first, built for the phone in the teacher's hand. All data lives in the browser — no server, no accounts.
 
+Live at **[libro-viajero.app](https://libro-viajero.app)**.
+
 ---
 
 ## Privacy
@@ -39,7 +41,7 @@ No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/
 
 ## Releasing
 
-Merging to `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): **blue ball** (`pnpm blue-ball` — lint + test + build) and the **e2e** suite run in parallel, and only if both pass does **deploy (production)** build with the Vercel CLI and promote to production. A red check stops the chain: nothing ships.
+Merging to `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): **blue ball** (`pnpm blue-ball` — lint + test + build) and the **e2e** suite run in parallel, and only if both pass does **deploy (production)** build with the Vercel CLI and promote to production at [libro-viajero.app](https://libro-viajero.app). A red check stops the chain: nothing ships.
 
 Vercel's own auto-deploy for `main` is switched off in [`vercel.json`](vercel.json) (`git.deploymentEnabled`) precisely so that the workflow is the only thing that can ship to production — otherwise Vercel would deploy on push, before the checks had a chance to run. Preview deploys for pull requests are unaffected.
 
