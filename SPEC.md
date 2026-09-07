@@ -66,7 +66,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 | DASH-5  | As a teacher, I can see a summary of which children did NOT return a book that was due, and when the rest are due | ✅     |
 | DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in issue #5 |
 | DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
-| DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | dropped — a return saves itself (DASH-2), and the reparto (SETUP-6) is what moves the books on |
+| DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | dropped — a return saves itself (DASH-2); once a book is back, the dashboard's banner leads to the reparto (SETUP-6), which moves the books on |
 | DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | ✅ the reparto seeds only from books still out; a returned one waits on the tray |
 
 ### History

@@ -6,7 +6,11 @@ import { EmptyCard, emptyStateFor } from "src/dashboard/empty-card.component";
 import { LoanSection } from "src/dashboard/loan-section.component";
 import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
-import { RepartirBanner } from "src/dashboard/repartir-banner.component";
+import {
+  booklessText,
+  RepartirBanner,
+  returnedText,
+} from "src/dashboard/repartir-banner.component";
 import { ReturnCounter } from "src/dashboard/return-counter.component";
 import { WeekSummary } from "src/dashboard/week-summary.component";
 import type { Tab } from "src/navigation/navigation.model";
@@ -106,6 +110,11 @@ export function DashboardScreen({
   const pending = expected.filter(({ loan }) => !loan.returnedOn);
   const returnedCount = expected.length - pending.length;
   const upcoming = upcomingFridays(byStatus.reading);
+  // Every book back on the tray, early returns included: what the next
+  // reparto has to hand on.
+  const freedCount = LOAN_STATUSES.flatMap((status) => byStatus[status]).filter(
+    ({ loan }) => loan.returnedOn,
+  ).length;
 
   const returnBook = (childId: string) => {
     onUpdate(markReturned({ project, childId }));
@@ -145,7 +154,7 @@ export function DashboardScreen({
       <main className={styles.main}>
         {bookless.length > 0 && (
           <RepartirBanner
-            unassignedCount={bookless.length}
+            text={booklessText(bookless.length)}
             onRepartir={onRepartir}
           />
         )}
@@ -185,7 +194,17 @@ export function DashboardScreen({
 
         <NextWeekPanel project={project} />
 
-        {bookless.length === 0 && (
+        {/* The returned-books banner lives down here, not at the top: it
+            appears on the first tap of a check-in, and above the grid it
+            would push every card down under the teacher's finger. */}
+        {bookless.length === 0 && freedCount > 0 && (
+          <RepartirBanner
+            text={returnedText(freedCount)}
+            onRepartir={onRepartir}
+          />
+        )}
+
+        {bookless.length === 0 && freedCount === 0 && (
           <button
             type="button"
             className={styles.repartirAgain}

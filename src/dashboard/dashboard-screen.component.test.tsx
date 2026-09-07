@@ -266,6 +266,43 @@ describe("<DashboardScreen />", () => {
     expect(screen.getByText("¡Todos los libros han vuelto! 🎉")).toBeDefined();
   });
 
+  it("points to the reparto once books are back, without doubling the CTA", () => {
+    const onRepartir = vi.fn();
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { ...due, returnedOn: "2026-09-11" },
+          { ...reading, returnedOn: "2026-09-11" },
+          overdue,
+        ],
+      },
+      onRepartir,
+    });
+
+    // The early return counts too: that book is on the tray as well.
+    expect(screen.getByText("2 libros devueltos")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+    expect(onRepartir).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the bookless banner as the one CTA while somebody has no book", () => {
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [{ ...due, returnedOn: "2026-09-11" }, overdue],
+      },
+    });
+
+    expect(screen.getByText("1 peque sin libro")).toBeDefined();
+    expect(screen.queryByText("1 libro devuelto")).toBeNull();
+    expect(
+      screen.getAllByRole("button", { name: "Repartir libros" }),
+    ).toHaveLength(1);
+  });
+
   it("still offers the reparto when every child has a book", () => {
     const onRepartir = vi.fn();
     renderDashboard({
