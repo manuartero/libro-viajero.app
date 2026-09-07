@@ -9,7 +9,6 @@ import styles from "./loan-log.module.css";
 
 type LoanLogProps = {
   child: Child;
-  // Newest first, as loanLogOf() hands it over.
   records: LoanRecord[];
   onEdit: () => void;
 };
@@ -30,7 +29,6 @@ const pencil = (
   </svg>
 );
 
-// What the card adds up to, under the name.
 function summaryLabel(records: LoanRecord[]) {
   const returned = records.filter((r) => r.status === "returned").length;
   const reading = records.some((r) => r.status === "reading");
@@ -55,7 +53,6 @@ function titleOf(book: Book | undefined) {
   return book.title;
 }
 
-// The dates, in one clause: how long the book was out, or since when.
 function datesLabel(record: LoanRecord) {
   if (record.status === "returned" && record.returnedOn) {
     return `del ${shortDateLabel(record.since)} al ${shortDateLabel(record.returnedOn)}`;
@@ -76,15 +73,10 @@ function rowClass(record: LoanRecord) {
   return styles.row;
 }
 
-// A child's loan card: the ficha that lives in a library book's pocket, one
-// dated line per book, stamped when it came back. Opens under the roster on a
-// chip tap; the pencil in its masthead is the way into the edit form.
 export function LoanLog({ child, records, onEdit }: LoanLogProps) {
   const titleId = useId();
 
-  // Same contract as the builder's: the card opens below a screenful of chips
-  // and has to come into view, and the callback must keep its identity or
-  // React re-attaches the ref and re-scrolls on every render.
+  // Stable identity, or React re-attaches the ref and re-scrolls every render.
   const scrollIn = useCallback((node: HTMLElement | null) => {
     node?.scrollIntoView({ block: "start" });
   }, []);

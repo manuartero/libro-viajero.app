@@ -82,7 +82,6 @@ describe("<AssignScreen />", () => {
       />,
     );
 
-    // Rana is the default active child; picking Zorro overrides it.
     fireEvent.click(screen.getByRole("button", { name: "Zorro, sin libro" }));
     fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
 

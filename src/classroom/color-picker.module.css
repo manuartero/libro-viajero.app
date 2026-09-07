@@ -5,8 +5,7 @@
   min-width: 0;
 }
 
-/* A real legend, off screen. Not display:none — that would take the group's
-   accessible name with it, which is the whole reason the legend survives. */
+/* Off screen, not display:none, or the group loses its accessible name. */
 .legend {
   position: absolute;
   width: 1px;
@@ -24,8 +23,7 @@
   gap: 0.625rem;
 }
 
-/* The radio *is* the swatch: appearance:none strips the dot so the inline
-   background colour and the ink border are all that show. */
+/* The radio is the swatch: appearance:none strips the dot. */
 .swatch {
   appearance: none;
   margin: 0;

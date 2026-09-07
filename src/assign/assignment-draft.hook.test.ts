@@ -27,7 +27,6 @@ describe("useAssignmentDraft()", () => {
 
     expect(result.current.pairs).toEqual({ c2: "b2" });
     expect(result.current.assignedCount).toBe(1);
-    // b2 is taken, so only b1 is left to hand out.
     expect(result.current.trayBooks.map((book) => book.id)).toEqual(["b1"]);
   });
 

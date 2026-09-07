@@ -19,9 +19,6 @@ function weeksLabel(weeks: LoanWeeks) {
   return "2 semanas";
 }
 
-// Asked where it matters — while handing books out — and answered in dates,
-// since "2 semanas" is abstract and "vuelve el viernes 18" is not. One value
-// for the whole class; it saves with the reparto.
 export function LoanWeeksPicker({ value, onChange }: LoanWeeksPickerProps) {
   const groupName = useId();
   const returnFriday = returnFridayFor({ loanWeeks: value, today: new Date() });

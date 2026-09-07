@@ -16,8 +16,7 @@
   background: var(--paper-dark);
 }
 
-/* A bottom sheet, from a dialog the UA would otherwise centre: `auto auto 0`
-   pins it to the bottom edge and still centres it horizontally. */
+/* `auto auto 0` pins the UA-centred dialog to the bottom edge. */
 .panel {
   margin: auto auto 0;
   width: 100%;

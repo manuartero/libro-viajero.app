@@ -14,18 +14,11 @@ function swatchClass(selected: boolean) {
   return styles.swatch;
 }
 
-// Real radios in a real fieldset, so the browser owns the arrow keys, the
-// single tab stop and the "exactly one of these" semantics. The input is the
-// swatch: it is what gets the colour, and it is what takes focus.
 export function ColorPicker({ selected, onPick }: ColorPickerProps) {
   const groupName = useId();
 
   return (
     <fieldset className={styles.picker}>
-      {/* Off screen, not gone: the avatar above already previews the colour,
-          and the swatches are the one thing on this screen that could not be
-          anything else. The real <legend> stays so the radio group keeps its
-          accessible name. */}
       <legend className={styles.legend}>Elige un color</legend>
       <div className={styles.colorRow}>
         {PALETTE.map((entry) => (

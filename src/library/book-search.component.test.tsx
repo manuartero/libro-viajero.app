@@ -122,7 +122,6 @@ describe("<BookSearch />", () => {
     ).toBeDefined();
     fireEvent.click(screen.getByRole("button", { name: "Añadirlo a mano" }));
 
-    // The manual title is prefilled with the failed query.
     expect(screen.getByLabelText<HTMLInputElement>("Título").value).toBe(
       "libro rarísimo",
     );

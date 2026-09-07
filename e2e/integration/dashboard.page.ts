@@ -1,4 +1,3 @@
-// The "Semana" tab: the Friday check-in (src/dashboard/).
 import type { Page } from "@playwright/test";
 import { tabBar } from "./tab-bar.page";
 
@@ -11,10 +10,7 @@ export function createDashboardPage(page: Page) {
     returnCounter: page.getByRole("status", { name: /libros devueltos/ }),
     booklessBanner: page.getByText(/peques? sin libro/),
     returnedBanner: page.getByText(/^\d+ libros? devueltos?$/),
-    // Loan sections are titled by status: "No volvió el viernes pasado",
-    // "Vuelve este viernes", "Sigue leyendo" (and their plurals).
     loanSection: (title: RegExp) => page.getByRole("region", { name: title }),
-    // One tap toggles "came back today"; the name is child + book in every state.
     loanCard: ({
       tag,
       title,

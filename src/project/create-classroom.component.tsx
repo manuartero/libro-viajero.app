@@ -10,7 +10,6 @@ type CreateClassroomProps = {
 export function CreateClassroom({ onCreate }: CreateClassroomProps) {
   const [classroomName, setClassroomName] = useState("");
 
-  // The course is not a choice: a class is created for the one running now.
   const year = currentSchoolYear();
   const canCreate = classroomName.trim().length > 0;
 

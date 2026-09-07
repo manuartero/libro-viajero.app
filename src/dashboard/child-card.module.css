@@ -19,8 +19,6 @@
   background: var(--paper-dark);
 }
 
-/* Red ink, nothing else: the section heading above already says what
-   happened, the card only has to be findable in a scroll. */
 .overdue {
   border-color: var(--missing);
 }
@@ -34,11 +32,6 @@
   background: var(--returned-dark);
 }
 
-/* Avatar in the flow; the cover hangs off its bottom-right edge, in front,
-   the way a child holds a book. The right and bottom padding are the part of
-   the cover that sticks out past the circle — sized so the cover overlaps
-   only the empty quadrant of the circle and never the emoji — and they keep
-   the figure's box around both, clear of the text below. */
 .figure {
   position: relative;
   margin-bottom: 0.5rem;

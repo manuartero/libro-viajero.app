@@ -5,7 +5,6 @@ import styles from "./roster.module.css";
 
 type RosterProps = {
   childList: Child[];
-  // The child whose card is open below the list, if any.
   selectedId: string | null;
   onSelect: (childId: string) => void;
 };

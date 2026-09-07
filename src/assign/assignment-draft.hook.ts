@@ -4,9 +4,6 @@ import type { Child } from "src/child/child.model";
 import type { Assignment, AssignmentPairs } from "src/project/project.model";
 import { pairsFrom } from "src/project/project.model";
 
-// Owns the reparto in progress and nothing else, so the screen is left with
-// markup: which child is being served, which books are still on the tray, and
-// the two edits a teacher can make.
 export function useAssignmentDraft({
   children,
   books,
@@ -21,8 +18,6 @@ export function useAssignmentDraft({
   );
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
 
-  // Nobody selected means "serve the next child without a book", so the
-  // teacher can tap books one after another without aiming first.
   const firstUnassignedId =
     children.find((child) => !pairs[child.id])?.id ?? null;
   const activeChildId = selectedChildId ?? firstUnassignedId;
@@ -38,7 +33,6 @@ export function useAssignmentDraft({
     }
     setPairs((prev) => {
       const next = { ...prev };
-      // One book, one child: strip the book from any other pairing.
       for (const childId of Object.keys(next)) {
         if (next[childId] === bookId) {
           delete next[childId];

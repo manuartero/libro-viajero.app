@@ -3,15 +3,7 @@ import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { ConfirmPanel } from "./confirm-panel.component";
 
-// The panel is always opened from a trigger that sits elsewhere on the page,
-// so the focus contract only means anything when it is exercised that way.
-function Harness({
-  onConfirm,
-}: {
-  onConfirm: () => void;
-  // Changing this re-renders the panel's parent without touching focus.
-  nonce?: number;
-}) {
+function Harness({ onConfirm }: { onConfirm: () => void; nonce?: number }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -80,9 +72,6 @@ describe("<ConfirmPanel />", () => {
     expect(document.activeElement).toBe(trigger);
   });
 
-  // The screens that host the panel re-render while it is open (ClassroomScreen
-  // does on editingId, confirmingRemove and project), so the focus contract has
-  // to survive that and not just the open and close.
   it("leaves focus where the teacher put it across a re-render", () => {
     const { rerender } = render(<Harness onConfirm={vi.fn()} nonce={0} />);
     openPanel();

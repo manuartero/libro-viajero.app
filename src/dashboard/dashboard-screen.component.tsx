@@ -39,11 +39,6 @@ type DashboardScreenProps = {
   onDownloadData: () => void;
 };
 
-// One pass over the class: every child lands either in a loan bucket or in
-// the bookless list. Partial repartos are allowed, so children without a
-// book are listed apart and never counted; a book that no longer exists puts
-// its child there too. A returned book stays in the bucket it was judged in
-// on the day it came back, so the card does not jump under the finger.
 function sortClass({ project, today }: { project: Project; today: Date }) {
   const loanWeeks = loanWeeksOf(project);
   const bookById = new Map(project.books.map((book) => [book.id, book]));
@@ -76,8 +71,6 @@ export function DashboardScreen({
   onRepartir,
   onDownloadData,
 }: DashboardScreenProps) {
-  // A child still reading whose card was tapped: the book is back before its
-  // Friday, which is unusual enough to ask before recording it.
   const [confirmingEarly, setConfirmingEarly] = useState<ChildLoan | null>(
     null,
   );
@@ -103,15 +96,10 @@ export function DashboardScreen({
 
   const { byStatus, bookless } = sortClass({ project, today: new Date() });
 
-  // The Friday check-in covers what should be back today: books due this
-  // week and books that should have been back already. A child still
-  // reading is not "missing", and never counts.
   const expected = [...byStatus.overdue, ...byStatus.due];
   const pending = expected.filter(({ loan }) => !loan.returnedOn);
   const returnedCount = expected.length - pending.length;
   const upcoming = upcomingFridays(byStatus.reading);
-  // Every book back on the tray, early returns included: what the next
-  // reparto has to hand on.
   const freedCount = LOAN_STATUSES.flatMap((status) => byStatus[status]).filter(
     ({ loan }) => loan.returnedOn,
   ).length;
@@ -121,9 +109,6 @@ export function DashboardScreen({
     setConfirmingEarly(null);
   };
 
-  // The tap on a card. On time or late it records the return outright — the
-  // teacher has the book in hand. Early it asks first. On a returned card it
-  // undoes, whatever the section.
   const toggle = (childLoan: ChildLoan) => {
     const { child, loan } = childLoan;
     if (loan.returnedOn) {
@@ -161,8 +146,6 @@ export function DashboardScreen({
 
         {LOAN_STATUSES.map((status) => (
           <Fragment key={status}>
-            {/* Directly above the "Sigue leyendo" grid, so it opens where the
-                tap was rather than a screenful of cards away from it. */}
             {status === "reading" && confirmingEarly && (
               <ConfirmPanel
                 label={`Devolución anticipada de ${confirmingEarly.child.tag}`}
@@ -194,9 +177,6 @@ export function DashboardScreen({
 
         <NextWeekPanel project={project} />
 
-        {/* The returned-books banner lives down here, not at the top: it
-            appears on the first tap of a check-in, and above the grid it
-            would push every card down under the teacher's finger. */}
         {bookless.length === 0 && freedCount > 0 && (
           <RepartirBanner
             text={returnedText(freedCount)}

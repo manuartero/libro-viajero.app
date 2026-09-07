@@ -11,11 +11,8 @@ import {
 import styles from "./week-summary.module.css";
 
 type WeekSummaryProps = {
-  // Books expected back this Friday — due or overdue — not yet checked in.
   pending: ChildLoan[];
-  // How many books were expected back this Friday in the first place.
   expectedCount: number;
-  // Later Fridays with the number of children reading until each one.
   upcoming: UpcomingFriday[];
 };
 
@@ -33,9 +30,6 @@ function upcomingLabel(count: number) {
   return `${pluralPeques(count)} vuelven el`;
 }
 
-// The chase list, in words: who still has to bring a book back, and when the
-// rest are due. The grid above is for tapping; this is what the teacher
-// reads out or types into the parents' chat.
 export function WeekSummary({
   pending,
   expectedCount,

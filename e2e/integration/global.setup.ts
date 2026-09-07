@@ -1,5 +1,4 @@
-// Called at module level in every spec. Must be idempotent: fullyParallel
-// runs it once per worker, and every spec in that worker calls it again.
+// Idempotent: every spec in a worker calls it.
 let done = false;
 
 export function globalSetup() {
@@ -7,7 +6,6 @@ export function globalSetup() {
     return;
   }
   done = true;
-  // Seeds compute "days ago" in Node; the browser runs in the same zone via
-  // `timezoneId` in playwright.config.ts, so both sides agree on the date.
+  // Seeds compute dates in Node; playwright.config.ts gives the browser the same zone.
   process.env.TZ ??= "Europe/Madrid";
 }

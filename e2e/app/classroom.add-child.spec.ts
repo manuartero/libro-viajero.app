@@ -23,7 +23,6 @@ test.describe("classroom: add child", () => {
     await expect(rana).toBeVisible();
     await expect.soft(classroomPage.dateline).toHaveText("La clase · 1 peque");
 
-    // Persistence is the feature: a new load reads the class back from storage.
     await classroomPage.goto();
     await expect.soft(rana).toBeVisible();
   });

@@ -2,10 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { EmojiPicker } from "src/classroom/emoji-picker.component";
 import { describe, expect, it, vi } from "vitest";
 
-// Arrow-key navigation and the single tab stop are the browser's, because
-// these are real <input type="radio"> in a real fieldset — there is no
-// roving-tabindex code here to test, and asserting jsdom's radio handling
-// would be testing the platform.
+// Arrow keys and the single tab stop are the browser's (real radios), so
+// they are not asserted here.
 const renderPicker = (props?: Partial<Parameters<typeof EmojiPicker>[0]>) => {
   const onPick = vi.fn();
   render(
@@ -62,9 +60,7 @@ describe("<EmojiPicker />", () => {
     expect(onPick).toHaveBeenCalledWith({ emoji: "🦊", name: "Zorro" });
   });
 
-  // Which row an emoji lands on, and whether opening on a chosen one scrolls
-  // the tray to it, are layout — jsdom has none, and setup.ts stubs
-  // scrollIntoView to a no-op. Checked in a real browser instead.
+  // Scrolling the tray to the chosen emoji is layout; jsdom has none.
   it("puts every emoji in one tray, with no panel to page through", () => {
     renderPicker();
 

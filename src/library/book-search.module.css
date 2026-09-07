@@ -58,8 +58,6 @@
   color: var(--ink-soft);
 }
 
-/* Sits in the slot the results list just vacated, so the collapse reads as a
-   handover rather than as the tap having done nothing. */
 .added {
   margin: 0;
   padding: 0.25rem 0 0.25rem 0.625rem;

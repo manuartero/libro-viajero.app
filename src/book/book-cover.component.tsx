@@ -8,8 +8,7 @@ type BookCoverProps = {
   size?: "small" | "medium";
 };
 
-// Decorative, like ChildAvatar: the cover always sits next to visible title
-// text, which is the accessible name.
+// Decorative: the visible title next to it is the accessible name.
 export function BookCover({
   title,
   coverUrl,

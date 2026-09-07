@@ -7,8 +7,6 @@ type TagFieldProps = {
   onChange: (tag: string) => void;
 };
 
-// The nickname defaults to the emoji's name. Typing one is a deliberate,
-// secondary action: the happy path never asks for a name at all.
 export function TagField({ tag, hasEmoji, onChange }: TagFieldProps) {
   const [changing, setChanging] = useState(false);
 
@@ -31,8 +29,6 @@ export function TagField({ tag, hasEmoji, onChange }: TagFieldProps) {
             aria-describedby="child-tag-hint"
             onChange={(event) => onChange(event.target.value)}
           />
-          {/* Described by the input, not just placed near it: the privacy rule
-              is the whole point of the field. */}
           <p id="child-tag-hint" className={styles.hint}>
             Nada de nombres reales: solo tú sabes quién es.
           </p>
@@ -41,9 +37,6 @@ export function TagField({ tag, hasEmoji, onChange }: TagFieldProps) {
 
       {!changing && (
         <>
-          {/* A term and its value, so "Apodo" labels something here too — in
-              edit mode it is a real <label>, and it should not degrade to a
-              floating paragraph just because the input is gone. */}
           <dl className={styles.tagPair}>
             <dt className={styles.tagLabel}>Apodo</dt>
 

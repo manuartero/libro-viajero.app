@@ -19,8 +19,7 @@ describe("coverColorFor()", () => {
     );
   });
 
-  // The only test here that catches a hash which stops telling books apart:
-  // both of the above still pass if every title comes back the same color.
+  // The tests above still pass if every title hashes to the same color.
   it("uses the whole palette across many titles", () => {
     const titles = Array.from({ length: 200 }, (_, index) => `Libro ${index}`);
     expect(new Set(titles.map(coverColorFor)).size).toBe(PALETTE_COLORS.length);

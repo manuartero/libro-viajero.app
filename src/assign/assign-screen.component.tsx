@@ -8,8 +8,6 @@ import { AssignmentRow } from "./assignment-row.component";
 import { BookTray } from "./book-tray.component";
 import { LoanWeeksPicker } from "./loan-weeks-picker.component";
 
-// A reparto is the pairs plus the class-wide loan length, saved together:
-// the loan length is asked here because handing books out is when it matters.
 export type Reparto = {
   pairs: AssignmentPairs;
   loanWeeks: LoanWeeks;
@@ -49,8 +47,7 @@ export function AssignScreen({
     <div className={styles.screen}>
       <Masthead
         name={project.name}
-        // Live: this count is the only feedback that a tap landed, and it
-        // changes without the teacher's focus moving anywhere near it.
+        // Live: the count is the only feedback that a tap landed.
         dateline={
           <span aria-live="polite">
             El reparto · {assignedCount} de {childList.length} con libro

@@ -15,7 +15,6 @@ const project = (overrides?: Partial<Project>): Project => ({
   ...overrides,
 });
 
-// Rana took Elmer home on Fri 4 Sep 2026 (week of Mon 31 Aug).
 const elmerLoan = {
   childId: "c1",
   bookId: "b1",
@@ -56,14 +55,12 @@ describe("loanLogOf()", () => {
       },
     ];
 
-    // Checked in and waiting for the next reparto...
     expect(
       loanLogOf({
         project: project({ currentAssignments: [returned] }),
         childId: "c1",
       }),
     ).toEqual(expected);
-    // ...reads the same once the reparto has closed it.
     expect(
       loanLogOf({ project: project({ history: [returned] }), childId: "c1" }),
     ).toEqual(expected);

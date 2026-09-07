@@ -1,7 +1,5 @@
 import type { AppData } from "src/app-data/app-data.model";
 
-// One phone, one teacher, one namespace. There are no accounts to key by.
-// This module is the storage schema: the whole AppData under this one key.
 const STORAGE_KEY = "libro-viajero";
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
@@ -19,8 +17,7 @@ export function getAppData(): AppData {
   try {
     raw = localStorage.getItem(STORAGE_KEY);
   } catch (error) {
-    // Storage blocked by the browser (private mode, cookie settings):
-    // the app still runs, it just won't persist.
+    // Storage blocked (private mode, cookie settings): run without persisting.
     console.error("libro-viajero: cannot read localStorage", error);
     return emptyAppData();
   }
@@ -34,9 +31,8 @@ export function getAppData(): AppData {
     parsed = undefined;
   }
   if (!isAppData(parsed)) {
-    // Unparseable or wrong-shaped entry: keep the raw payload under a backup
-    // key so a bad write stays recoverable, then boot fresh instead of
-    // crashing — the next save would otherwise overwrite it.
+    // Back the raw payload up before booting fresh: the next save would
+    // otherwise overwrite it.
     console.error(
       `libro-viajero: unreadable data at ${STORAGE_KEY}, backing it up`,
     );
@@ -55,7 +51,6 @@ export function saveAppData(data: AppData): boolean {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     return true;
   } catch (error) {
-    // Quota exhausted or storage blocked — the caller must tell the teacher.
     console.error("libro-viajero: cannot save app data", error);
     return false;
   }
