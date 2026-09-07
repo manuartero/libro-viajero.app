@@ -55,7 +55,7 @@ jobs:
     timeout-minutes: 10
     environment:
       name: production
-      url: ${{ steps.deploy.outputs.url }}
+      url: https://libro-viajero.app
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -78,5 +78,4 @@ jobs:
 
       - run: vercel build --prod
 
-      - id: deploy
-        run: echo "url=$(vercel deploy --prebuilt --prod)" >> "$GITHUB_OUTPUT"
+      - run: vercel deploy --prebuilt --prod
