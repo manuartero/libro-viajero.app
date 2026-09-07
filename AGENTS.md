@@ -1,36 +1,46 @@
-# AGENTS.md
+client-side React + TypeScript app for teachers running a "traveling book" classroom initiative.
+All data in `localStorage`.
+Docs:
 
-**libro-viajero.app** — client-side React + TypeScript app for teachers running a "traveling book" classroom initiative. All data in `localStorage`. Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [README.md](README.md) (setup & commands). Four docs, and no more — types are the source of truth for shapes, and a design for unwritten code lives in its repo issue, not in a file.
+- [VISION.md](VISION.md) (why)
+- [SPEC.md](SPEC.md) (stories, scope, build status)
+- [README.md](README.md) (setup & commands).
 
-## Decisions the code cannot tell you
+do not create more docs — types are the source of truth for shapes, and a design for unwritten code lives in its repo issue, not in a file.
+
+## Ground rules
 
 ### Mobile first (IMPORTANT)
 
-- Design for **360×800 CSS px** — reference device: **Xiaomi Redmi 15C**. All user testing happens on it. Desktop is the same layout centered with `max-width`, nothing else.
-- `dvh`, never `vh`. Touch targets ≥ 44×44px. No horizontal scroll, ever.
+- Design for **360×800 CSS px** — reference device: **Xiaomi Redmi 15C**. All user testing happens on it. Desktop is the same layout centered with `max-width`.
+- `dvh`, never `vh`.
+- Touch targets ≥ 44×44px.
+- No horizontal scroll.
 
 ### Language
 
-- **UI copy is Spanish; docs, code, and comments are English.**
+- UI copy is Spanish; docs, code, and comments are English.
 
-### Design language ("raw newsprint")
+### Design ("raw newsprint")
 
-- Hard `--ink` borders, `border-radius: 0`, uppercase letter-spaced datelines. No shadows, no gradients.
-- The palette in `src/palette/palette.json` is load-bearing by **membership** only: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children. Adding or reordering is free.
+- Hard `--ink` borders, `border-radius: 0`, uppercase letter-spaced datelines.
+- No shadows, no gradients.
+- The palette in `src/palette/palette.json` is load-bearing by **membership** only: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children.
 
 ### Dependencies
 
-- Runtime deps are `react`, `react-dom`, `@fontsource/besley`. Adding any library — router, state, UI kit, CSS-in-JS, HTTP, dates, utils — is a decision to raise first, not a convenience.
+- Runtime deps are `react`, `react-dom`, `@fontsource/besley`.
+- Adding any library — router, state, UI kit, CSS-in-JS, HTTP, dates, utils — is a decision: ask first.
 
-### Components
+### Conventions
 
 - No `class`, no `this`: plain functions, closures, function factories. `new` only for built-ins. The one exception is the React error boundary, which the framework forces to be a class.
-- **No ternaries in JSX.** Render with guards: `{cond && (…)}`, or two sibling guards for two branches. Numbers need an explicit test (`list.length > 0 &&`), or React renders the `0`. Branching that picks a *string* (a label, an `aria-label`) goes in a named helper with early returns, not inline in the markup.
+- **No ternaries in JSX.** Render with guards: `{cond && (…)}`, or two sibling guards for two branches. A branch that picks a string (a label, an `aria-label`) is a named helper with early returns.
 - **Comments are the exception.** A comment records what neither the code, the tests nor this file can say: a browser or React gotcha, a caveat about data persisted by an older version, a link to the issue that owns a placeholder. Never what a function, prop or handler does — rename it or split it instead. One or two lines; no section banners.
 
-### Platform before ARIA (IMPORTANT)
+### Platform before ARIA
 
-Reach for the element before the attribute. Both rules replaced hand-rolled versions that were longer and less correct in a real browser.
+Reach for the element before the attribute.
 
 - **Modals are `<dialog>` + `showModal()`** (`privacy-note`). `ConfirmPanel` is the deliberate exception: it renders inline with no backdrop, so trapping focus in it would be worse than not. Do not "unify" the two.
 - **Single-select is `<input type="radio">`** in a `fieldset` (`emoji-picker`, `color-picker`). `aria-pressed` is for genuine toggles only (`child-card`, `roster`). `role="radio"` on a `<button>` is not the answer.
@@ -39,10 +49,10 @@ Reach for the element before the attribute. Both rules replaced hand-rolled vers
 ### Folder layout
 
 - No `utils/`, `types/`, `helpers/` catch-alls, and no `types.ts`. Name folders by domain; every type lives in its domain module, even if that means more files.
-- `src/` root holds only the entry point, the composition root it mounts and the error boundary around it. There is no `src/app/`: a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`.
+- `src/` root holds only the entry point, the composition root it mounts and the error boundary around it. There is no `src/app/`.
 
 ### Testing
 
-- Two layers, no third. **Vitest + jsdom is the unit layer**: one module at a time, and `app.component.test.tsx` covers only the composition root's own wiring. **Playwright (`e2e/`) is the integration and end-to-end layer**: any flow that crosses screens or must survive a reload is a spec there, never a jsdom test.
-- Accessibility is the test contract: query by role + accessible name, then label or visible text, `getByTestId` last. If an element isn't reachable by role + name, fix the component. Never query by CSS class or DOM shape.
+- Two layers. Vitest + jsdom is the unit layer; Playwright (`e2e/`) is the integration and end-to-end layer: any flow that crosses screens or must survive a reload is a Playwright spec, never a jsdom test.
+- Accessibility is the test contract: query by role + accessible name, then label or visible text, `getByTestId()` last. If an element isn't reachable by role + name, fix the component. Never query by CSS class or DOM shape.
 - No test slop: no asserting static attributes or constants, no re-testing one code path with cosmetically different inputs, no testing platform behavior the code doesn't handle.
