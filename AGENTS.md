@@ -1,18 +1,13 @@
 # AGENTS.md
 
-**libro-viajero.app** — 100% client-side React + TypeScript app for teachers running a "traveling book" classroom initiative. Friday check-in: tap who returned their book, see who's missing, confirm next week's assignments. All data in `localStorage`.
+**libro-viajero.app** — client-side React + TypeScript app for teachers running a "traveling book" classroom initiative. All data in `localStorage`. Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [README.md](README.md) (setup & commands). Four docs, and no more — types are the source of truth for shapes, and a design for unwritten code lives in its repo issue, not in a file.
 
-Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build status) · [README.md](README.md) (setup & commands). Four docs, and no more — types are the source of truth for shapes, and a design for unwritten code lives in its repo issue, not in a file.
-
-## Standards
+## Decisions the code cannot tell you
 
 ### Mobile first (IMPORTANT)
 
-- Design for **360×800 CSS px** — reference device: **Xiaomi Redmi 15C** (6.9", 720×1600, DPR 2). All user testing happens on it.
-- Desktop is just the same layout centered: `max-width` + auto margins. Nothing else.
-- Media queries: `min-width` only.
-- Units: `rem` for type/spacing, `%`/flex/grid for layout, `dvh` (never `vh`) for viewport height, `clamp()` for fluid sizing. `px` only for borders/shadows.
-- Touch targets ≥ 44×44px. No horizontal scroll, ever.
+- Design for **360×800 CSS px** — reference device: **Xiaomi Redmi 15C**. All user testing happens on it. Desktop is the same layout centered with `max-width`, nothing else.
+- `dvh`, never `vh`. Touch targets ≥ 44×44px. No horizontal scroll, ever.
 
 ### Language
 
@@ -20,70 +15,33 @@ Docs: [VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories, scope, build 
 
 ### Design language ("raw newsprint")
 
-- Tokens in `src/styles/globals.css`: `--paper`/`--paper-dark` (ground), `--ink`/`--ink-soft` (text/borders), `--returned`/`--returned-dark` (green), `--missing` (red), `--font-body` (Helvetica), `--font-display` (Besley serif, 700).
-- Hard 2–3px `--ink` borders, `border-radius: 0` on buttons, uppercase letter-spaced datelines. No shadows, no gradients.
-- One 12-color palette for the whole app: `src/palette/palette.json`, read only by `palette.data.ts`, sorted by hue (warm → cool → neutral). Only its **membership** is load-bearing: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children on a color no swatch matches. Adding or reordering is free — order only picks which hue `nextUnusedColor()` hands out first.
+- Hard `--ink` borders, `border-radius: 0`, uppercase letter-spaced datelines. No shadows, no gradients.
+- The palette in `src/palette/palette.json` is load-bearing by **membership** only: `Child.color` is persisted as a raw hex, so dropping an entry strands existing children. Adding or reordering is free.
 
 ### Dependencies
 
-- Exact versions only (`save-exact=true`). Runtime deps are currently `react`, `react-dom`, `@fontsource/besley` — adding one is a decision, not a convenience.
-- **No**: react-router, Redux, Zustand, MUI, Tailwind, styled-components, Axios, date-fns, lodash, or any other library not listed.
-
-### Filenames
-
-- Always `kebab-case`. Never PascalCase or camelCase.
-- Pattern `<module>.<role>.ts(x)`: `storage.service.ts`, `child-avatar.component.tsx`, `open-library.service.test.ts`.
-- Every branch of `View` is a `*-screen.component.tsx` exporting a `*Screen`: `dashboard-screen`, `assign-screen`, `classroom-screen`, `library-screen`. `create-class` is not one — it renders from the `!activeProject` early return, outside the view switch.
-
-### Imports
-
-- Absolute `src/*` paths; relative only for same-folder files (e.g. `./child-avatar.module.css`).
-- `import type` for type-only imports.
-
-### Code style
-
-- `type` for data shapes; `interface` only for behavioral contracts (e.g. `Runnable { run() }`).
-- No `class`, no `this` — plain functions, closures, function factories. `new` only for built-ins (`Date`, `Map`, `Set`, `Error`, …). Exception: React error boundaries must be class components (`app-error-boundary.component.tsx`).
-- Let TypeScript infer return types; annotate only when inference fails or a public API needs it.
-- 2+ params → single destructured object param.
-- No `any`; use `unknown` if truly unknown.
+- Runtime deps are `react`, `react-dom`, `@fontsource/besley`. Adding any library — router, state, UI kit, CSS-in-JS, HTTP, dates, utils — is a decision to raise first, not a convenience.
 
 ### Components
 
-- Functional only.
-- Props type immediately above the component, named `{ComponentName}Props`. No `React.FC<>`.
-- **No ternaries in JSX.** Render with guards — `{cond && (…)}` for one branch, two sibling guards (`{empty && …}` / `{!empty && …}`) for both. Never `? … : null`, never a chained `? … : … ? …`. Numbers need an explicit test (`list.length > 0 &&`), or React renders the `0`.
-- Branching that picks a *string* (a label, an `aria-label`) goes in a named helper above the component with early returns — not inline in the markup.
-- A component that outgrows one screenful splits: lift the repeated row or the self-contained panel into its own `.component.tsx` + `.module.css` beside it.
-- Every screen opens with `<ProjectHeading />` (`src/project/`), which owns the one `<h1>`; sections below it start at `<h2>`. Never title a screen with a `<p>` — that leaves the document outline starting at level 2.
-- A DOM `id` referenced by `aria-labelledby`/`aria-describedby` comes from `useId()`, never a literal. Two instances of the same panel on one screen would otherwise collide.
+- **No ternaries in JSX.** Render with guards: `{cond && (…)}`, or two sibling guards for two branches. Numbers need an explicit test (`list.length > 0 &&`), or React renders the `0`. Branching that picks a *string* (a label, an `aria-label`) goes in a named helper with early returns, not inline in the markup.
+- Every screen opens with `<ProjectHeading />`, which owns the one `<h1>`; sections below start at `<h2>`. A DOM `id` referenced by `aria-labelledby`/`aria-describedby` comes from `useId()`, never a literal.
 
 ### Platform before ARIA (IMPORTANT)
 
-Reach for the element before the attribute. Both rules below replaced hand-rolled versions that were longer and less correct in a real browser.
+Reach for the element before the attribute. Both rules replaced hand-rolled versions that were longer and less correct in a real browser.
 
-- **Modals are `<dialog>` + `showModal()`** (`privacy-note.component.tsx`). It brings the focus trap, top-layer inertness, Escape, and focus restoration to the trigger — no `aria-modal`, no `role="dialog"`, no keydown listener, no refs for the trigger. `ConfirmPanel` is the deliberate exception and is *not* a dialog element: it renders inline in document flow with no backdrop, so trapping focus in it would be worse than not. Do not "unify" the two.
-- **Single-select is `<input type="radio">`** in a `fieldset` (`emoji-picker`, `color-picker`), which brings arrow-key navigation, wrap-around and one tab stop per group. `aria-pressed` is for genuine toggles only — `child-card` (returned or not), `roster` (which child is being edited). `role="radio"` on a `<button>` is not the answer; biome's `a11y/useSemanticElements` rejects it, and it makes you write the keyboard handling by hand.
-- jsdom implements neither: its `HTMLDialogElement` is an empty stub (`test/setup.ts` patches the two methods so a dialog can render), and `fireEvent` moves no focus. So platform behaviour is **not** unit-testable here — verify it in a real browser and delete the test rather than assert against the stub.
-
-### CSS
-
-- All styling in `.module.css` — inline `style` only for values computed at runtime (e.g. avatar/cover background color).
-- Custom properties in `:root` in `src/styles/globals.css`, imported once from `main.tsx`. No global class names outside it.
+- **Modals are `<dialog>` + `showModal()`** (`privacy-note`). `ConfirmPanel` is the deliberate exception: it renders inline with no backdrop, so trapping focus in it would be worse than not. Do not "unify" the two.
+- **Single-select is `<input type="radio">`** in a `fieldset` (`emoji-picker`, `color-picker`). `aria-pressed` is for genuine toggles only (`child-card`, `roster`). `role="radio"` on a `<button>` is not the answer.
+- jsdom implements neither, so platform behaviour is **not** unit-testable here: verify it in a real browser and delete the test rather than assert against the stub.
 
 ### Folder layout
 
-- No `utils/`, `types/`, `helpers/` catch-alls — and no `types.ts` either. Name folders by domain; every type lives in its domain module (`src/project/project.model.ts` defines `Project`), even if that means more files.
-- Accepted non-domain folders: `services/` (I/O), `styles/`, `lib/`, `palette/`.
-- `src/` root holds the entry point and the composition root it mounts, and nothing else: `main.tsx`, `app.component.tsx`, `app-error-boundary.component.tsx` (plus their CSS and `app.component.test.tsx`). There is no `src/app/` — a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`. So `Tab` / `View` and `TabBar` live in `src/navigation/`, and `useAppData` in `src/project/` beside the `AppData` type it persists.
-- Static data is a raw `.json` file read by one `.ts` module in the same folder (`avatar-catalog.json` → `avatar-catalog.data.ts`, `palette.json` → `palette.data.ts`). Nothing else imports the JSON, and the invariants are enforced by tests (`book.model.test.ts`), not by `as const satisfies`.
+- No `utils/`, `types/`, `helpers/` catch-alls, and no `types.ts`. Name folders by domain; every type lives in its domain module, even if that means more files.
+- `src/` root holds only the entry point and the composition root it mounts. There is no `src/app/`: a composition root is not a domain, and a folder named after the app is the same catch-all as `utils/`.
 
 ### Testing
 
-- Two layers, no third. **Vitest + jsdom is the unit layer**: one module at a time under `src/`, and `app.component.test.tsx` covers only the composition root's own wiring (which screen the view shows, what a failed save does to it). **Playwright (`e2e/`) is the integration and end-to-end layer**: any flow that crosses screens, hits `localStorage` through the UI, or must survive a reload is a spec there, in a real browser, never a jsdom test.
-- Co-located: `<module>.<role>.test.ts(x)` beside the source.
-- Outer `describe` encodes kind: `describe('foo()')`, `describe('<Foo />')`, `describe('foo{}')`.
-- Query as a user perceives the UI: role + accessible name → label/visible text → `getByTestId` as last resort. Never by CSS class or DOM shape.
-- Assert behavior and handler spies, not rendering detail. Hooks via `renderHook`.
-- Accessibility is the test contract: if an element isn't reachable by role + name, fix the component.
-- No test slop: no asserting static attributes or constants, no re-testing the same code path with cosmetically different inputs, no testing platform behavior the code doesn't handle.
+- Two layers, no third. **Vitest + jsdom is the unit layer**: one module at a time, and `app.component.test.tsx` covers only the composition root's own wiring. **Playwright (`e2e/`) is the integration and end-to-end layer**: any flow that crosses screens or must survive a reload is a spec there, never a jsdom test.
+- Accessibility is the test contract: query by role + accessible name, then label or visible text, `getByTestId` last. If an element isn't reachable by role + name, fix the component. Never query by CSS class or DOM shape.
+- No test slop: no asserting static attributes or constants, no re-testing one code path with cosmetically different inputs, no testing platform behavior the code doesn't handle.
