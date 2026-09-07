@@ -1,4 +1,5 @@
 import { useCallback, useId, useState } from "react";
+import type { CuratedEmoji } from "src/child/avatar-catalog.data";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { nextUnusedColor } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
@@ -64,6 +65,19 @@ export function ChildBuilder({
 
   const canSubmit = emoji !== null && tag.trim().length > 0;
 
+  const editTag = (next: string) => {
+    setTag(next);
+    setTagTouched(true);
+  };
+
+  // The emoji's name is the default tag, until the teacher types their own.
+  const selectEmoji = (picked: CuratedEmoji) => {
+    setEmoji(picked.emoji);
+    if (!tagTouched) {
+      setTag(picked.name);
+    }
+  };
+
   const submit = () => {
     if (emoji === null || !canSubmit) {
       return;
@@ -102,25 +116,13 @@ export function ChildBuilder({
             </span>
           )}
 
-          <TagField
-            tag={tag}
-            hasEmoji={emoji !== null}
-            onChange={(next) => {
-              setTag(next);
-              setTagTouched(true);
-            }}
-          />
+          <TagField tag={tag} hasEmoji={emoji !== null} onChange={editTag} />
         </div>
 
         <EmojiPicker
           selectedEmoji={emoji}
           usedEmojis={usedEmojis}
-          onPick={(picked) => {
-            setEmoji(picked.emoji);
-            if (!tagTouched) {
-              setTag(picked.name);
-            }
-          }}
+          onPick={selectEmoji}
         />
 
         <ColorPicker selected={color} onPick={setPickedColor} />

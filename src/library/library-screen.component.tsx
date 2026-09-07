@@ -36,6 +36,15 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
     }
   };
 
+  // A book at a child's home gets a confirm first; one on the shelf goes at once.
+  const requestRemove = (bookId: string) => {
+    if (readerOf(bookId)) {
+      setConfirmingRemove(project.books.find((b) => b.id === bookId) ?? null);
+      return;
+    }
+    remove(bookId);
+  };
+
   return (
     <div className={styles.screen}>
       <ProjectHeading
@@ -59,18 +68,7 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
 
         <BookSearch onAdd={(draft) => onUpdate(addBook({ project, draft }))} />
 
-        <Bookshelf
-          bookList={project.books}
-          onRemove={(bookId) => {
-            if (readerOf(bookId)) {
-              setConfirmingRemove(
-                project.books.find((b) => b.id === bookId) ?? null,
-              );
-              return;
-            }
-            remove(bookId);
-          }}
-        />
+        <Bookshelf bookList={project.books} onRemove={requestRemove} />
       </main>
     </div>
   );

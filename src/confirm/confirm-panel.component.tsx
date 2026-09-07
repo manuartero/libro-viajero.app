@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useId } from "react";
+import { type KeyboardEvent, type ReactNode, useCallback, useId } from "react";
 import styles from "./confirm-panel.module.css";
 
 type ConfirmPanelProps = {
@@ -39,6 +39,12 @@ export function ConfirmPanel({
     };
   }, []);
 
+  const cancelOnEscape = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      onCancel();
+    }
+  };
+
   return (
     <div
       ref={holdFocus}
@@ -47,11 +53,7 @@ export function ConfirmPanel({
       role="alertdialog"
       aria-label={label}
       aria-describedby={textId}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          onCancel();
-        }
-      }}
+      onKeyDown={cancelOnEscape}
     >
       <p id={textId} className={styles.confirmText}>
         {children}

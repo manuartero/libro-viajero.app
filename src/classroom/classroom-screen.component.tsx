@@ -55,6 +55,43 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
     }
   };
 
+  // A chip tap opens that child's card; tapping the open one closes it.
+  const toggleCard = (childId: string) => {
+    setConfirmingRemove(null);
+    setPanel((prev) => {
+      if (prev.status !== "adding" && prev.status !== "closed") {
+        if (prev.childId === childId) {
+          return { status: "closed" };
+        }
+      }
+      return { status: "viewing", childId };
+    });
+  };
+
+  const saveEdits = (child: Child) => {
+    if (onUpdate(saveChild({ project, child }))) {
+      view(child.id);
+    }
+  };
+
+  // A child with a book at home gets a confirm first; anyone else goes at once.
+  const requestRemove = (childId: string) => {
+    if (hasBook(childId)) {
+      const child = childList.find((c) => c.id === childId) ?? null;
+      setConfirmingRemove(child);
+      return;
+    }
+    remove(childId);
+  };
+
+  const leaveBuilder = () => {
+    if (editing) {
+      view(editing.id);
+      return;
+    }
+    close();
+  };
+
   return (
     <div className={styles.screen}>
       <ProjectHeading
@@ -66,17 +103,7 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
         <Roster
           childList={childList}
           selectedId={selected?.id ?? null}
-          onSelect={(childId) => {
-            setConfirmingRemove(null);
-            setPanel((prev) => {
-              if (prev.status !== "adding" && prev.status !== "closed") {
-                if (prev.childId === childId) {
-                  return { status: "closed" };
-                }
-              }
-              return { status: "viewing", childId };
-            });
-          }}
+          onSelect={toggleCard}
         />
 
         {/* Directly above the builder, so it opens where the "Quitar" tap was
@@ -112,26 +139,9 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
             // Stays in "adding": the setup burst is tap-emoji, tap-añadir,
             // twenty times over, and reopening the builder per child doubles it.
             onAdd={(draft) => onUpdate(addChild({ project, draft }))}
-            onSave={(child) => {
-              if (onUpdate(saveChild({ project, child }))) {
-                view(child.id);
-              }
-            }}
-            onRemove={(childId) => {
-              if (hasBook(childId)) {
-                const child = childList.find((c) => c.id === childId) ?? null;
-                setConfirmingRemove(child);
-                return;
-              }
-              remove(childId);
-            }}
-            onCancel={() => {
-              if (editing) {
-                view(editing.id);
-                return;
-              }
-              close();
-            }}
+            onSave={saveEdits}
+            onRemove={requestRemove}
+            onCancel={leaveBuilder}
           />
         )}
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import type { BookDraft } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import { type SearchState, useBookSearch } from "src/library/book-search.hook";
@@ -47,6 +47,18 @@ export function BookSearch({ onAdd }: BookSearchProps) {
     return true;
   };
 
+  // Typing a new title retires the "añadido" line: it confirmed the last tap.
+  const typeQuery = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setAddedTitle(null);
+  };
+
+  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAddedTitle(null);
+    runSearch(query);
+  };
+
   const openManual = () => {
     setManualTitle(query.trim());
     setManualAuthor("");
@@ -69,14 +81,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
 
   return (
     <div className={styles.search}>
-      <form
-        className={styles.form}
-        onSubmit={(event) => {
-          event.preventDefault();
-          setAddedTitle(null);
-          runSearch(query);
-        }}
-      >
+      <form className={styles.form} onSubmit={submitSearch}>
         <label className={styles.label} htmlFor="book-query">
           Busca un libro por título
         </label>
@@ -87,10 +92,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
             type="search"
             value={query}
             autoComplete="off"
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setAddedTitle(null);
-            }}
+            onChange={typeQuery}
           />
           <button
             type="submit"
