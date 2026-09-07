@@ -15,8 +15,6 @@ type ChildBuilderProps = {
   onAdd: (draft: ChildDraft) => void;
   onSave: (child: Child) => void;
   onRemove: (childId: string) => void;
-  // Leaves the builder, from either mode: "Cancelar" while editing, "Listo"
-  // once a run of additions is done.
   onCancel: () => void;
 };
 
@@ -51,16 +49,12 @@ export function ChildBuilder({
   );
   const titleId = useId();
 
-  // The builder sits below the roster, which is a screenful of chips on a full
-  // class: opening it — from the add bar or from a chip tap — has to bring it
-  // into view, or the tap looks like it did nothing. Stable identity is
-  // load-bearing for the reason ConfirmPanel documents: React re-attaches a ref
-  // whose callback changed, so an inline arrow would re-scroll on every render.
+  // Stable identity matters: React re-attaches a ref whose callback changed,
+  // so an inline arrow would re-scroll on every render.
   const scrollIn = useCallback((node: HTMLElement | null) => {
     node?.scrollIntoView({ block: "start" });
   }, []);
 
-  // Preselected so color is an optional tap: emoji + add is enough.
   const color = pickedColor ?? nextUnusedColor(usedColors);
 
   const canSubmit = emoji !== null && tag.trim().length > 0;
@@ -70,7 +64,6 @@ export function ChildBuilder({
     setTagTouched(true);
   };
 
-  // The emoji's name is the default tag, until the teacher types their own.
   const selectEmoji = (picked: CuratedEmoji) => {
     setEmoji(picked.emoji);
     if (!tagTouched) {
@@ -82,8 +75,7 @@ export function ChildBuilder({
     if (emoji === null || !canSubmit) {
       return;
     }
-    // maxLength on the input is advisory only — enforce the Child
-    // invariant (tag ≤ 20 chars) at the boundary too.
+    // maxLength on the input is advisory: pasted values can exceed it.
     const draft = { tag: tag.trim().slice(0, 20), emoji, color };
     if (editing) {
       onSave({ ...editing, ...draft });
@@ -94,8 +86,6 @@ export function ChildBuilder({
 
   return (
     <section ref={scrollIn} className={styles.panel} aria-labelledby={titleId}>
-      {/* Which mode you landed in is not obvious any more: you get here from
-          the add bar or from a chip tap, both of them above the fold. */}
       <h2 id={titleId} className={styles.title}>
         {builderTitle(editing)}
       </h2>

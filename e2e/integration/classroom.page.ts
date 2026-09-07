@@ -1,4 +1,3 @@
-// The "Clase" tab: the class list and the child builder (src/classroom/).
 import type { Page } from "@playwright/test";
 import { tabBar } from "./tab-bar.page";
 

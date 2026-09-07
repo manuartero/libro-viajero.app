@@ -5,30 +5,20 @@ import { isoDate, mondayOf } from "src/lib/week";
 import type { LoanWeeks } from "src/loan/loan.model";
 import type { SchoolYear } from "src/project/school-year.model";
 
-// One loan: a book at one child's home. Live while it sits in
-// currentAssignments; closed once it moves to history.
 export type Assignment = {
   childId: string;
   bookId: string;
   weekStart: string; // ISO date of that week's Monday
-  // ISO date of the day the book actually went home, for "4 días en casa".
-  // weekStart is the rotation's key and is Monday-normalised, so it can be
-  // up to six days early. Missing on assignments saved before it existed.
+  // The day it actually went home; weekStart is Monday-normalised, so up to
+  // six days earlier. Absent on assignments saved before this field existed.
   since?: string;
-  // ISO date of the day the book came back. A live assignment with it set is
-  // a book checked in and waiting for the next reparto to hand it on; a
-  // closed one without it is a loan that ended with the book still out.
+  // Set while live: checked in, waiting for the next reparto to close it.
+  // Absent once closed: the loan ended with the book still out.
   returnedOn?: string;
 };
 
-// A reparto in progress: childId -> bookId, before it becomes assignments.
 export type AssignmentPairs = Record<string, string>;
 
-// The inverse of distributeBooks(): flattens live assignments back into the
-// editable shape, so re-entering the reparto starts from the current state.
-// A returned book is not paired any more — it goes back on the tray and its
-// reader's row starts empty, which is what the reparto after a check-in is
-// for.
 export function pairsFrom(assignments: readonly Assignment[]): AssignmentPairs {
   const pairs: AssignmentPairs = {};
   for (const { childId, bookId, returnedOn } of assignments) {
@@ -44,24 +34,12 @@ export type Project = {
   name: string; // classroom name + short school year, e.g. "Clase Caracoles 2026/27"
   children: Child[];
   books: Book[];
-  // Invariant: one entry per assigned child. An unreturned book keeps its
-  // current assignment — the child holds it another week; only returned
-  // books rotate, and they rotate at the next reparto, which is when a
-  // returned assignment leaves this list.
   currentAssignments: Assignment[];
-  // Every loan that ended, oldest → newest: returned ones with their
-  // returnedOn, and ones dissolved with the book still out (a reparto moved
-  // on, the child or the book left) without. The class-list loan card reads
-  // it; nothing ever edits an entry.
-  history: Assignment[];
-  // How many Fridays a book stays out, for every child alike. Optional
-  // because projects saved before it existed have none; read it through
-  // loanWeeksOf(), never directly.
+  history: Assignment[]; // closed loans, oldest first, append-only
+  // Absent on projects saved before it existed; read through loanWeeksOf().
   loanWeeks?: LoanWeeks;
 };
 
-// A classroom's first state: named after the class and the running course,
-// with nothing in it yet. The only way a Project is born.
 export function createProject({
   classroomName,
   year,
@@ -79,12 +57,6 @@ export function createProject({
   };
 }
 
-// Pure mutations. Each returns a new Project; `history` is an append-only
-// log — an assignment leaving currentAssignments for any reason is closed
-// into it, never dropped.
-
-// Moves every live assignment that `ends` out of currentAssignments and onto
-// the end of history, in class order.
 function closeLoans({
   project,
   ends,
@@ -153,9 +125,6 @@ export function addBook({
   return { ...project, books: [...project.books, { ...draft, id: newId() }] };
 }
 
-// The check-in tap: the child handed the book back today. The assignment
-// stays live so the card keeps its place and a second tap can undo it; the
-// next reparto is what closes the loan.
 export function markReturned({
   project,
   childId,
@@ -192,14 +161,6 @@ export function undoReturn({
   };
 }
 
-// Replaces currentAssignments from a childId → bookId mapping (a reparto).
-// Guarantees the assignment invariants regardless of where `pairs` came from:
-// only live children and books, one book per child and one child per book
-// (first child in class order wins), and an unchanged pair keeps its dates
-// so rotation scoring and "días en casa" stay honest — a new or changed pair
-// starts counting from today. A returned book is never carried over, even
-// to the same child: that loan is done and goes to history along with every
-// pairing the reparto replaced.
 export function distributeBooks({
   project,
   pairs,

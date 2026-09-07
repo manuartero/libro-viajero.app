@@ -8,11 +8,8 @@ export type Book = {
   isbn?: string;
 };
 
-// identity is assigned on creation.
 export type BookDraft = Omit<Book, "id">;
 
-// Deterministic so a book keeps its placeholder color across renders and
-// reloads without the color ever being persisted.
 export function coverColorFor(title: string): string {
   let sum = 0;
   for (const char of title) {

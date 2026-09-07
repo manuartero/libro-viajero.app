@@ -23,9 +23,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Two across at 360px: enough room for a large avatar with a cover beside
-   it, a nickname and a title on one line each. Desktop is the same two
-   columns inside the screen's max-width, as the rest of the app. */
 .grid {
   list-style: none;
   margin: 0;

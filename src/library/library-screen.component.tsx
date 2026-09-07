@@ -10,13 +10,11 @@ import styles from "./library-screen.module.css";
 
 type LibraryScreenProps = {
   project: Project;
-  // Returns whether the update persisted; on false the screen keeps its
-  // transient UI (confirm panel) so the action stays retryable.
+  // Whether the save persisted; on false the confirm stays for a retry.
   onUpdate: (project: Project) => boolean;
 };
 
 export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
-  // A book that is at a child's home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Book | null>(null);
 
   const readerOf = (bookId: string) => {
@@ -36,7 +34,6 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
     }
   };
 
-  // A book at a child's home gets a confirm first; one on the shelf goes at once.
   const requestRemove = (bookId: string) => {
     if (readerOf(bookId)) {
       setConfirmingRemove(project.books.find((b) => b.id === bookId) ?? null);

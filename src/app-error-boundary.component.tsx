@@ -9,8 +9,6 @@ type AppErrorBoundaryState = {
   hasError: boolean;
 };
 
-// React error boundaries can only be class components — the one place the
-// project's "no class" rule yields to the framework.
 export class AppErrorBoundary extends Component<
   AppErrorBoundaryProps,
   AppErrorBoundaryState

@@ -5,6 +5,5 @@ export type PaletteColor = {
   name: string;
 };
 
-// The app's only palette, sorted by hue (warm → cool → neutral). Adding and
-// removing entries is not free — see AGENTS.md § Design language.
+// Removing an entry strands persisted children — see AGENTS.md § Design language.
 export const PALETTE: readonly PaletteColor[] = palette;

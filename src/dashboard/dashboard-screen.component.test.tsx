@@ -53,7 +53,6 @@ const renderDashboard = ({
     />,
   );
 
-// The assignments the screen asked to save, from the last onUpdate call.
 const savedAssignments = (onUpdate: ReturnType<typeof vi.fn>) => {
   const [saved] = onUpdate.mock.lastCall as [Project];
   return saved.currentAssignments;
@@ -102,7 +101,6 @@ describe("<DashboardScreen />", () => {
       onRepartir,
     });
 
-    // Zorro and Búho never took a book home: out of the count, no card.
     expect(screen.getByRole("status").textContent).toContain("0/1");
     expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
     expect(screen.queryByRole("button", { name: /Zorro/ })).toBeNull();
@@ -132,7 +130,6 @@ describe("<DashboardScreen />", () => {
       "Sigue leyendo1 libro",
     ]);
 
-    // Overdue and due are expected today; Zorro is still reading and is not.
     expect(screen.getByRole("status").textContent).toContain("0/2");
     expect(screen.getByText("Faltan 2 de 2")).toBeDefined();
     expect(
@@ -152,7 +149,6 @@ describe("<DashboardScreen />", () => {
       screen.getByRole("button", { name: "Búho — La oruga glotona" }),
     );
 
-    // Late or on time alike: the teacher has the book in hand, no questions.
     expect(screen.queryByRole("alertdialog")).toBeNull();
     expect(onUpdate).toHaveBeenCalledTimes(2);
     expect(savedAssignments(onUpdate)).toContainEqual({
@@ -198,7 +194,6 @@ describe("<DashboardScreen />", () => {
       },
     });
 
-    // Zorro brought the book back early: the card shows it, the count does not.
     expect(
       screen
         .getByRole("button", { name: "Zorro — El Grúfalo" })
@@ -281,7 +276,6 @@ describe("<DashboardScreen />", () => {
       onRepartir,
     });
 
-    // The early return counts too: that book is on the tray as well.
     expect(screen.getByText("2 libros devueltos")).toBeDefined();
     fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
     expect(onRepartir).toHaveBeenCalledTimes(1);

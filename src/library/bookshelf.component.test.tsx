@@ -22,7 +22,6 @@ describe("<Bookshelf />", () => {
     );
 
     expect(screen.getByText("David McKee")).toBeDefined();
-    // Duplicate titles are legit (two physical copies) — both rows render.
     expect(
       screen.getAllByRole("button", { name: "Elmer, quitar" }),
     ).toHaveLength(2);

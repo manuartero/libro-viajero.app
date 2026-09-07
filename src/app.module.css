@@ -4,8 +4,7 @@
   flex-direction: column;
 }
 
-/* The content area is the scrollport: screens' sticky headers and footers
-   stick to it, and the tab bar below never scrolls away. */
+/* The scrollport: sticky headers stick to this, not to the viewport. */
 .content {
   flex: 1;
   min-height: 0;
@@ -14,9 +13,8 @@
   flex-direction: column;
 }
 
-/* The classroom builder scrolls itself into view when it opens. CSS owns the
-   motion — scrollIntoView({ block: "start" }) states the intent and nothing
-   else — so honouring reduced motion costs no JS and no matchMedia. */
+/* scrollIntoView() calls state the intent; CSS owns the motion, so reduced
+   motion needs no matchMedia. */
 @media (prefers-reduced-motion: no-preference) {
   .content {
     scroll-behavior: smooth;

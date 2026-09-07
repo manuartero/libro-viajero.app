@@ -1,6 +1,5 @@
-// Seeds the app's "backend": the one localStorage key. The init script runs
-// before the app on every navigation but only writes when the key is absent,
-// so a second goto() keeps what the app itself persisted in between.
+// The init script only writes when the key is absent, so a second goto()
+// keeps what the app persisted in between.
 import type { Page } from "@playwright/test";
 import type { AppData } from "src/app-data/app-data.model";
 import type { Book } from "src/book/book.model";
@@ -51,8 +50,7 @@ export function classroomOf({
   return { projects: [project], activeProjectId: project.id };
 }
 
-// A book that went home `daysAgo` days ago. Three weeks back is overdue on
-// any weekday and for either loan length.
+// Three weeks back is overdue on any weekday and for either loan length.
 export function loanFromDaysAgo({
   child,
   book,

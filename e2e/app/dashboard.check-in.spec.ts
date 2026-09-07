@@ -46,12 +46,10 @@ test.describe("dashboard: check-in", () => {
       .soft(dashboardPage.returnCounter)
       .toHaveAccessibleName("1 de 1 libros devueltos");
 
-    // The return is saved on the spot, not held until some later confirm.
     await page.reload();
     await expect(
       dashboardPage.loanCard({ tag: "Rana", title: "Elmer", pressed: true }),
     ).toBeVisible();
-    // A book on the tray is the reparto's cue, and the dashboard says so.
     await expect
       .soft(dashboardPage.returnedBanner)
       .toHaveText("1 libro devuelto");

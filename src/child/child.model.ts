@@ -7,7 +7,6 @@ export type Child = {
   color: string;
 };
 
-// A child being composed in the setup flow: identity is assigned on creation.
 export type ChildDraft = Omit<Child, "id">;
 
 export function pluralPeques(count: number) {
@@ -17,7 +16,6 @@ export function pluralPeques(count: number) {
   return `${count} peques`;
 }
 
-// Walks the shared palette front-to-back, so early children get distinct hues.
 export function nextUnusedColor(usedColors: readonly string[]) {
   const unused = PALETTE.find(({ color }) => !usedColors.includes(color));
   return (unused ?? PALETTE[usedColors.length % PALETTE.length]).color;

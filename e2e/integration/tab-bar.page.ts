@@ -1,4 +1,3 @@
-// The tab bar is shared by every tabbed screen, so its locators live once.
 import type { Page } from "@playwright/test";
 
 export function tabBar(page: Page) {

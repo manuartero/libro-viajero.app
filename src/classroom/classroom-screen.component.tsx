@@ -11,10 +11,8 @@ import type { Project } from "src/project/project.model";
 import { addChild, removeChild, saveChild } from "src/project/project.model";
 import styles from "./classroom-screen.module.css";
 
-// What sits under the roster is one surface with four states: nothing, the
-// add form, a child's loan card, or that child's edit form. A union rather
-// than a `selectedId` plus flags, because "adding while a card is open" is
-// not a state this screen can be in and separate booleans would allow it.
+// A union rather than `selectedId` plus flags: "adding while a card is open"
+// is not a state this screen can be in.
 type Panel =
   | { status: "closed" }
   | { status: "adding" }
@@ -28,7 +26,6 @@ type ClassroomScreenProps = {
 
 export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
   const [panel, setPanel] = useState<Panel>({ status: "closed" });
-  // A child with a book at home is only removed after an explicit confirm.
   const [confirmingRemove, setConfirmingRemove] = useState<Child | null>(null);
 
   const childList = project.children;
@@ -42,7 +39,6 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
   const usedColors = others.map((child) => child.color);
 
   const close = () => setPanel({ status: "closed" });
-  // Back to the card the edit form was opened from.
   const view = (childId: string) => setPanel({ status: "viewing", childId });
 
   const hasBook = (childId: string) =>
@@ -55,7 +51,6 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
     }
   };
 
-  // A chip tap opens that child's card; tapping the open one closes it.
   const toggleCard = (childId: string) => {
     setConfirmingRemove(null);
     setPanel((prev) => {
@@ -74,7 +69,6 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
     }
   };
 
-  // A child with a book at home gets a confirm first; anyone else goes at once.
   const requestRemove = (childId: string) => {
     if (hasBook(childId)) {
       const child = childList.find((c) => c.id === childId) ?? null;
@@ -106,8 +100,6 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
           onSelect={toggleCard}
         />
 
-        {/* Directly above the builder, so it opens where the "Quitar" tap was
-            rather than a screenful of chips away from it. */}
         {confirmingRemove && (
           <ConfirmPanel
             label={`Quitar a ${confirmingRemove.tag}`}
@@ -136,8 +128,6 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
             usedEmojis={usedEmojis}
             usedColors={usedColors}
             editing={editing}
-            // Stays in "adding": the setup burst is tap-emoji, tap-añadir,
-            // twenty times over, and reopening the builder per child doubles it.
             onAdd={(draft) => onUpdate(addChild({ project, draft }))}
             onSave={saveEdits}
             onRemove={requestRemove}
@@ -145,8 +135,6 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
           />
         )}
 
-        {/* Reading a card is not filling a form: the add bar stays put under
-            it, so checking on one peque mid-setup costs no extra tap. */}
         {(panel.status === "closed" || panel.status === "viewing") && (
           <button
             type="button"

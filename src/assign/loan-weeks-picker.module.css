@@ -22,8 +22,6 @@
   gap: 0.5rem;
 }
 
-/* The label is the chip and the whole chip is the hit area; the radio inside
-   keeps focus, the arrow keys and the "one of these" semantics. */
 .chip {
   position: relative;
   display: grid;
@@ -47,8 +45,7 @@
   color: var(--paper);
 }
 
-/* Hidden with opacity rather than display:none so it stays focusable and the
-   browser keeps its keyboard handling. */
+/* opacity, not display:none: it must stay focusable for the arrow keys. */
 .chipInput {
   position: absolute;
   inset: 0;

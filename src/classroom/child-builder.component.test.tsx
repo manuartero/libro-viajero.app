@@ -142,8 +142,6 @@ describe("<ChildBuilder />", () => {
 
     fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     changeNickname();
-    // maxLength on the input is advisory — a programmatic/paste value can
-    // exceed it, so the boundary enforcement is at submit.
     fireEvent.change(screen.getByLabelText("Apodo"), {
       target: { value: "a".repeat(25) },
     });

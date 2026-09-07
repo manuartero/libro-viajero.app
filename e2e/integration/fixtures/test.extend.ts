@@ -1,5 +1,4 @@
-// Every spec imports { test, expect } from here — never from
-// '@playwright/test' directly.
+// Specs import { test, expect } from here, never from '@playwright/test'.
 import { test as base } from "@playwright/test";
 import { type ApiRoutes, createApiRoutes } from "../api.routes";
 import { type AssignPage, createAssignPage } from "../assign.page";
@@ -21,8 +20,6 @@ type CustomFixtures = {
 };
 
 export const test = base.extend<CustomFixtures>({
-  // `auto: true` — the backend is mocked in every test, even one that never
-  // names `apiRoutes`.
   apiRoutes: [
     async ({ page, baseURL }, use) => {
       const api = await createApiRoutes({

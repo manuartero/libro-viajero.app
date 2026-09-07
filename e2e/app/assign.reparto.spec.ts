@@ -23,7 +23,6 @@ test.describe("assign: reparto", () => {
     await dashboardPage.goto();
 
     await dashboardPage.repartirButton.click();
-    // The reparto is full-screen: the tab bar steps aside.
     await expect.soft(assignPage.tabBar.root).toBeHidden();
 
     await assignPage.loanWeeksOption("2 semanas").check();

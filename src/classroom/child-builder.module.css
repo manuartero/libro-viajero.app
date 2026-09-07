@@ -1,12 +1,8 @@
-/* The builder is a titled section like the roster above it, so the outline
-   below the h1 is "La lista de clase" then this. */
 .panel {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-  /* The screen's header is sticky, so scrolling this panel to the top of the
-     scrollport parks its title underneath it. Clearing the header (~64px) plus
-     a little air is the platform's own job — no offset maths in the ref. */
+  /* Clears the sticky header (~64px) when scrollIntoView parks this at the top. */
   scroll-margin-top: 4.75rem;
 }
 

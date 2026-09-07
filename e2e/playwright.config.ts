@@ -5,9 +5,8 @@ const baseURL = process.env.BASE_URL ?? "http://localhost:5173";
 
 export default defineConfig({
   testDir: "./app",
-  // Explicit, so both land beside this config: the defaults resolve against
-  // the nearest package.json instead, which is the repo root. The Docker
-  // volumes and .gitignore both point here.
+  // Explicit: the defaults resolve against the repo root's package.json, and
+  // the Docker volumes and .gitignore point here.
   outputDir: "./test-results",
   fullyParallel: true,
   forbidOnly: CI,
@@ -23,14 +22,11 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
-    // The app formats dates itself in es-ES; the zone must match the one the
-    // seeds are computed in (global.setup.ts).
+    // Must match the zone the seeds are computed in (global.setup.ts).
     locale: "es-ES",
     timezoneId: "Europe/Madrid",
   },
   projects: [
-    // Mobile first: the reference device is 360×800 CSS px at DPR 2
-    // (AGENTS.md). Pixel 7 supplies the touch/mobile flags.
     {
       name: "mobile",
       use: {

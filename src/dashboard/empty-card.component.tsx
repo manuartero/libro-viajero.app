@@ -2,10 +2,6 @@ import type { Tab } from "src/navigation/navigation.model";
 import type { Project } from "src/project/project.model";
 import styles from "./empty-card.module.css";
 
-// The setup journey, as a chain of empty states: first the class needs
-// children, then books, then a first reparto — then the check-in proper.
-// Returns null once the project is ready, which is what tells the screen to
-// render the dashboard instead.
 export function emptyStateFor({
   project,
   onNavigate,

@@ -49,7 +49,6 @@ const baseProject = (): Project => ({
   history: [closedLoan],
 });
 
-// Caracol had Elmer the week before and brought it back on the Friday.
 const closedLoan = {
   childId: "c1",
   bookId: "b2",
@@ -185,8 +184,6 @@ describe("distributeBooks()", () => {
     const project = baseProject();
     const next = distributeBooks({ project, pairs: { c1: "b2" } });
 
-    // Zorro's Elmer goes to Caracol, so both old loans end with no return
-    // recorded: Caracol's Grúfalo was dropped, Zorro's Elmer was taken.
     expect(next.history).toEqual([
       closedLoan,
       { childId: "c1", bookId: "b1", weekStart: "2026-08-31" },

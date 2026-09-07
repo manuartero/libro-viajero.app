@@ -53,7 +53,6 @@ describe("useBookSearch()", () => {
         { key: expect.any(String), draft: { title: "Elmer" } },
       ],
     });
-    // Duplicate titles are legitimate, so the keys must still differ.
     const { results } = result.current.search as { results: { key: string }[] };
     expect(new Set(results.map(({ key }) => key)).size).toBe(2);
   });

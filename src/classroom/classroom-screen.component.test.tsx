@@ -47,8 +47,6 @@ describe("<ClassroomScreen />", () => {
       screen.getByRole("button", { name: "Añadir peque a la clase" }),
     );
 
-    // Two taps per child, twenty children: reopening the builder for each one
-    // is the whole reason this is a disclosure and not a dialog.
     expect(
       screen.getByRole("button", { name: "Añadir peque a la clase" }),
     ).toBeDefined();
@@ -80,7 +78,6 @@ describe("<ClassroomScreen />", () => {
 
     expect(screen.getByText("Elmer")).toBeDefined();
     expect(screen.queryAllByRole("radio")).toHaveLength(0);
-    // The add bar stays: reading a card should not cost a tap to add.
     expect(
       screen.getByRole("button", { name: "Añadir un peque" }),
     ).toBeDefined();
@@ -157,7 +154,6 @@ describe("<ClassroomScreen />", () => {
     const next = onUpdate.mock.calls[0][0];
     expect(next.children).toHaveLength(0);
     expect(next.currentAssignments).toHaveLength(0);
-    // The loan ends with the book still out, on record rather than lost.
     expect(next.history).toEqual(withBook.currentAssignments);
     expect(screen.queryByText(/tiene un libro en casa/)).toBeNull();
   });
@@ -175,7 +171,6 @@ describe("<ClassroomScreen />", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
 
     expect(onUpdate).toHaveBeenCalledTimes(1);
-    // Still in edit mode with the typed tag intact — nothing to retype.
     const input: HTMLInputElement = screen.getByLabelText("Apodo");
     expect(input.value).toBe("Ranita");
     expect(screen.getByRole("button", { name: "Guardar" })).toBeDefined();

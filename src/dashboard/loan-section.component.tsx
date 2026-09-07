@@ -42,9 +42,6 @@ function titleClass(status: LoanStatus) {
   return styles.title;
 }
 
-// One status, one heading, one grid. The status is the structure of the
-// dashboard: the teacher reads the situation from the outline, so an empty
-// status renders no section rather than a heading over nothing.
 export function LoanSection({ status, loans, onToggle }: LoanSectionProps) {
   const titleId = useId();
 

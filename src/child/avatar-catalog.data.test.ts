@@ -13,8 +13,6 @@ describe("EMOJI_PANELS{}", () => {
     }
   });
 
-  // A repeat would collide as a React key and would read as "already in use"
-  // on both cells the moment one child takes it.
   it("has no duplicate emojis across panels", () => {
     const emojis = EMOJI_PANELS.flatMap((panel) =>
       panel.emojis.map(({ emoji }) => emoji),

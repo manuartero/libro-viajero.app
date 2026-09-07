@@ -30,8 +30,6 @@ function metaLabel(loan: Loan) {
   return daysAtHomeLabel(loan.daysAtHome);
 }
 
-// One tap toggles "came back". The name stays child + book so it reads the
-// same in every state; how long the book has been out is the description.
 export function ChildCard({ child, book, loan, onToggle }: ChildCardProps) {
   const metaId = useId();
   const returned = Boolean(loan.returnedOn);
@@ -45,9 +43,6 @@ export function ChildCard({ child, book, loan, onToggle }: ChildCardProps) {
       aria-describedby={metaId}
       onClick={onToggle}
     >
-      {/* The child holding the book: the cover sits behind the avatar's lower
-          edge, and the returned stamp lands on the cover — it is the book
-          that came back. */}
       <span className={styles.figure}>
         <ChildAvatar emoji={child.emoji} color={child.color} size="large" />
         <span className={styles.coverSlot}>

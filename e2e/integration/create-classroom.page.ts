@@ -1,5 +1,3 @@
-// The create-classroom screen: what a fresh install boots into (src/project/).
-// Describes the page — locators and intent-level helpers. No assertions here.
 import type { Page } from "@playwright/test";
 
 export function createCreateClassroomPage(page: Page) {

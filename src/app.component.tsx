@@ -16,8 +16,6 @@ export function App() {
     useAppData();
   const [view, setView] = useState<View>("semana");
 
-  // Leave the reparto only when it actually persisted; on a failed save the
-  // flow stays mounted so no tap is lost.
   const confirmReparto = ({ pairs, loanWeeks }: Reparto) => {
     if (!activeProject) {
       return;

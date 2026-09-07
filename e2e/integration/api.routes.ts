@@ -1,7 +1,5 @@
-// Mocks the whole backend — for this app, Open Library and its covers CDN.
-// Anything cross-origin that no handler claims is aborted and logged: an
-// aborted request is usually a missing mock, and a silent abort turns into
-// a flaky "element not found" three tests later.
+// Unclaimed cross-origin requests are aborted and logged: a silent abort
+// turns into a flaky "element not found" three tests later.
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Page, Route } from "@playwright/test";
@@ -37,8 +35,6 @@ function fulfillFromFile({
   });
 }
 
-// `baseURL` is Playwright's built-in fixture — the dev server the app itself
-// is served from.
 export async function createApiRoutes({
   page,
   baseURL,
@@ -49,12 +45,10 @@ export async function createApiRoutes({
   const appOrigin = new URL(baseURL).origin;
   let searchVariant: SearchVariant = "ok";
 
-  // FIRST: Playwright runs matching handlers in reverse registration order,
-  // so the specific handlers below win and this one only sees what nothing
-  // else claimed.
+  // Registered first: Playwright tries handlers in reverse registration
+  // order, so this one only sees what nothing below claimed.
   await page.route("**/*", (route) => {
     const url = new URL(route.request().url());
-    // The app's own bundle, CSS and fonts come from the dev server.
     if (url.origin === appOrigin || url.protocol === "data:") {
       return route.fallback();
     }
@@ -79,16 +73,13 @@ export async function createApiRoutes({
     return fulfillFromFile({ route, file: "open-library-search.json" });
   });
 
-  // Every cover URL the mock JSON references → a placeholder of the same
-  // size. Open Library's "-M" covers are 180 px wide. Keep the mapping
-  // explicit; a regex that "matches any image" hides missing placeholders.
+  // Explicit per size; a regex that matches any image hides missing placeholders.
   await page.route(`${COVERS_ORIGIN}/b/id/*-M.jpg*`, (route) =>
     fulfillFromFile({ route, file: "image180x270.jpg" }),
   );
 
   return {
     search: {
-      /** Swap the search response for the rest of this test. */
       respondWith(variant: SearchVariant) {
         searchVariant = variant;
       },

@@ -7,9 +7,6 @@ type BooklessListProps = {
   childList: Child[];
 };
 
-// The peques a partial reparto left out. Deliberately not interactive: there
-// is nothing to check in for a child who took no book home, and the check-in
-// count must not include them.
 export function BooklessList({ childList }: BooklessListProps) {
   const titleId = useId();
 

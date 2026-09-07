@@ -27,7 +27,6 @@ export function daysBetween({ from, to }: { from: string; to: string }) {
   return Math.round(ms / 86_400_000);
 }
 
-// Assignment.weekStart is the ISO date of that week's Monday.
 export function mondayOf(date = new Date()): string {
   const monday = new Date(date);
   const day = monday.getDay(); // 0 = Sunday → previous Monday

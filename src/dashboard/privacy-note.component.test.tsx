@@ -2,12 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { describe, expect, it, vi } from "vitest";
 
-// The focus contract — focus into the dialog on open, back to the trigger on
-// close, Tab held inside, Escape cancelling — now belongs to the platform,
-// and jsdom implements none of it (its HTMLDialogElement is an empty stub).
-// Asserting it against the stub in test/setup.ts would only assert the stub,
-// so those four checks live in a real browser instead. What is left here is
-// the part this component still decides.
+// The focus contract (trap, Escape, return to trigger) is the platform's and
+// jsdom stubs <dialog>, so it is checked in a real browser, not here.
 const openNote = () => {
   fireEvent.click(
     screen.getByRole("button", { name: "Tus datos y privacidad" }),

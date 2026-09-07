@@ -5,13 +5,10 @@ import { type SearchState, useBookSearch } from "src/library/book-search.hook";
 import styles from "./book-search.module.css";
 
 type BookSearchProps = {
-  // Returns whether the book was saved. On false the search results and the
-  // manual form stay as they are, so the tap stays retryable.
+  // Whether the save persisted; on false the form stays for a retry.
   onAdd: (draft: BookDraft) => boolean;
 };
 
-// After a search that found nothing, the manual route is the obvious next
-// step rather than a hint.
 function manualToggleLabel(status: SearchState["status"]) {
   if (status === "empty" || status === "error") {
     return "Añadirlo a mano";
@@ -34,9 +31,6 @@ export function BookSearch({ onAdd }: BookSearchProps) {
   const [manualAuthor, setManualAuthor] = useState("");
   const { search, runSearch, clearSearch } = useBookSearch();
 
-  // The shelf below is the real confirmation, but it grows downwards and is
-  // off-screen on a phone once a few books are on it. This line stays until
-  // the next title is typed, so the tap has a visible ending either way.
   const add = (draft: BookDraft) => {
     if (!onAdd(draft)) {
       return false;
@@ -47,7 +41,6 @@ export function BookSearch({ onAdd }: BookSearchProps) {
     return true;
   };
 
-  // Typing a new title retires the "añadido" line: it confirmed the last tap.
   const typeQuery = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setAddedTitle(null);

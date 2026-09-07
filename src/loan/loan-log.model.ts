@@ -1,23 +1,15 @@
 import type { Book } from "src/book/book.model";
 import type { Assignment, Project } from "src/project/project.model";
 
-// Where one loan on a child's record ended up.
-//   reading    — the live assignment: the book is at home right now.
-//   returned   — checked in, whether the loan has closed yet or is still
-//                waiting for the next reparto.
-//   unreturned — the loan ended with the book still out: a reparto or a
-//                removal replaced it before the book came back.
+// "returned" covers a checked-in book whether or not the next reparto has
+// closed the loan yet; "unreturned" is a loan that ended with the book out.
 export type LoanRecordStatus = "reading" | "returned" | "unreturned";
 
-// One book a child took home: a line on their loan card.
 export type LoanRecord = {
   // Missing when the book has since been removed from the library.
   book: Book | undefined;
-  // ISO date the book went home. Assignments saved before `since` existed
-  // only know their Monday, the closest thing on record.
   since: string;
   status: LoanRecordStatus;
-  // ISO date the book was checked back in; only when returned.
   returnedOn?: string;
 };
 
@@ -37,8 +29,6 @@ function statusOf({
   return "unreturned";
 }
 
-// Every book a child has taken home, newest first: the closed loans in
-// history plus the live assignment, which is always the newest line.
 export function loanLogOf({
   project,
   childId,

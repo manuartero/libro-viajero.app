@@ -13,7 +13,6 @@ test.describe("create classroom", () => {
     await createClassroomPage.nameField.fill("Los Caracoles");
     await createClassroomPage.createButton.click();
 
-    // Precondition for the rest: the class exists and the dashboard is up.
     await expect(dashboardPage.heading).toHaveText(
       /^Los Caracoles \d{4}\/\d{2}$/,
     );

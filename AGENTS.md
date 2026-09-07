@@ -26,6 +26,7 @@
 
 - No `class`, no `this`: plain functions, closures, function factories. `new` only for built-ins. The one exception is the React error boundary, which the framework forces to be a class.
 - **No ternaries in JSX.** Render with guards: `{cond && (…)}`, or two sibling guards for two branches. Numbers need an explicit test (`list.length > 0 &&`), or React renders the `0`. Branching that picks a *string* (a label, an `aria-label`) goes in a named helper with early returns, not inline in the markup.
+- **Comments are the exception.** A comment records what neither the code, the tests nor this file can say: a browser or React gotcha, a caveat about data persisted by an older version, a link to the issue that owns a placeholder. Never what a function, prop or handler does — rename it or split it instead. One or two lines; no section banners.
 
 ### Platform before ARIA (IMPORTANT)
 

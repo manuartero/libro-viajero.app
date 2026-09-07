@@ -11,8 +11,8 @@ const loadAppData = (): AppData => {
   if (stored.projects.length === 0 || hasActive) {
     return stored;
   }
-  // Dangling activeProjectId: projects exist but the pointer matches none.
-  // Self-heal to the first project instead of impersonating a fresh install.
+  // Dangling activeProjectId: heal to the first project rather than boot as
+  // a fresh install.
   console.error("libro-viajero: activeProjectId matches no project, healing");
   const healed: AppData = {
     ...stored,
@@ -29,10 +29,8 @@ export function useAppData() {
   const activeProject =
     appData.projects.find((p) => p.id === appData.activeProjectId) ?? null;
 
-  // On a failed save the state stays pre-mutation so nothing on screen
-  // pretends to be persisted. Callers get the outcome back so they can keep
-  // transient UI (forms, dialogs, the reparto) alive instead of tearing it
-  // down over a change that never landed.
+  // A failed save leaves state untouched; the boolean lets callers keep
+  // transient UI (forms, the reparto) alive for a retry.
   const persist = (next: AppData) => {
     if (!saveAppData(next)) {
       setSaveFailed(true);
@@ -57,7 +55,5 @@ export function useAppData() {
       ),
     });
 
-  // `appData` is exposed whole for "Descargar mis datos": the export is the
-  // storage value verbatim, not a view of the active project.
   return { appData, activeProject, saveFailed, createProject, updateProject };
 }
