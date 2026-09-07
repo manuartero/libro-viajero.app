@@ -10,6 +10,7 @@ export function createDashboardPage(page: Page) {
     repartirButton: page.getByRole("button", { name: "Repartir libros" }),
     returnCounter: page.getByRole("status", { name: /libros devueltos/ }),
     booklessBanner: page.getByText(/peques? sin libro/),
+    returnedBanner: page.getByText(/^\d+ libros? devueltos?$/),
     // Loan sections are titled by status: "No volvió el viernes pasado",
     // "Vuelve este viernes", "Sigue leyendo" (and their plurals).
     loanSection: (title: RegExp) => page.getByRole("region", { name: title }),

@@ -51,8 +51,14 @@ test.describe("dashboard: check-in", () => {
     await expect(
       dashboardPage.loanCard({ tag: "Rana", title: "Elmer", pressed: true }),
     ).toBeVisible();
+    // A book on the tray is the reparto's cue, and the dashboard says so.
+    await expect
+      .soft(dashboardPage.returnedBanner)
+      .toHaveText("1 libro devuelto");
+    await expect.soft(dashboardPage.repartirButton).toBeVisible();
 
     await card.click();
+    await expect.soft(dashboardPage.returnedBanner).toBeHidden();
     await expect
       .soft(
         dashboardPage.loanCard({ tag: "Rana", title: "Elmer", pressed: false }),
