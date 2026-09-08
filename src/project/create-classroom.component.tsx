@@ -1,13 +1,16 @@
 import { type FormEvent, useState } from "react";
+import type { AppData } from "src/app-data/app-data.model";
+import { RestoreBackup } from "src/backup/restore-backup.component";
 import { createProject, type Project } from "src/project/project.model";
 import { currentSchoolYear } from "src/project/school-year.model";
 import styles from "./create-classroom.module.css";
 
 type CreateClassroomProps = {
   onCreate: (project: Project) => void;
+  onRestore: (appData: AppData) => boolean;
 };
 
-export function CreateClassroom({ onCreate }: CreateClassroomProps) {
+export function CreateClassroom({ onCreate, onRestore }: CreateClassroomProps) {
   const [classroomName, setClassroomName] = useState("");
 
   const year = currentSchoolYear();
@@ -45,6 +48,10 @@ export function CreateClassroom({ onCreate }: CreateClassroomProps) {
         <button type="submit" className={styles.create} disabled={!canCreate}>
           Crear la clase
         </button>
+        <RestoreBackup
+          prompt="¿Ya tenías una clase en otro teléfono?"
+          onRestore={onRestore}
+        />
       </footer>
     </form>
   );

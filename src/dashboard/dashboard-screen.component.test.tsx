@@ -50,6 +50,7 @@ const renderDashboard = ({
       onNavigate={onNavigate}
       onRepartir={onRepartir}
       onDownloadData={() => {}}
+      onRestoreData={() => true}
     />,
   );
 

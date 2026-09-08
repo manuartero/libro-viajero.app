@@ -35,6 +35,18 @@ pnpm blue-ball         # lint + test + build — run before pushing
 
 No environment variables, no API keys. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the three suites as separate jobs on every pull request to `main`; the e2e job runs the same Docker image as `pnpm test:e2e:docker`.
 
+### Sample classrooms
+
+[`samples/`](samples/) holds three downloaded copies, each eight children and twelve books, to try the restore with ("Recuperar una copia") or to fill a phone for a demo. Nicknames and avatars only, no real children; covers come from Open Library.
+
+| File | Class | What it shows |
+| --- | --- | --- |
+| `long-history-2026-06-19.json` | Las Ardillas 2025/26 | Last year's class: a full course of history, five books back and three still out since June, so every loan is overdue today |
+| `new-classroom-2026-09-07.json` | Los Caracoles 2026/27 | The course just started: two weeks per book, one trial round in the history, two newcomers without a book yet |
+| `mixed-week-2026-09-08.json` | Los Búhos 2026/27 | Every dashboard section at once: overdue, due this Friday, reading, two early returns, one book that never came home |
+
+The date stays at the end of each name because the restore preview reads "Copia del…" from it. Dates are absolute, so the third file was built for the week of 7 September 2026 and its sections drift as weeks pass. `src/backup/samples.test.ts` keeps the three restorable as the model moves on.
+
 ---
 
 ## Releasing

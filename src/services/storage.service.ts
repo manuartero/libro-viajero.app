@@ -1,15 +1,15 @@
-import type { AppData } from "src/app-data/app-data.model";
+import { type AppData, parseAppData } from "src/app-data/app-data.model";
 
 const STORAGE_KEY = "libro-viajero";
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
 
-const isAppData = (value: unknown): value is AppData => {
-  if (typeof value !== "object" || value === null) {
-    return false;
+const stashRaw = (raw: string) => {
+  try {
+    localStorage.setItem(`${STORAGE_KEY}:backup-${Date.now()}`, raw);
+  } catch {
+    // Backup is best-effort; without space the original stays in place.
   }
-  const candidate = value as Partial<AppData>;
-  return Array.isArray(candidate.projects) && "activeProjectId" in candidate;
 };
 
 export function getAppData(): AppData {
@@ -30,20 +30,17 @@ export function getAppData(): AppData {
   } catch {
     parsed = undefined;
   }
-  if (!isAppData(parsed)) {
+  const data = parseAppData(parsed);
+  if (!data) {
     // Back the raw payload up before booting fresh: the next save would
     // otherwise overwrite it.
     console.error(
       `libro-viajero: unreadable data at ${STORAGE_KEY}, backing it up`,
     );
-    try {
-      localStorage.setItem(`${STORAGE_KEY}:backup-${Date.now()}`, raw);
-    } catch {
-      // Backup is best-effort; without space the original stays in place.
-    }
+    stashRaw(raw);
     return emptyAppData();
   }
-  return parsed;
+  return data;
 }
 
 export function saveAppData(data: AppData): boolean {
@@ -53,5 +50,17 @@ export function saveAppData(data: AppData): boolean {
   } catch (error) {
     console.error("libro-viajero: cannot save app data", error);
     return false;
+  }
+}
+
+export function backUpAppData() {
+  let raw: string | null;
+  try {
+    raw = localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return;
+  }
+  if (raw) {
+    stashRaw(raw);
   }
 }

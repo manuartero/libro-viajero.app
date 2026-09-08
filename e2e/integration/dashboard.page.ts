@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { restoreBackup } from "./restore-backup.page";
 import { tabBar } from "./tab-bar.page";
 
 export function createDashboardPage(page: Page) {
@@ -25,6 +26,11 @@ export function createDashboardPage(page: Page) {
         exact: true,
         pressed,
       }),
+    privacyNote: {
+      trigger: page.getByRole("button", { name: "Tus datos y privacidad" }),
+      dialog: page.getByRole("dialog", { name: "Tus datos" }),
+      restore: restoreBackup(page),
+    },
     async goto() {
       await page.goto("/");
     },

@@ -107,6 +107,27 @@ describe("useAppData()", () => {
     errorLog.mockRestore();
   });
 
+  it("replaces everything with a restored copy and keeps the old class as a backup", () => {
+    const { result } = renderHook(() => useAppData());
+    act(() => result.current.createProject(project("p1")));
+
+    act(() => {
+      result.current.replaceAppData({
+        projects: [project("restored")],
+        activeProjectId: "restored",
+      });
+    });
+
+    expect(result.current.activeProject?.id).toBe("restored");
+    const stored = JSON.parse(localStorage.getItem("libro-viajero") ?? "null");
+    expect(stored.projects.map((p: Project) => p.id)).toEqual(["restored"]);
+    const backupKey = Object.keys(localStorage).find((key) =>
+      key.startsWith("libro-viajero:backup-"),
+    );
+    const backup = JSON.parse(localStorage.getItem(backupKey ?? "") ?? "null");
+    expect(backup.projects[0].id).toBe("p1");
+  });
+
   it("self-heals a dangling activeProjectId", () => {
     localStorage.setItem(
       "libro-viajero",

@@ -12,13 +12,25 @@ const openNote = () => {
 
 describe("<PrivacyNote />", () => {
   it("stays closed until the teacher asks", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
+    render(
+      <PrivacyNote
+        projectName="Los Caracoles 2026/27"
+        onDownloadData={() => {}}
+        onRestoreData={() => true}
+      />,
+    );
 
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("opens a dialog that states the privacy promise", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
+    render(
+      <PrivacyNote
+        projectName="Los Caracoles 2026/27"
+        onDownloadData={() => {}}
+        onRestoreData={() => true}
+      />,
+    );
 
     openNote();
 
@@ -30,7 +42,13 @@ describe("<PrivacyNote />", () => {
 
   it("hands the download over to the caller", () => {
     const onDownloadData = vi.fn();
-    render(<PrivacyNote onDownloadData={onDownloadData} />);
+    render(
+      <PrivacyNote
+        projectName="Los Caracoles 2026/27"
+        onDownloadData={onDownloadData}
+        onRestoreData={() => true}
+      />,
+    );
 
     openNote();
     fireEvent.click(
@@ -41,7 +59,13 @@ describe("<PrivacyNote />", () => {
   });
 
   it("closes with the button", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
+    render(
+      <PrivacyNote
+        projectName="Los Caracoles 2026/27"
+        onDownloadData={() => {}}
+        onRestoreData={() => true}
+      />,
+    );
 
     openNote();
     fireEvent.click(screen.getByRole("button", { name: "Cerrar" }));
@@ -50,7 +74,13 @@ describe("<PrivacyNote />", () => {
   });
 
   it("keeps the panel out of reach while it is closed", () => {
-    render(<PrivacyNote onDownloadData={() => {}} />);
+    render(
+      <PrivacyNote
+        projectName="Los Caracoles 2026/27"
+        onDownloadData={() => {}}
+        onRestoreData={() => true}
+      />,
+    );
 
     expect(
       screen.queryByRole("button", { name: "Descargar mis datos" }),
