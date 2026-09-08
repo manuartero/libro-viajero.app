@@ -1,11 +1,19 @@
 import { useId, useRef } from "react";
+import type { AppData } from "src/app-data/app-data.model";
+import { RestoreBackup } from "src/backup/restore-backup.component";
 import styles from "./privacy-note.module.css";
 
 type PrivacyNoteProps = {
+  projectName: string;
   onDownloadData: () => void;
+  onRestoreData: (appData: AppData) => boolean;
 };
 
-export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
+export function PrivacyNote({
+  projectName,
+  onDownloadData,
+  onRestoreData,
+}: PrivacyNoteProps) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -14,6 +22,14 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
     dialog?.showModal();
     // Focus the prose, not the first button (which is the download).
     dialog?.focus();
+  };
+
+  const restoreAndClose = (appData: AppData) => {
+    const restored = onRestoreData(appData);
+    if (restored) {
+      dialogRef.current?.close();
+    }
+    return restored;
   };
 
   return (
@@ -58,6 +74,7 @@ export function PrivacyNote({ onDownloadData }: PrivacyNoteProps) {
         >
           Descargar mis datos
         </button>
+        <RestoreBackup replacing={projectName} onRestore={restoreAndClose} />
         <button
           type="button"
           className={styles.close}

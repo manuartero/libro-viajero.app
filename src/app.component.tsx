@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAppData } from "src/app-data/app-data.hook";
+import type { AppData } from "src/app-data/app-data.model";
 import { AssignScreen, type Reparto } from "src/assign/assign-screen.component";
 import { ClassroomScreen } from "src/classroom/classroom-screen.component";
 import { DashboardScreen } from "src/dashboard/dashboard-screen.component";
@@ -12,8 +13,14 @@ import { downloadAppData } from "src/services/export.service";
 import styles from "./app.module.css";
 
 export function App() {
-  const { appData, activeProject, saveFailed, createProject, updateProject } =
-    useAppData();
+  const {
+    appData,
+    activeProject,
+    saveFailed,
+    createProject,
+    updateProject,
+    replaceAppData,
+  } = useAppData();
   const [view, setView] = useState<View>("semana");
 
   const confirmReparto = ({ pairs, loanWeeks }: Reparto) => {
@@ -29,6 +36,14 @@ export function App() {
     }
   };
 
+  const restoreAppData = (data: AppData) => {
+    if (!replaceAppData(data)) {
+      return false;
+    }
+    setView("semana");
+    return true;
+  };
+
   const saveError = saveFailed && (
     <p role="alert" className={styles.saveError}>
       No se pudo guardar los cambios. Libera espacio o sal del modo privado y
@@ -40,7 +55,7 @@ export function App() {
     return (
       <>
         {saveError}
-        <CreateClassroom onCreate={createProject} />
+        <CreateClassroom onCreate={createProject} onRestore={restoreAppData} />
       </>
     );
   }
@@ -56,6 +71,7 @@ export function App() {
             onNavigate={setView}
             onRepartir={() => setView("repartir")}
             onDownloadData={() => downloadAppData(appData)}
+            onRestoreData={restoreAppData}
           />
         )}
 

@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import type { AppData } from "src/app-data/app-data.model";
 import type { Child } from "src/child/child.model";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BooklessList } from "src/dashboard/bookless-list.component";
@@ -37,6 +38,7 @@ type DashboardScreenProps = {
   onNavigate: (tab: Tab) => void;
   onRepartir: () => void;
   onDownloadData: () => void;
+  onRestoreData: (appData: AppData) => boolean;
 };
 
 function sortClass({ project, today }: { project: Project; today: Date }) {
@@ -70,19 +72,24 @@ export function DashboardScreen({
   onNavigate,
   onRepartir,
   onDownloadData,
+  onRestoreData,
 }: DashboardScreenProps) {
   const [confirmingEarly, setConfirmingEarly] = useState<ChildLoan | null>(
     null,
   );
   const emptyState = emptyStateFor({ project, onNavigate, onRepartir });
+  const privacyNote = (
+    <PrivacyNote
+      projectName={project.name}
+      onDownloadData={onDownloadData}
+      onRestoreData={onRestoreData}
+    />
+  );
 
   if (emptyState) {
     return (
       <div className={styles.screen}>
-        <Masthead
-          name={project.name}
-          after={<PrivacyNote onDownloadData={onDownloadData} />}
-        />
+        <Masthead name={project.name} after={privacyNote} />
         <main className={styles.main}>
           <EmptyCard
             text={emptyState.text}
@@ -131,7 +138,7 @@ export function DashboardScreen({
             {expected.length > 0 && (
               <ReturnCounter returned={returnedCount} total={expected.length} />
             )}
-            <PrivacyNote onDownloadData={onDownloadData} />
+            {privacyNote}
           </div>
         }
       />

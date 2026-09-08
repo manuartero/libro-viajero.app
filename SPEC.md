@@ -15,7 +15,6 @@
 - Offline-first / PWA / installable app
 - More than one active project at a time
 - Book lending tracking beyond the current week; book ratings; ISBN scanning
-- Importing a downloaded `libro-viajero-*.json` (new phone, next year's teacher) — future work
 
 ---
 
@@ -27,11 +26,14 @@ Status: ✅ shipped · 🚧 placeholder · ❌ not built.
 
 One phone = one teacher = one localStorage key (`src/services/storage.service.ts`). The only network traffic is the Open Library search and its cover images, enforced by a Content-Security-Policy injected at build time (`src/lib/csp.ts`).
 
+A downloaded copy restores from wherever the teacher is: the first screen on a new phone, or the "Tus datos" sheet on a phone that already holds a class. Either way the copy is previewed (class, date, headcount) and confirmed before anything is written, and the class it replaces is kept under a `libro-viajero:backup-*` key rather than deleted (`src/backup/`).
+
 |   ID   |                                                 Story                                                  | Status |
 | ------ | ------------------------------------------------------------------------------------------------------ | ------ |
 | PRIV-1 | As a teacher, I can open the app and pick up where I left off, with no account and no sign-in          | ✅     |
 | PRIV-2 | As a teacher, I can read in plain words, from the dashboard, what leaves my phone (nothing I don't know about) | ✅     |
 | PRIV-3 | As a teacher, I can download a copy of all my data as a file, whenever I want                         | ✅     |
+| PRIV-4 | As a teacher, I can restore a downloaded copy on this phone, seeing what is in it before it replaces what I have | ✅     |
 
 ### Project Setup — ✅ shipped
 

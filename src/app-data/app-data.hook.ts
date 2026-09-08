@@ -1,7 +1,11 @@
 import { useState } from "react";
 import type { AppData } from "src/app-data/app-data.model";
 import type { Project } from "src/project/project.model";
-import { getAppData, saveAppData } from "src/services/storage.service";
+import {
+  backUpAppData,
+  getAppData,
+  saveAppData,
+} from "src/services/storage.service";
 
 const loadAppData = (): AppData => {
   const stored = getAppData();
@@ -55,5 +59,19 @@ export function useAppData() {
       ),
     });
 
-  return { appData, activeProject, saveFailed, createProject, updateProject };
+  const replaceAppData = (next: AppData) => {
+    if (appData.projects.length > 0) {
+      backUpAppData();
+    }
+    return persist(next);
+  };
+
+  return {
+    appData,
+    activeProject,
+    saveFailed,
+    createProject,
+    updateProject,
+    replaceAppData,
+  };
 }
