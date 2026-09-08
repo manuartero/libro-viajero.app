@@ -1,0 +1,813 @@
+{
+  "projects": [
+    {
+      "id": "project-ardillas-2025-26",
+      "name": "Las Ardillas 2025/26",
+      "children": [
+        {
+          "id": "child-rana",
+          "tag": "Rana",
+          "emoji": "🐸",
+          "color": "#8ac926"
+        },
+        {
+          "id": "child-zorro",
+          "tag": "Zorro",
+          "emoji": "🦊",
+          "color": "#f3722c"
+        },
+        {
+          "id": "child-buho",
+          "tag": "Búho",
+          "emoji": "🦉",
+          "color": "#6a4c93"
+        },
+        {
+          "id": "child-erizo",
+          "tag": "Erizo",
+          "emoji": "🦔",
+          "color": "#b5838d"
+        },
+        {
+          "id": "child-luna",
+          "tag": "Luna",
+          "emoji": "🌙",
+          "color": "#4267ac"
+        },
+        {
+          "id": "child-fresa",
+          "tag": "Fresa",
+          "emoji": "🍓",
+          "color": "#ff595e"
+        },
+        {
+          "id": "child-cohete",
+          "tag": "Cohete",
+          "emoji": "🚀",
+          "color": "#1982c4"
+        },
+        {
+          "id": "child-robot",
+          "tag": "Robot",
+          "emoji": "🤖",
+          "color": "#8d99ae"
+        }
+      ],
+      "books": [
+        {
+          "id": "book-elmer",
+          "title": "Elmer",
+          "author": "David McKee",
+          "coverUrl": "https://covers.openlibrary.org/b/id/430501-M.jpg?default=false",
+          "isbn": "9780099697206"
+        },
+        {
+          "id": "book-el-monstruo-de-colores",
+          "title": "El monstruo de colores",
+          "author": "Anna Llenas",
+          "coverUrl": "https://covers.openlibrary.org/b/id/14567182-M.jpg?default=false",
+          "isbn": "9788419401601"
+        },
+        {
+          "id": "book-adivina-cuanto-te-quiero",
+          "title": "Adivina cuánto te quiero",
+          "author": "Sam McBratney",
+          "coverUrl": "https://covers.openlibrary.org/b/id/12334862-M.jpg?default=false",
+          "isbn": "9788417074104"
+        },
+        {
+          "id": "book-la-pequena-oruga-glotona",
+          "title": "La pequeña oruga glotona",
+          "author": "Eric Carle",
+          "coverUrl": "https://covers.openlibrary.org/b/id/11196825-M.jpg?default=false",
+          "isbn": "9788416126866"
+        },
+        {
+          "id": "book-donde-viven-los-monstruos",
+          "title": "Donde viven los monstruos",
+          "author": "Maurice Sendak"
+        },
+        {
+          "id": "book-a-que-sabe-la-luna",
+          "title": "¿A qué sabe la luna?",
+          "author": "Michael Grejniec",
+          "coverUrl": "https://covers.openlibrary.org/b/id/5276132-M.jpg?default=false",
+          "isbn": "9788495123619"
+        },
+        {
+          "id": "book-el-grufalo",
+          "title": "El grúfalo",
+          "author": "Julia Donaldson",
+          "coverUrl": "https://covers.openlibrary.org/b/id/13109392-M.jpg?default=false",
+          "isbn": "9788469667729"
+        },
+        {
+          "id": "book-el-pez-arcoiris",
+          "title": "El pez arcoíris",
+          "author": "Marcus Pfister",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7397328-M.jpg?default=false",
+          "isbn": "9788448821913"
+        },
+        {
+          "id": "book-frederick",
+          "title": "Frederick",
+          "author": "Leo Lionni",
+          "coverUrl": "https://covers.openlibrary.org/b/id/254689-M.jpg?default=false",
+          "isbn": "9782211069144"
+        },
+        {
+          "id": "book-nadarin",
+          "title": "Nadarín",
+          "author": "Leo Lionni",
+          "coverUrl": "https://covers.openlibrary.org/b/id/14499833-M.jpg?default=false",
+          "isbn": "9781417682461"
+        },
+        {
+          "id": "book-pequeno-azul-y-pequeno-amarillo",
+          "title": "Pequeño azul y pequeño amarillo",
+          "author": "Leo Lionni",
+          "coverUrl": "https://covers.openlibrary.org/b/id/12747495-M.jpg?default=false",
+          "isbn": "9786079589400"
+        },
+        {
+          "id": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "title": "El topo que quería saber quién se había hecho aquello en su cabeza",
+          "author": "Werner Holzwarth",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7279974-M.jpg?default=false",
+          "isbn": "9788420443355"
+        }
+      ],
+      "currentAssignments": [
+        {
+          "childId": "child-rana",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12",
+          "returnedOn": "2026-06-19"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12",
+          "returnedOn": "2026-06-19"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12",
+          "returnedOn": "2026-06-19"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-elmer",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12",
+          "returnedOn": "2026-06-19"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12",
+          "returnedOn": "2026-06-19"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-adivina-cuanto-te-quiero",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2026-06-08",
+          "since": "2026-06-12"
+        }
+      ],
+      "history": [
+        {
+          "childId": "child-rana",
+          "bookId": "book-elmer",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-10"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-10"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-adivina-cuanto-te-quiero",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-09"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-10"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-10"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-a-que-sabe-la-luna",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-13"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-10"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2025-09-29",
+          "since": "2025-10-03",
+          "returnedOn": "2025-10-10"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-24"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-23"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-a-que-sabe-la-luna",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-24"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-24"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-27"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-frederick",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-24"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-nadarin",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2025-10-13",
+          "since": "2025-10-17",
+          "returnedOn": "2025-10-24"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-13"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-14"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-frederick",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-14"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-nadarin",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-17"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-14"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-14"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-elmer",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-14"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2025-11-03",
+          "since": "2025-11-07",
+          "returnedOn": "2025-11-14"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-nadarin",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-28"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-28"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-12-01"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-elmer",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-28"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-28"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-adivina-cuanto-te-quiero",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-28"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-28"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2025-11-17",
+          "since": "2025-11-21",
+          "returnedOn": "2025-11-27"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-elmer",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-19"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-22"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-adivina-cuanto-te-quiero",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-19"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-19"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-a-que-sabe-la-luna",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-19"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-18"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2025-12-08",
+          "since": "2025-12-12",
+          "returnedOn": "2025-12-19"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-26"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-23"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-a-que-sabe-la-luna",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-23"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-23"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-23"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-frederick",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-22"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-23"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2026-01-12",
+          "since": "2026-01-16",
+          "returnedOn": "2026-01-23"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-13"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-13"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-frederick",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-13"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-13"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-12"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-13"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-elmer",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-13"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2026-02-02",
+          "since": "2026-02-06",
+          "returnedOn": "2026-02-16"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-06"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-06"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-elmer",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-05"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-06"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-adivina-cuanto-te-quiero",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-06"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-09"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2026-02-23",
+          "since": "2026-02-27",
+          "returnedOn": "2026-03-06"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-elmer",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-27"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-27"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-adivina-cuanto-te-quiero",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-26"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-27"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-27"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-a-que-sabe-la-luna",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-30"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-27"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2026-03-16",
+          "since": "2026-03-20",
+          "returnedOn": "2026-03-27"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-la-pequena-oruga-glotona",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-01"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-donde-viven-los-monstruos",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-04-30"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-a-que-sabe-la-luna",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-01"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-01"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-04"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-frederick",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-01"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-01"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2026-04-20",
+          "since": "2026-04-24",
+          "returnedOn": "2026-05-01"
+        },
+        {
+          "childId": "child-rana",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-21"
+        },
+        {
+          "childId": "child-zorro",
+          "bookId": "book-el-pez-arcoiris",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-22"
+        },
+        {
+          "childId": "child-buho",
+          "bookId": "book-frederick",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-22"
+        },
+        {
+          "childId": "child-erizo",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-25"
+        },
+        {
+          "childId": "child-luna",
+          "bookId": "book-pequeno-azul-y-pequeno-amarillo",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-22"
+        },
+        {
+          "childId": "child-fresa",
+          "bookId": "book-el-topo-que-queria-saber-quien-se-habia-",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15"
+        },
+        {
+          "childId": "child-cohete",
+          "bookId": "book-elmer",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-22"
+        },
+        {
+          "childId": "child-robot",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2026-05-11",
+          "since": "2026-05-15",
+          "returnedOn": "2026-05-22"
+        }
+      ],
+      "loanWeeks": 1
+    }
+  ],
+  "activeProjectId": "project-ardillas-2025-26"
+}

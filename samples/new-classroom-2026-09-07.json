@@ -1,0 +1,226 @@
+{
+  "projects": [
+    {
+      "id": "project-caracoles-2026-27",
+      "name": "Los Caracoles 2026/27",
+      "children": [
+        {
+          "id": "child-panda",
+          "tag": "Panda",
+          "emoji": "🐼",
+          "color": "#8d99ae"
+        },
+        {
+          "id": "child-tigre",
+          "tag": "Tigre",
+          "emoji": "🐯",
+          "color": "#f3722c"
+        },
+        {
+          "id": "child-conejo",
+          "tag": "Conejo",
+          "emoji": "🐰",
+          "color": "#f49cbb"
+        },
+        {
+          "id": "child-pulpo",
+          "tag": "Pulpo",
+          "emoji": "🐙",
+          "color": "#6a4c93"
+        },
+        {
+          "id": "child-sol",
+          "tag": "Sol",
+          "emoji": "🌞",
+          "color": "#ffca3a"
+        },
+        {
+          "id": "child-arcoiris",
+          "tag": "Arcoíris",
+          "emoji": "🌈",
+          "color": "#98c1d9"
+        },
+        {
+          "id": "child-osito",
+          "tag": "Osito",
+          "emoji": "🧸",
+          "color": "#b5838d"
+        },
+        {
+          "id": "child-tren",
+          "tag": "Tren",
+          "emoji": "🚂",
+          "color": "#52a675"
+        }
+      ],
+      "books": [
+        {
+          "id": "book-cocorico",
+          "title": "Cocorico",
+          "author": "Marisa Núñez",
+          "coverUrl": "https://covers.openlibrary.org/b/id/3334861-M.jpg?default=false",
+          "isbn": "9788496573246"
+        },
+        {
+          "id": "book-un-bicho-extrano",
+          "title": "Un bicho extraño",
+          "author": "Mon Daporta",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7281663-M.jpg?default=false",
+          "isbn": "9788496957671"
+        },
+        {
+          "id": "book-la-cebra-camila",
+          "title": "La cebra Camila",
+          "author": "Marisa Núñez",
+          "coverUrl": "https://covers.openlibrary.org/b/id/5007638-M.jpg?default=false",
+          "isbn": "9788495123602"
+        },
+        {
+          "id": "book-el-punto",
+          "title": "El punto",
+          "author": "Peter Reynolds"
+        },
+        {
+          "id": "book-ines-del-reves",
+          "title": "Inés del revés",
+          "author": "Anita Jeram",
+          "coverUrl": "https://covers.openlibrary.org/b/id/13234710-M.jpg?default=false",
+          "isbn": "9788488342126"
+        },
+        {
+          "id": "book-te-quiero-casi-siempre",
+          "title": "Te quiero (casi siempre)",
+          "author": "Anna Llenas",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7322942-M.jpg?default=false",
+          "isbn": "9788490577257"
+        },
+        {
+          "id": "book-las-princesas-tambien-se-tiran-pedos",
+          "title": "Las princesas también se tiran pedos",
+          "author": "Ilan Brenman",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7272578-M.jpg?default=false",
+          "isbn": "9788498453157"
+        },
+        {
+          "id": "book-soy-el-mas-fuerte",
+          "title": "Soy el más fuerte",
+          "author": "Mario Ramos",
+          "coverUrl": "https://covers.openlibrary.org/b/id/12336145-M.jpg?default=false",
+          "isbn": "9788484704003"
+        },
+        {
+          "id": "book-cuando-nace-un-monstruo",
+          "title": "Cuando nace un monstruo",
+          "author": "Sean Taylor",
+          "coverUrl": "https://covers.openlibrary.org/b/id/5263637-M.jpg?default=false",
+          "isbn": "9788426135643"
+        },
+        {
+          "id": "book-el-arbol-generoso",
+          "title": "El árbol generoso",
+          "author": "Shel Silverstein",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7391634-M.jpg?default=false",
+          "isbn": "9788484649618"
+        },
+        {
+          "id": "book-yo-matare-monstruos-por-ti",
+          "title": "Yo mataré monstruos por ti",
+          "author": "Santi Balmes",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7384575-M.jpg?default=false",
+          "isbn": "9788493897888"
+        },
+        {
+          "id": "book-chivos-chivones",
+          "title": "Chivos chivones",
+          "author": "Olalla González",
+          "coverUrl": "https://covers.openlibrary.org/b/id/5275871-M.jpg?default=false",
+          "isbn": "9788493375553"
+        }
+      ],
+      "currentAssignments": [
+        {
+          "childId": "child-panda",
+          "bookId": "book-las-princesas-tambien-se-tiran-pedos",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-tigre",
+          "bookId": "book-soy-el-mas-fuerte",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-conejo",
+          "bookId": "book-cuando-nace-un-monstruo",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-pulpo",
+          "bookId": "book-el-arbol-generoso",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-sol",
+          "bookId": "book-yo-matare-monstruos-por-ti",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-arcoiris",
+          "bookId": "book-chivos-chivones",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        }
+      ],
+      "history": [
+        {
+          "childId": "child-panda",
+          "bookId": "book-cocorico",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-01",
+          "returnedOn": "2026-09-04"
+        },
+        {
+          "childId": "child-tigre",
+          "bookId": "book-un-bicho-extrano",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-01",
+          "returnedOn": "2026-09-04"
+        },
+        {
+          "childId": "child-conejo",
+          "bookId": "book-la-cebra-camila",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-01",
+          "returnedOn": "2026-09-04"
+        },
+        {
+          "childId": "child-pulpo",
+          "bookId": "book-el-punto",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-01",
+          "returnedOn": "2026-09-03"
+        },
+        {
+          "childId": "child-sol",
+          "bookId": "book-ines-del-reves",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-01",
+          "returnedOn": "2026-09-04"
+        },
+        {
+          "childId": "child-arcoiris",
+          "bookId": "book-te-quiero-casi-siempre",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-01",
+          "returnedOn": "2026-09-04"
+        }
+      ],
+      "loanWeeks": 2
+    }
+  ],
+  "activeProjectId": "project-caracoles-2026-27"
+}

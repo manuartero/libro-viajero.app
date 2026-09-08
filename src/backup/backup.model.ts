@@ -10,10 +10,11 @@ export type Backup = {
   savedOn: string; // ISO date the copy was made
 };
 
-const FILENAME_DATE = /libro-viajero-(\d{4}-\d{2}-\d{2})\.json$/;
+// Anywhere in the name: a second download becomes "libro-viajero-<date> (1).json".
+const FILENAME_DATE = /(\d{4}-\d{2}-\d{2})/;
 
-// The export names the file after the day; a renamed file falls back to the
-// date the file system remembers.
+// The export names the file after the day; a name without one falls back to
+// the date the file system remembers.
 export function backupDateOf({
   filename,
   lastModified,

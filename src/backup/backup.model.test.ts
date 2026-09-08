@@ -38,7 +38,16 @@ describe("backupDateOf()", () => {
     ).toBe("2026-06-20");
   });
 
-  it("falls back to the file's own date once it has been renamed", () => {
+  it("survives the suffix a second download gets", () => {
+    expect(
+      backupDateOf({
+        filename: "libro-viajero-2026-06-20 (1).json",
+        lastModified: new Date(2026, 8, 1).getTime(),
+      }),
+    ).toBe("2026-06-20");
+  });
+
+  it("falls back to the file's own date once the name has lost it", () => {
     expect(
       backupDateOf({
         filename: "copia clase.json",
