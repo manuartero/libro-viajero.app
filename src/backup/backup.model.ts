@@ -14,36 +14,11 @@ const FILENAME_DATE = /libro-viajero-(\d{4}-\d{2}-\d{2})\.json$/;
 
 // The export names the file after the day; a renamed file falls back to the
 // date the file system remembers.
-export function backupDateOf({
-  filename,
-  lastModified,
-}: {
-  filename: string;
-  lastModified: number;
-}): string {
-  const fromName = FILENAME_DATE.exec(filename)?.[1];
-  if (fromName) {
-    return fromName;
-  }
-  return isoDate(new Date(lastModified));
-}
+const savedOnOf = (file: File) =>
+  FILENAME_DATE.exec(file.name)?.[1] ?? isoDate(new Date(file.lastModified));
 
-export function parseBackup({
-  text,
-  filename,
-  lastModified,
-}: {
-  text: string;
-  filename: string;
-  lastModified: number;
-}): Backup | null {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    return null;
-  }
-  const appData = parseAppData(parsed);
+export async function readBackup(file: File): Promise<Backup | null> {
+  const appData = parseAppData(await file.text());
   if (!appData || appData.projects.length === 0) {
     return null;
   }
@@ -53,16 +28,8 @@ export function parseBackup({
   return {
     appData: { ...appData, activeProjectId: project.id },
     project,
-    savedOn: backupDateOf({ filename, lastModified }),
+    savedOn: savedOnOf(file),
   };
-}
-
-export async function readBackup(file: File): Promise<Backup | null> {
-  return parseBackup({
-    text: await file.text(),
-    filename: file.name,
-    lastModified: file.lastModified,
-  });
 }
 
 const longDateFormat = new Intl.DateTimeFormat("es-ES", {

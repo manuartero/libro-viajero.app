@@ -12,42 +12,39 @@ const project = {
   history: [],
 };
 
+const parse = (value: unknown) => parseAppData(JSON.stringify(value));
+
 describe("parseAppData()", () => {
   it("accepts a whole export and hands it back typed", () => {
     const data = { projects: [project], activeProjectId: "p1" };
 
-    expect(parseAppData(data)).toEqual(data);
+    expect(parse(data)).toEqual(data);
   });
 
   it("accepts a fresh install with no active project", () => {
-    expect(parseAppData({ projects: [], activeProjectId: null })).toEqual({
+    expect(parse({ projects: [], activeProjectId: null })).toEqual({
       projects: [],
       activeProjectId: null,
     });
   });
 
-  it("rejects anything that is not an object with a projects list", () => {
-    expect(parseAppData("libro-viajero")).toBeNull();
-    expect(parseAppData({ activeProjectId: "p1" })).toBeNull();
+  it("rejects broken JSON and anything that is not an object with a projects list", () => {
+    expect(parseAppData("{not json")).toBeNull();
+    expect(parse("libro-viajero")).toBeNull();
+    expect(parse({ activeProjectId: "p1" })).toBeNull();
   });
 
   it("rejects a project that a screen could not render", () => {
     const { history: _history, ...noHistory } = project;
 
-    expect(
-      parseAppData({ projects: [noHistory], activeProjectId: "p1" }),
-    ).toBeNull();
+    expect(parse({ projects: [noHistory], activeProjectId: "p1" })).toBeNull();
   });
 
   it("rejects a child or a book missing what the cards show", () => {
     const nameless = { ...project, children: [{ id: "c1", emoji: "🐸" }] };
     const untitled = { ...project, books: [{ id: "b1" }] };
 
-    expect(
-      parseAppData({ projects: [nameless], activeProjectId: "p1" }),
-    ).toBeNull();
-    expect(
-      parseAppData({ projects: [untitled], activeProjectId: "p1" }),
-    ).toBeNull();
+    expect(parse({ projects: [nameless], activeProjectId: "p1" })).toBeNull();
+    expect(parse({ projects: [untitled], activeProjectId: "p1" })).toBeNull();
   });
 });

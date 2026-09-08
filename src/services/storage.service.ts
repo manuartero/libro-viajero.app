@@ -24,13 +24,7 @@ export function getAppData(): AppData {
   if (!raw) {
     return emptyAppData();
   }
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    parsed = undefined;
-  }
-  const data = parseAppData(parsed);
+  const data = parseAppData(raw);
   if (!data) {
     // Back the raw payload up before booting fresh: the next save would
     // otherwise overwrite it.

@@ -2,6 +2,15 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import { describe, expect, it, vi } from "vitest";
 
+const renderNote = (onDownloadData = () => {}) =>
+  render(
+    <PrivacyNote
+      projectName="Los Caracoles 2026/27"
+      onDownloadData={onDownloadData}
+      onRestoreData={() => true}
+    />,
+  );
+
 // The focus contract (trap, Escape, return to trigger) is the platform's and
 // jsdom stubs <dialog>, so it is checked in a real browser, not here.
 const openNote = () => {
@@ -12,25 +21,13 @@ const openNote = () => {
 
 describe("<PrivacyNote />", () => {
   it("stays closed until the teacher asks", () => {
-    render(
-      <PrivacyNote
-        projectName="Los Caracoles 2026/27"
-        onDownloadData={() => {}}
-        onRestoreData={() => true}
-      />,
-    );
+    renderNote();
 
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("opens a dialog that states the privacy promise", () => {
-    render(
-      <PrivacyNote
-        projectName="Los Caracoles 2026/27"
-        onDownloadData={() => {}}
-        onRestoreData={() => true}
-      />,
-    );
+    renderNote();
 
     openNote();
 
@@ -42,13 +39,7 @@ describe("<PrivacyNote />", () => {
 
   it("hands the download over to the caller", () => {
     const onDownloadData = vi.fn();
-    render(
-      <PrivacyNote
-        projectName="Los Caracoles 2026/27"
-        onDownloadData={onDownloadData}
-        onRestoreData={() => true}
-      />,
-    );
+    renderNote(onDownloadData);
 
     openNote();
     fireEvent.click(
@@ -59,13 +50,7 @@ describe("<PrivacyNote />", () => {
   });
 
   it("closes with the button", () => {
-    render(
-      <PrivacyNote
-        projectName="Los Caracoles 2026/27"
-        onDownloadData={() => {}}
-        onRestoreData={() => true}
-      />,
-    );
+    renderNote();
 
     openNote();
     fireEvent.click(screen.getByRole("button", { name: "Cerrar" }));
@@ -74,13 +59,7 @@ describe("<PrivacyNote />", () => {
   });
 
   it("keeps the panel out of reach while it is closed", () => {
-    render(
-      <PrivacyNote
-        projectName="Los Caracoles 2026/27"
-        onDownloadData={() => {}}
-        onRestoreData={() => true}
-      />,
-    );
+    renderNote();
 
     expect(
       screen.queryByRole("button", { name: "Descargar mis datos" }),

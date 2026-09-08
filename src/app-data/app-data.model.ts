@@ -8,41 +8,47 @@ export type AppData = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
-const hasStrings = (record: Record<string, unknown>, keys: string[]) =>
-  keys.every((key) => typeof record[key] === "string");
+const withStrings =
+  (...keys: string[]) =>
+  (value: unknown): value is Record<string, unknown> =>
+    isRecord(value) && keys.every((key) => typeof value[key] === "string");
 
-const isChild = (value: unknown) =>
-  isRecord(value) && hasStrings(value, ["id", "tag", "emoji", "color"]);
+const listOf =
+  <T>(isItem: (value: unknown) => value is T) =>
+  (value: unknown): value is T[] =>
+    Array.isArray(value) && value.every(isItem);
 
-const isBook = (value: unknown) =>
-  isRecord(value) && hasStrings(value, ["id", "title"]);
-
-const isAssignment = (value: unknown) =>
-  isRecord(value) && hasStrings(value, ["childId", "bookId", "weekStart"]);
+const areChildren = listOf(withStrings("id", "tag", "emoji", "color"));
+const areBooks = listOf(withStrings("id", "title"));
+const areAssignments = listOf(withStrings("childId", "bookId", "weekStart"));
+const hasProjectFields = withStrings("id", "name");
 
 const isProject = (value: unknown): value is Project =>
-  isRecord(value) &&
-  hasStrings(value, ["id", "name"]) &&
-  Array.isArray(value.children) &&
-  value.children.every(isChild) &&
-  Array.isArray(value.books) &&
-  value.books.every(isBook) &&
-  Array.isArray(value.currentAssignments) &&
-  value.currentAssignments.every(isAssignment) &&
-  Array.isArray(value.history) &&
-  value.history.every(isAssignment);
+  hasProjectFields(value) &&
+  areChildren(value.children) &&
+  areBooks(value.books) &&
+  areAssignments(value.currentAssignments) &&
+  areAssignments(value.history);
+
+const areProjects = listOf(isProject);
 
 // Deep enough that every screen can render what passes; optional fields are
 // left to their readers, which already cope with their absence.
-export function parseAppData(value: unknown): AppData | null {
-  if (!isRecord(value) || !Array.isArray(value.projects)) {
+export function parseAppData(text: string): AppData | null {
+  let value: unknown;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (!isRecord(value)) {
     return null;
   }
   const { projects, activeProjectId } = value;
-  if (!projects.every(isProject)) {
+  if (typeof activeProjectId !== "string" && activeProjectId !== null) {
     return null;
   }
-  if (typeof activeProjectId !== "string" && activeProjectId !== null) {
+  if (!areProjects(projects)) {
     return null;
   }
   return { projects, activeProjectId };

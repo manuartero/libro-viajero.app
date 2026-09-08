@@ -10,7 +10,6 @@ import styles from "./restore-backup.module.css";
 
 type RestoreBackupProps = {
   prompt?: string;
-  // Name of the class this phone holds now, when there is one to lose.
   replacing?: string;
   // Whether the save persisted; on false the preview stays for a retry.
   onRestore: (appData: AppData) => boolean;
