@@ -5,7 +5,6 @@ import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BooklessList } from "src/dashboard/bookless-list.component";
 import { EmptyCard, emptyStateFor } from "src/dashboard/empty-card.component";
 import { LoanSection } from "src/dashboard/loan-section.component";
-import { NextWeekPanel } from "src/dashboard/next-week.component";
 import { PrivacyNote } from "src/dashboard/privacy-note.component";
 import {
   booklessText,
@@ -181,8 +180,6 @@ export function DashboardScreen({
           expectedCount={expected.length}
           upcoming={upcoming}
         />
-
-        <NextWeekPanel project={project} />
 
         {bookless.length === 0 && freedCount > 0 && (
           <RepartirBanner

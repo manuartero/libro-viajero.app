@@ -7,8 +7,6 @@ export function createAssignPage(page: Page) {
     dateline: page.getByText(/^El reparto · /),
     loanWeeksOption: (label: "1 semana" | "2 semanas") =>
       page.getByRole("radio", { name: label }),
-    trayBook: (title: string) =>
-      page.getByRole("button", { name: `${title}, asignar` }),
     row: (label: string) =>
       page.getByRole("button", { name: label, exact: true }),
     saveButton: page.getByRole("button", { name: "Guardar reparto" }),

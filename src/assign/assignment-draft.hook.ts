@@ -1,21 +1,18 @@
 import { useState } from "react";
 import type { Book } from "src/book/book.model";
 import type { Child } from "src/child/child.model";
-import type { Assignment, AssignmentPairs } from "src/project/project.model";
-import { pairsFrom } from "src/project/project.model";
+import type { AssignmentPairs } from "src/project/project.model";
 
 export function useAssignmentDraft({
   children,
   books,
-  currentAssignments,
+  initialPairs,
 }: {
   children: readonly Child[];
   books: readonly Book[];
-  currentAssignments: readonly Assignment[];
+  initialPairs: AssignmentPairs;
 }) {
-  const [pairs, setPairs] = useState<AssignmentPairs>(() =>
-    pairsFrom(currentAssignments),
-  );
+  const [pairs, setPairs] = useState(initialPairs);
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
 
   const firstUnassignedId =

@@ -12,18 +12,12 @@ const books = [
   { id: "b2", title: "El Grúfalo" },
 ];
 
-const draft = (
-  currentAssignments: Parameters<
-    typeof useAssignmentDraft
-  >[0]["currentAssignments"] = [],
-) =>
-  renderHook(() => useAssignmentDraft({ children, books, currentAssignments }));
+const draft = (initialPairs: Record<string, string> = {}) =>
+  renderHook(() => useAssignmentDraft({ children, books, initialPairs }));
 
 describe("useAssignmentDraft()", () => {
-  it("starts from the assignments already in the project", () => {
-    const { result } = draft([
-      { childId: "c2", bookId: "b2", weekStart: "2026-09-07" },
-    ]);
+  it("starts from the pairs it is given", () => {
+    const { result } = draft({ c2: "b2" });
 
     expect(result.current.pairs).toEqual({ c2: "b2" });
     expect(result.current.assignedCount).toBe(1);

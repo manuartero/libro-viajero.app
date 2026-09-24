@@ -78,13 +78,12 @@ describe("<App />", () => {
     restore();
   });
 
-  it("keeps the reparto mounted when saving fails, so the taps survive a retry", () => {
+  it("keeps the reparto mounted when saving fails, so the draft survives a retry", () => {
     render(<App />);
     setupClassWithRanaAndElmer();
 
     fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
     expect(screen.queryByRole("navigation")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Elmer, asignar" }));
 
     const restore = failEverySave();
     fireEvent.click(screen.getByRole("button", { name: "Guardar reparto" }));
