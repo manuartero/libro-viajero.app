@@ -46,6 +46,17 @@ export function Colophon() {
           <li>
             <a
               className={styles.link}
+              href={`${REPO_URL}/blob/main/CHANGELOG.md`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ColophonIcon name="history" />
+              Novedades
+            </a>
+          </li>
+          <li>
+            <a
+              className={styles.link}
               href={REPO_URL}
               target="_blank"
               rel="noopener noreferrer"
