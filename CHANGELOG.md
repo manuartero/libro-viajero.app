@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.2.0](https://github.com/manuartero/libro-viajero.app/compare/v0.1.0...v0.2.0) — 2026-09-24
+
+### Features
+
+- a release workflow tags the build sent to teachers ([#47](https://github.com/manuartero/libro-viajero.app/pull/47))
+- "Repartir libros" shows only when there is a free book and a child to take it ([#46](https://github.com/manuartero/libro-viajero.app/pull/46))
+- tap a book on the shelf to see where it has travelled ([#45](https://github.com/manuartero/libro-viajero.app/pull/45))
+- the dashboard foot prints the version and opens a colophon ([#42](https://github.com/manuartero/libro-viajero.app/pull/42))
+- the data sheet opens from a download icon, with shorter copy ([#40](https://github.com/manuartero/libro-viajero.app/pull/40))
+- the reparto opens filled in, rotated clockwise ([#39](https://github.com/manuartero/libro-viajero.app/pull/39))
+
+### Fixes
+
+- the release workflow no longer needs pnpm to set up node ([#50](https://github.com/manuartero/libro-viajero.app/pull/50))
+
+### Style
+
+- blue-black ink on a lighter sheet, returned cards legible ([#44](https://github.com/manuartero/libro-viajero.app/pull/44))
+- a trash icon on the shelf, and the return count moves into its section ([#41](https://github.com/manuartero/libro-viajero.app/pull/41))
+
+### Chores
+
+- trim test slop, dead code, repeated CSS and doc duplication ([#48](https://github.com/manuartero/libro-viajero.app/pull/48))
+- trim AGENTS.md and SPEC.md ([#37](https://github.com/manuartero/libro-viajero.app/pull/37))
+- less duplication, fewer lines, helpers pulled out ([#43](https://github.com/manuartero/libro-viajero.app/pull/43))
+
 ## [0.1.0](https://github.com/manuartero/libro-viajero.app/releases/tag/v0.1.0) — 2026-09-08
 
 The first build shared with teachers.
