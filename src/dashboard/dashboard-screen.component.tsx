@@ -22,6 +22,7 @@ import {
 import { Masthead } from "src/masthead/masthead.component";
 import type { Tab } from "src/navigation/navigation.model";
 import {
+  canDistribute,
   markReturned,
   type Project,
   undoReturn,
@@ -98,6 +99,7 @@ export function DashboardScreen({
   const freedCount = LOAN_STATUSES.flatMap((status) => byStatus[status]).filter(
     ({ loan }) => loan.returnedOn,
   ).length;
+  const repartible = canDistribute(project);
 
   const returnBook = (childId: string) => {
     onUpdate(markReturned({ project, childId }));
@@ -119,7 +121,7 @@ export function DashboardScreen({
 
   return (
     <Screen name={project.name} privacyNote={privacyNote}>
-      {bookless.length > 0 && (
+      {bookless.length > 0 && repartible && (
         <RepartirBanner
           text={`${pluralPeques(bookless.length)} sin libro`}
           onRepartir={onRepartir}
@@ -143,7 +145,9 @@ export function DashboardScreen({
         </Fragment>
       ))}
 
-      {bookless.length > 0 && <BooklessList childList={bookless} />}
+      {bookless.length > 0 && (
+        <BooklessList childList={bookless} waiting={!repartible} />
+      )}
 
       <WeekSummary
         pending={pending}
@@ -151,8 +155,11 @@ export function DashboardScreen({
         upcoming={upcoming}
       />
 
-      {bookless.length === 0 && (
-        <NextReparto freedCount={freedCount} onRepartir={onRepartir} />
+      {bookless.length === 0 && freedCount > 0 && (
+        <RepartirBanner
+          text={librosDevueltos(freedCount)}
+          onRepartir={onRepartir}
+        />
       )}
     </Screen>
   );
@@ -198,34 +205,5 @@ function EarlyReturnConfirm({
       «{child.tag}» tenía «{book.title}» hasta el {fridayLabel(loan.dueFriday)}.
       ¿Lo devuelve ya?
     </ConfirmPanel>
-  );
-}
-
-function NextReparto({
-  freedCount,
-  onRepartir,
-}: {
-  freedCount: number;
-  onRepartir: () => void;
-}) {
-  return (
-    <>
-      {freedCount > 0 && (
-        <RepartirBanner
-          text={librosDevueltos(freedCount)}
-          onRepartir={onRepartir}
-        />
-      )}
-
-      {freedCount === 0 && (
-        <button
-          type="button"
-          className={styles.repartirAgain}
-          onClick={onRepartir}
-        >
-          Repartir libros
-        </button>
-      )}
-    </>
   );
 }

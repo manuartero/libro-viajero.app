@@ -14,19 +14,3 @@
   gap: 1.25rem;
   padding: 1rem;
 }
-
-.repartirAgain {
-  min-height: 2.75rem;
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.repartirAgain:active {
-  background: var(--paper-dark);
-}
