@@ -67,7 +67,7 @@ Three secrets under **Settings → Secrets and variables → Actions**, none of 
 
 ## Docs
 
-[VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (stories and what is built) · [AGENTS.md](AGENTS.md) (conventions).
+[VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (scope and product decisions) · [AGENTS.md](AGENTS.md) (conventions).
 
 There is no data-model doc: the types are the source of truth in their domain modules (`src/*/*.model.ts`), and the storage schema is `src/services/storage.service.ts`.
 

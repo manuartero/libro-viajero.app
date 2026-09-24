@@ -18,67 +18,37 @@
 
 ---
 
-## User Stories
+## Product decisions
 
-Status: ✅ shipped · 🚧 placeholder · ❌ not built.
+What the code cannot tell you about why the app behaves as it does.
 
-### Privacy & Data Ownership — ✅ shipped
+### Privacy & data ownership
 
-One phone = one teacher = one localStorage key (`src/services/storage.service.ts`). The only network traffic is the Open Library search and its cover images, enforced by a Content-Security-Policy injected at build time (`src/lib/csp.ts`).
+- One phone = one teacher = one localStorage key (`src/services/storage.service.ts`). No account, no sign-in.
+- The only network traffic is the Open Library search and its cover images, enforced by a Content-Security-Policy injected at build time (`src/lib/csp.ts`).
+- A downloaded copy restores from the first screen on a new phone, or from the "Tus datos" sheet on one that already holds a class. The copy is previewed (class, date, headcount) and confirmed before anything is written, and the class it replaces is kept under a `libro-viajero:backup-*` key rather than deleted (`src/backup/`).
 
-A downloaded copy restores from wherever the teacher is: the first screen on a new phone, or the "Tus datos" sheet on a phone that already holds a class. Either way the copy is previewed (class, date, headcount) and confirmed before anything is written, and the class it replaces is kept under a `libro-viajero:backup-*` key rather than deleted (`src/backup/`).
-
-|   ID   |                                                 Story                                                  | Status |
-| ------ | ------------------------------------------------------------------------------------------------------ | ------ |
-| PRIV-1 | As a teacher, I can open the app and pick up where I left off, with no account and no sign-in          | ✅     |
-| PRIV-2 | As a teacher, I can read in plain words, from the dashboard, what leaves my phone (nothing I don't know about) | ✅     |
-| PRIV-3 | As a teacher, I can download a copy of all my data as a file, whenever I want                         | ✅     |
-| PRIV-4 | As a teacher, I can restore a downloaded copy on this phone, seeing what is in it before it replaces what I have | ✅     |
-| PRIV-5 | As a teacher, I can see which version of the app I have, and from there reach its code, its license and a place to report a fault | ✅     |
-
-### Project Setup — ✅ shipped
-
-Decisions worth knowing, since they are not obvious from the stories:
+### Project setup
 
 - The school year is stamped from the calendar (`currentSchoolYear()`, July onwards counts as the upcoming course), never chosen by the teacher.
 - The project starts empty and the dashboard's empty states drive first-time setup: añadir peques → añadir libros → repartir libros.
-- The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child. Tapping a child opens their loan card, not the form — editing is the pencil on the card.
-- The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
+- The **Clase** tab leads with the class list at every size, empty included; the builder sits behind a bar below it and stays open across additions, so a class of twenty stays two taps per child.
+- Children go by a nickname or tag, never a real name. The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
-- A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/loan/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
+
+### The reparto
+
+- A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/loan/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, spelled out as a return date, and it saves with the reparto.
 - The reparto opens **already filled in**, clockwise (`rotatePairs()` in `src/assign/rotation.model.ts`): books still out stay put, and each free book goes to the next child in Clase-list order without a book, starting after its last reader. Books nobody has read go to the first free children. The teacher only adjusts.
+- Fewer books than children is fine: the children without a book wait for the next rotation.
 
-|   ID    |                                                Story                                                 | Status |
-| ------- | ---------------------------------------------------------------------------------------------------- | ------ |
-| SETUP-1 | As a teacher, I can create a new "traveling book project" and give it a name                         | ✅     |
-| SETUP-2 | As a teacher, I can add each child to the project using a nickname or tag (not their real name)      | ✅     |
-| SETUP-3 | As a teacher, I can assign an emoji and background color to each child to create their avatar        | ✅     |
-| SETUP-4 | As a teacher, I can add books to the project by searching by title                                   | ✅     |
-| SETUP-5 | As a teacher, the app automatically finds and displays the book cover when I search                  | ✅     |
-| SETUP-6 | As a teacher, I can distribute books to children from the dashboard ("Repartir libros"), at the start and mid-course | ✅     |
-| SETUP-7 | As a teacher, I can run the class with fewer books than children — the children without a book wait for the next rotation | ✅     |
-| SETUP-8 | As a teacher, I can choose whether the class keeps a book one week or two, and the dashboard judges returns by it | ✅     |
+### Friday check-in
 
-### Friday Check-in (Dashboard)
-
-|   ID    |                                             Story                                              | Status |
-| ------- | ---------------------------------------------------------------------------------------------- | ------ |
-| DASH-1  | As a teacher, I can open the dashboard and see all children with their current book assignment, its cover, and how long they have had it — grouped by whether it is late, due this Friday, or still out | ✅     |
-| DASH-2  | As a teacher, I can tap a child's avatar to mark that they returned their book, and it is saved on the spot — on time or late with one tap, early (the book is not due yet) after a confirm | ✅     |
-| DASH-3  | As a teacher, I can tap again to undo a return mark                                            | ✅     |
-| DASH-4  | As a teacher, I can see a live count of how many books have been returned                      | ✅     |
-| DASH-5  | As a teacher, I can see a summary of which children did NOT return a book that was due, and when the rest are due | ✅     |
-| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | ✅ the reparto opens with them filled in (clockwise rotation) |
-| DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
-| DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | dropped — a return saves itself (DASH-2); once a book is back, the dashboard's banner leads to the reparto (SETUP-6), which moves the books on |
-| DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | ✅ the reparto seeds only from books still out; a returned one waits on the tray |
+- The dashboard groups children by loan state: late, due this Friday, still out.
+- A return is one tap and saves on the spot; tapping again undoes it. An early return (the book is not due yet) asks to confirm first.
+- There is no "confirm the check-in" step: once a book is back, the dashboard's banner leads to the reparto, which moves the books on.
 
 ### History
 
-There is no weekly session: a loan is the unit. Tapping a card writes `returnedOn` on the live assignment, and the next reparto closes every returned or replaced assignment into `Project.history` (`distributeBooks()` in `src/project/project.model.ts`), as does removing a child or a book. Tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/loan/loan-log.model.ts`): one dated line per book, from history plus the live assignment. The edit form is behind the card's pencil.
-
-|   ID   |                                Story                                | Status |
-| ------ | ------------------------------------------------------------------- | ------ |
-| HIST-1 | As a teacher, I can see a log of all past weekly sessions           | ❌     |
-| HIST-2 | As a teacher, I can see which child had which book in any past week | ❌     |
-| HIST-3 | As a teacher, I can tap a child in the class list and see every book they have taken home, with dates and whether it came back | ✅     |
+- There is no weekly session: a loan is the unit. A return writes `returnedOn` on the live assignment, and the next reparto closes every returned or replaced assignment into `Project.history` (`distributeBooks()` in `src/project/project.model.ts`), as does removing a child or a book.
+- Tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/loan/loan-log.model.ts`): one dated line per book, from history plus the live assignment. Editing the child is the pencil on the card.
