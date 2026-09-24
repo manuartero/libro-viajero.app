@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { type ReactNode, useId } from "react";
 import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import styles from "./bookshelf.module.css";
@@ -21,12 +21,38 @@ const trash = (
   </svg>
 );
 
+const chevron = (
+  <svg
+    aria-hidden="true"
+    className={styles.chevron}
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="square"
+  >
+    <path d="M3 5l4 4 4-4" />
+  </svg>
+);
+
 type BookshelfProps = {
   bookList: Book[];
+  openBookId: string | null;
+  onToggle: (bookId: string) => void;
   onRemove: (bookId: string) => void;
+  // Rendered under the open book's row.
+  children?: ReactNode;
 };
 
-export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
+export function Bookshelf({
+  bookList,
+  openBookId,
+  onToggle,
+  onRemove,
+  children,
+}: BookshelfProps) {
   const titleId = useId();
 
   return (
@@ -41,22 +67,33 @@ export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
       {bookList.length > 0 && (
         <ul className={styles.list}>
           {bookList.map((book) => (
-            <li key={book.id} className={styles.row}>
-              <BookCover book={book} size="small" />
-              <span className={styles.text}>
-                <span className={styles.bookTitle}>{book.title}</span>
-                {book.author && (
-                  <span className={styles.author}>{book.author}</span>
-                )}
-              </span>
-              <button
-                type="button"
-                className={styles.remove}
-                aria-label={`${book.title}, quitar`}
-                onClick={() => onRemove(book.id)}
-              >
-                {trash}
-              </button>
+            <li key={book.id} className={styles.item}>
+              <div className={styles.row}>
+                <button
+                  type="button"
+                  className={styles.open}
+                  aria-expanded={book.id === openBookId}
+                  onClick={() => onToggle(book.id)}
+                >
+                  <BookCover book={book} size="small" />
+                  <span className={styles.text}>
+                    <span className={styles.bookTitle}>{book.title}</span>
+                    {book.author && (
+                      <span className={styles.author}>{book.author}</span>
+                    )}
+                  </span>
+                  {chevron}
+                </button>
+                <button
+                  type="button"
+                  className={styles.remove}
+                  aria-label={`${book.title}, quitar`}
+                  onClick={() => onRemove(book.id)}
+                >
+                  {trash}
+                </button>
+              </div>
+              {book.id === openBookId && children}
             </li>
           ))}
         </ul>

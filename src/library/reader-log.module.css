@@ -1,0 +1,80 @@
+.log {
+  border-top: 2px solid var(--ink);
+  /* Clears the sticky header (~64px) when scrollIntoView parks this at the top. */
+  scroll-margin-top: 4.75rem;
+  scroll-margin-bottom: 1rem;
+}
+
+.summary {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--ink);
+}
+
+.entry {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.tag {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dates {
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.reading {
+  background: var(--paper-dark);
+}
+
+.reading .dates {
+  color: var(--ink);
+}
+
+.unreturned .dates {
+  color: var(--missing);
+  font-weight: 700;
+}
+
+.stamp {
+  flex-shrink: 0;
+  width: 1.75rem;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--returned);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+}

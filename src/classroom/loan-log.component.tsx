@@ -3,8 +3,7 @@ import { type Book, librosDevueltos } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
-import { shortDateLabel } from "src/loan/loan.model";
-import type { LoanRecord } from "src/loan/loan-log.model";
+import { type LoanRecord, loanDatesLabel } from "src/loan/loan-log.model";
 import styles from "./loan-log.module.css";
 
 type LoanLogProps = {
@@ -55,16 +54,6 @@ function titleOf(book: Book | undefined) {
     return "Un libro que ya no está en la biblioteca";
   }
   return book.title;
-}
-
-function datesLabel(record: LoanRecord) {
-  if (record.status === "returned" && record.returnedOn) {
-    return `del ${shortDateLabel(record.since)} al ${shortDateLabel(record.returnedOn)}`;
-  }
-  if (record.status === "reading") {
-    return `en casa desde el ${shortDateLabel(record.since)}`;
-  }
-  return `se lo llevó el ${shortDateLabel(record.since)} y no volvió`;
 }
 
 function rowClass(record: LoanRecord) {
@@ -120,7 +109,7 @@ function LoanRow({ record }: { record: LoanRecord }) {
       <BookCover book={record.book ?? { title: "?" }} size="small" />
       <span className={styles.entry}>
         <span className={styles.bookTitle}>{titleOf(record.book)}</span>
-        <span className={styles.dates}>{datesLabel(record)}</span>
+        <span className={styles.dates}>{loanDatesLabel(record)}</span>
       </span>
       {record.status === "returned" && (
         <span className={styles.stamp} aria-hidden="true">
