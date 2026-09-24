@@ -38,8 +38,9 @@ export function Colophon() {
           v{version}
         </h2>
         <p className={styles.body}>
-          Ábrela el viernes por la tarde, marca quién ha devuelto su libro y
-          confirma el reparto de la semana que viene.
+          Una ayuda para la profe con el libro viajero: marca en un momento
+          quién ha devuelto su libro y deja listo el reparto de la semana que
+          viene.
         </p>
         <ul className={styles.links}>
           <li>
