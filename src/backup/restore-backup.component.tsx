@@ -1,4 +1,11 @@
-import { type ChangeEvent, useEffect, useId, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  type Ref,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import type { AppData } from "src/app-data/app-data.model";
 import {
   type Backup,
@@ -22,7 +29,6 @@ export function RestoreBackup({
   replacing,
   onRestore,
 }: RestoreBackupProps) {
-  const titleId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const previewRef = useRef<HTMLElement>(null);
@@ -37,10 +43,6 @@ export function RestoreBackup({
       return () => triggerRef.current?.focus();
     }
   }, [backup]);
-
-  const openPicker = () => {
-    fileInputRef.current?.click();
-  };
 
   const readPickedFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -69,7 +71,7 @@ export function RestoreBackup({
             ref={triggerRef}
             type="button"
             className={styles.trigger}
-            onClick={openPicker}
+            onClick={() => fileInputRef.current?.click()}
           >
             <UploadIcon size={18} />
             Recuperar una copia
@@ -84,35 +86,13 @@ export function RestoreBackup({
       )}
 
       {backup && (
-        <section
+        <BackupPreview
           ref={previewRef}
-          tabIndex={-1}
-          className={styles.preview}
-          aria-labelledby={titleId}
-        >
-          <div className={styles.clipping}>
-            <h2 id={titleId} className={styles.name}>
-              {backup.project.name}
-            </h2>
-            <p className={styles.dateline}>{backupDateline(backup)}</p>
-            <p className={styles.summary}>{backupSummary(backup.project)}</p>
-          </div>
-          {replacing && (
-            <p className={styles.warning}>
-              Sustituirá a «{replacing}» en este teléfono.
-            </p>
-          )}
-          <button type="button" className={styles.confirm} onClick={restore}>
-            Sí, recuperar esta clase
-          </button>
-          <button
-            type="button"
-            className={styles.cancel}
-            onClick={() => setBackup(null)}
-          >
-            No, dejarlo como está
-          </button>
-        </section>
+          backup={backup}
+          replacing={replacing}
+          onConfirm={restore}
+          onCancel={() => setBackup(null)}
+        />
       )}
 
       <input
@@ -124,5 +104,49 @@ export function RestoreBackup({
         onChange={readPickedFile}
       />
     </div>
+  );
+}
+
+function BackupPreview({
+  ref,
+  backup,
+  replacing,
+  onConfirm,
+  onCancel,
+}: {
+  ref: Ref<HTMLElement>;
+  backup: Backup;
+  replacing?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  const titleId = useId();
+
+  return (
+    <section
+      ref={ref}
+      tabIndex={-1}
+      className={styles.preview}
+      aria-labelledby={titleId}
+    >
+      <div className={styles.clipping}>
+        <h2 id={titleId} className={styles.name}>
+          {backup.project.name}
+        </h2>
+        <p className={styles.dateline}>{backupDateline(backup)}</p>
+        <p className={styles.summary}>{backupSummary(backup.project)}</p>
+      </div>
+      {replacing && (
+        <p className={styles.warning}>
+          Sustituirá a «{replacing}» en este teléfono.
+        </p>
+      )}
+      <button type="button" className={styles.confirm} onClick={onConfirm}>
+        Sí, recuperar esta clase
+      </button>
+      <button type="button" className={styles.cancel} onClick={onCancel}>
+        No, dejarlo como está
+      </button>
+    </section>
   );
 }

@@ -1,4 +1,8 @@
-import { type AppData, parseAppData } from "src/app-data/app-data.model";
+import {
+  type AppData,
+  activeProjectOf,
+  parseAppDataJson,
+} from "src/app-data/app-data.model";
 import { pluralLibros } from "src/book/book.model";
 import { pluralPeques } from "src/child/child.model";
 import { isoDate, parseIsoDate } from "src/lib/week";
@@ -21,7 +25,7 @@ export function backupDateOf({
 }: {
   filename: string;
   lastModified: number;
-}): string {
+}) {
   const fromName = FILENAME_DATE.exec(filename)?.[1];
   if (fromName) {
     return fromName;
@@ -37,20 +41,12 @@ export function parseBackup({
   text: string;
   filename: string;
   lastModified: number;
-}): Backup | null {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    return null;
-  }
-  const appData = parseAppData(parsed);
+}) {
+  const appData = parseAppDataJson(text);
   if (!appData || appData.projects.length === 0) {
     return null;
   }
-  const project =
-    appData.projects.find((p) => p.id === appData.activeProjectId) ??
-    appData.projects[0];
+  const project = activeProjectOf(appData) ?? appData.projects[0];
   return {
     appData: { ...appData, activeProjectId: project.id },
     project,
@@ -58,7 +54,7 @@ export function parseBackup({
   };
 }
 
-export async function readBackup(file: File): Promise<Backup | null> {
+export async function readBackup(file: File) {
   return parseBackup({
     text: await file.text(),
     filename: file.name,

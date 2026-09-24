@@ -1,6 +1,6 @@
 // crypto.randomUUID only exists in secure contexts (https / localhost).
 // Dev on the reference phone runs over LAN http, so fall back gracefully.
-export function newId(): string {
+export function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID();
   }

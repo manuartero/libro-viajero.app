@@ -24,15 +24,20 @@ type ClassroomScreenProps = {
   onUpdate: (project: Project) => boolean;
 };
 
+function openChildIdOf(panel: Panel) {
+  if (panel.status === "viewing" || panel.status === "editing") {
+    return panel.childId;
+  }
+  return null;
+}
+
 export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
   const [panel, setPanel] = useState<Panel>({ status: "closed" });
   const [confirmingRemove, setConfirmingRemove] = useState<Child | null>(null);
 
   const childList = project.children;
-  const selected =
-    panel.status === "viewing" || panel.status === "editing"
-      ? (childList.find((child) => child.id === panel.childId) ?? null)
-      : null;
+  const openChildId = openChildIdOf(panel);
+  const selected = childList.find((child) => child.id === openChildId) ?? null;
   const editing = panel.status === "editing" ? selected : null;
   const others = childList.filter((child) => child.id !== editing?.id);
   const usedEmojis = others.map((child) => child.emoji);
@@ -54,10 +59,8 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
   const toggleCard = (childId: string) => {
     setConfirmingRemove(null);
     setPanel((prev) => {
-      if (prev.status !== "adding" && prev.status !== "closed") {
-        if (prev.childId === childId) {
-          return { status: "closed" };
-        }
+      if (openChildIdOf(prev) === childId) {
+        return { status: "closed" };
       }
       return { status: "viewing", childId };
     });
@@ -71,8 +74,7 @@ export function ClassroomScreen({ project, onUpdate }: ClassroomScreenProps) {
 
   const requestRemove = (childId: string) => {
     if (hasBook(childId)) {
-      const child = childList.find((c) => c.id === childId) ?? null;
-      setConfirmingRemove(child);
+      setConfirmingRemove(childList.find((c) => c.id === childId) ?? null);
       return;
     }
     remove(childId);

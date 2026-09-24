@@ -4,7 +4,7 @@ export type SchoolYear = {
   short: string; // "2026/27"
 };
 
-export function schoolYearFrom(start: number): SchoolYear {
+export function schoolYearFrom(start: number) {
   const end = start + 1;
   return {
     start,
@@ -15,7 +15,7 @@ export function schoolYearFrom(start: number): SchoolYear {
 
 // July onwards counts as the upcoming course: teachers set up
 // their classroom during the summer, before September starts.
-export function currentSchoolYear(today = new Date()): SchoolYear {
+export function currentSchoolYear(today = new Date()) {
   const start =
     today.getMonth() >= 6 ? today.getFullYear() : today.getFullYear() - 1;
   return schoolYearFrom(start);

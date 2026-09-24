@@ -1,5 +1,9 @@
-import type { Book } from "src/book/book.model";
-import type { Assignment, Project } from "src/project/project.model";
+import { type Book, booksById } from "src/book/book.model";
+import {
+  type Assignment,
+  type Project,
+  sinceOf,
+} from "src/project/project.model";
 
 // "returned" covers a checked-in book whether or not the next reparto has
 // closed the loan yet; "unreturned" is a loan that ended with the book out.
@@ -19,7 +23,7 @@ function statusOf({
 }: {
   assignment: Assignment;
   live: boolean;
-}): LoanRecordStatus {
+}) {
   if (assignment.returnedOn) {
     return "returned";
   }
@@ -35,8 +39,8 @@ export function loanLogOf({
 }: {
   project: Project;
   childId: string;
-}): LoanRecord[] {
-  const bookById = new Map(project.books.map((book) => [book.id, book]));
+}) {
+  const bookById = booksById(project.books);
   const recordOf = ({
     assignment,
     live,
@@ -45,7 +49,7 @@ export function loanLogOf({
     live: boolean;
   }): LoanRecord => ({
     book: bookById.get(assignment.bookId),
-    since: assignment.since ?? assignment.weekStart,
+    since: sinceOf(assignment),
     status: statusOf({ assignment, live }),
     ...(assignment.returnedOn && { returnedOn: assignment.returnedOn }),
   });

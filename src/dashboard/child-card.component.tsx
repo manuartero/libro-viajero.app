@@ -44,9 +44,9 @@ export function ChildCard({ child, book, loan, onToggle }: ChildCardProps) {
       onClick={onToggle}
     >
       <span className={styles.figure}>
-        <ChildAvatar emoji={child.emoji} color={child.color} size="large" />
+        <ChildAvatar child={child} size="large" />
         <span className={styles.coverSlot}>
-          <BookCover title={book.title} coverUrl={book.coverUrl} />
+          <BookCover book={book} />
           {returned && (
             <span className={styles.stamp} aria-hidden="true">
               ✓

@@ -1,20 +1,17 @@
-import type { Assignment, Project } from "src/project/project.model";
-import { pairsFrom } from "src/project/project.model";
+import { type Project, pairsFrom } from "src/project/project.model";
 
 function lastHolderOf({
   bookId,
-  currentAssignments,
-  history,
+  project,
 }: {
   bookId: string;
-  currentAssignments: readonly Assignment[];
-  history: readonly Assignment[];
+  project: Project;
 }) {
-  const live = currentAssignments.find((a) => a.bookId === bookId);
+  const live = project.currentAssignments.find((a) => a.bookId === bookId);
   if (live) {
     return live.childId;
   }
-  return history.filter((a) => a.bookId === bookId).at(-1)?.childId;
+  return project.history.filter((a) => a.bookId === bookId).at(-1)?.childId;
 }
 
 export function rotatePairs(project: Project) {
@@ -26,11 +23,7 @@ export function rotatePairs(project: Project) {
   const freeBooks = project.books
     .filter((book) => !heldBookIds.has(book.id))
     .map((book) => {
-      const holderId = lastHolderOf({
-        bookId: book.id,
-        currentAssignments: project.currentAssignments,
-        history: project.history,
-      });
+      const holderId = lastHolderOf({ bookId: book.id, project });
       const holderSeat = holderId === undefined ? -1 : seatOf.get(holderId);
       return { bookId: book.id, holderSeat: holderSeat ?? -1 };
     });

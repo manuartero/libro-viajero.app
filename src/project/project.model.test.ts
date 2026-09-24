@@ -15,7 +15,7 @@ import {
 import { schoolYearFrom } from "src/project/school-year.model";
 import { describe, expect, it } from "vitest";
 
-describe("createProject", () => {
+describe("createProject()", () => {
   it("names the class after the trimmed name and the short course, with nothing in it", () => {
     const project = createProject({
       classroomName: "  Los Caracoles  ",

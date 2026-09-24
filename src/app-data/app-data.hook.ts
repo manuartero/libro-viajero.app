@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { AppData } from "src/app-data/app-data.model";
+import { type AppData, activeProjectOf } from "src/app-data/app-data.model";
 import type { Project } from "src/project/project.model";
 import {
   backUpAppData,
@@ -7,21 +7,15 @@ import {
   saveAppData,
 } from "src/services/storage.service";
 
-const loadAppData = (): AppData => {
+const loadAppData = () => {
   const stored = getAppData();
-  const hasActive = stored.projects.some(
-    (p) => p.id === stored.activeProjectId,
-  );
-  if (stored.projects.length === 0 || hasActive) {
+  if (stored.projects.length === 0 || activeProjectOf(stored)) {
     return stored;
   }
   // Dangling activeProjectId: heal to the first project rather than boot as
   // a fresh install.
   console.error("libro-viajero: activeProjectId matches no project, healing");
-  const healed: AppData = {
-    ...stored,
-    activeProjectId: stored.projects[0].id,
-  };
+  const healed = { ...stored, activeProjectId: stored.projects[0].id };
   saveAppData(healed);
   return healed;
 };
@@ -30,19 +24,17 @@ export function useAppData() {
   const [appData, setAppData] = useState<AppData>(loadAppData);
   const [saveFailed, setSaveFailed] = useState(false);
 
-  const activeProject =
-    appData.projects.find((p) => p.id === appData.activeProjectId) ?? null;
+  const activeProject = activeProjectOf(appData) ?? null;
 
   // A failed save leaves state untouched; the boolean lets callers keep
   // transient UI (forms, the reparto) alive for a retry.
   const persist = (next: AppData) => {
-    if (!saveAppData(next)) {
-      setSaveFailed(true);
-      return false;
+    const saved = saveAppData(next);
+    setSaveFailed(!saved);
+    if (saved) {
+      setAppData(next);
     }
-    setSaveFailed(false);
-    setAppData(next);
-    return true;
+    return saved;
   };
 
   const createProject = (project: Project) =>

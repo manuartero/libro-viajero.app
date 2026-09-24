@@ -1,5 +1,3 @@
-import type { BookDraft } from "src/book/book.model";
-
 type SearchDoc = {
   title?: string;
   author_name?: string[];
@@ -21,7 +19,7 @@ export async function searchBooks({
 }: {
   title: string;
   signal?: AbortSignal;
-}): Promise<BookDraft[]> {
+}) {
   const url = `${SEARCH_URL}?title=${encodeURIComponent(title)}&limit=8&fields=title,author_name,cover_i,isbn`;
   const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
   const response = await fetch(url, {

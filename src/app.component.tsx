@@ -37,11 +37,11 @@ export function App() {
   };
 
   const restoreAppData = (data: AppData) => {
-    if (!replaceAppData(data)) {
-      return false;
+    const restored = replaceAppData(data);
+    if (restored) {
+      setView("semana");
     }
-    setView("semana");
-    return true;
+    return restored;
   };
 
   const saveError = saveFailed && (
