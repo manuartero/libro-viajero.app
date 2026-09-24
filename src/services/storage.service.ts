@@ -1,8 +1,18 @@
-import { type AppData, parseAppData } from "src/app-data/app-data.model";
+import { type AppData, parseAppDataJson } from "src/app-data/app-data.model";
 
 const STORAGE_KEY = "libro-viajero";
 
 const emptyAppData = (): AppData => ({ projects: [], activeProjectId: null });
+
+const readRaw = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch (error) {
+    // Storage blocked (private mode, cookie settings): run without persisting.
+    console.error("libro-viajero: cannot read localStorage", error);
+    return null;
+  }
+};
 
 const stashRaw = (raw: string) => {
   try {
@@ -12,25 +22,12 @@ const stashRaw = (raw: string) => {
   }
 };
 
-export function getAppData(): AppData {
-  let raw: string | null;
-  try {
-    raw = localStorage.getItem(STORAGE_KEY);
-  } catch (error) {
-    // Storage blocked (private mode, cookie settings): run without persisting.
-    console.error("libro-viajero: cannot read localStorage", error);
-    return emptyAppData();
-  }
+export function getAppData() {
+  const raw = readRaw();
   if (!raw) {
     return emptyAppData();
   }
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    parsed = undefined;
-  }
-  const data = parseAppData(parsed);
+  const data = parseAppDataJson(raw);
   if (!data) {
     // Back the raw payload up before booting fresh: the next save would
     // otherwise overwrite it.
@@ -43,7 +40,7 @@ export function getAppData(): AppData {
   return data;
 }
 
-export function saveAppData(data: AppData): boolean {
+export function saveAppData(data: AppData) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     return true;
@@ -54,12 +51,7 @@ export function saveAppData(data: AppData): boolean {
 }
 
 export function backUpAppData() {
-  let raw: string | null;
-  try {
-    raw = localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return;
-  }
+  const raw = readRaw();
   if (raw) {
     stashRaw(raw);
   }

@@ -1,5 +1,5 @@
-import { useCallback, useId } from "react";
-import type { Book } from "src/book/book.model";
+import { useId } from "react";
+import { type Book, librosDevueltos } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import type { Child } from "src/child/child.model";
 import { ChildAvatar } from "src/child/child-avatar.component";
@@ -29,6 +29,12 @@ const pencil = (
   </svg>
 );
 
+// Module scope keeps the ref callback stable: React re-runs one that changed,
+// so an inline arrow would re-scroll on every render.
+const scrollIn = (node: HTMLElement | null) => {
+  node?.scrollIntoView({ block: "start" });
+};
+
 function summaryLabel(records: LoanRecord[]) {
   const returned = records.filter((r) => r.status === "returned").length;
   const reading = records.some((r) => r.status === "reading");
@@ -38,12 +44,10 @@ function summaryLabel(records: LoanRecord[]) {
   if (returned === 0 && reading) {
     return "Su primer libro, en casa";
   }
-  const devueltos =
-    returned === 1 ? "1 libro devuelto" : `${returned} libros devueltos`;
   if (reading) {
-    return `${devueltos}, uno en casa`;
+    return `${librosDevueltos(returned)}, uno en casa`;
   }
-  return devueltos;
+  return librosDevueltos(returned);
 }
 
 function titleOf(book: Book | undefined) {
@@ -76,15 +80,10 @@ function rowClass(record: LoanRecord) {
 export function LoanLog({ child, records, onEdit }: LoanLogProps) {
   const titleId = useId();
 
-  // Stable identity, or React re-attaches the ref and re-scrolls every render.
-  const scrollIn = useCallback((node: HTMLElement | null) => {
-    node?.scrollIntoView({ block: "start" });
-  }, []);
-
   return (
     <section ref={scrollIn} className={styles.card} aria-labelledby={titleId}>
       <header className={styles.masthead}>
-        <ChildAvatar emoji={child.emoji} color={child.color} size="medium" />
+        <ChildAvatar child={child} size="medium" />
         <div className={styles.who}>
           <h2 id={titleId} className={styles.tag}>
             {child.tag}
@@ -104,28 +103,30 @@ export function LoanLog({ child, records, onEdit }: LoanLogProps) {
       {records.length > 0 && (
         <ol className={styles.list}>
           {records.map((record) => (
-            <li
+            <LoanRow
               key={`${record.book?.id ?? "gone"}:${record.since}`}
-              className={rowClass(record)}
-            >
-              <BookCover
-                title={record.book?.title ?? "?"}
-                coverUrl={record.book?.coverUrl}
-                size="small"
-              />
-              <span className={styles.entry}>
-                <span className={styles.bookTitle}>{titleOf(record.book)}</span>
-                <span className={styles.dates}>{datesLabel(record)}</span>
-              </span>
-              {record.status === "returned" && (
-                <span className={styles.stamp} aria-hidden="true">
-                  ✓
-                </span>
-              )}
-            </li>
+              record={record}
+            />
           ))}
         </ol>
       )}
     </section>
+  );
+}
+
+function LoanRow({ record }: { record: LoanRecord }) {
+  return (
+    <li className={rowClass(record)}>
+      <BookCover book={record.book ?? { title: "?" }} size="small" />
+      <span className={styles.entry}>
+        <span className={styles.bookTitle}>{titleOf(record.book)}</span>
+        <span className={styles.dates}>{datesLabel(record)}</span>
+      </span>
+      {record.status === "returned" && (
+        <span className={styles.stamp} aria-hidden="true">
+          ✓
+        </span>
+      )}
+    </li>
   );
 }

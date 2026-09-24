@@ -27,8 +27,6 @@ export function BookSearch({ onAdd }: BookSearchProps) {
   const [query, setQuery] = useState("");
   const [addedTitle, setAddedTitle] = useState<string | null>(null);
   const [manualOpen, setManualOpen] = useState(false);
-  const [manualTitle, setManualTitle] = useState("");
-  const [manualAuthor, setManualAuthor] = useState("");
   const { search, runSearch, clearSearch } = useBookSearch();
 
   const add = (draft: BookDraft) => {
@@ -41,6 +39,12 @@ export function BookSearch({ onAdd }: BookSearchProps) {
     return true;
   };
 
+  const addManual = (draft: BookDraft) => {
+    if (add(draft)) {
+      setManualOpen(false);
+    }
+  };
+
   const typeQuery = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setAddedTitle(null);
@@ -50,26 +54,6 @@ export function BookSearch({ onAdd }: BookSearchProps) {
     event.preventDefault();
     setAddedTitle(null);
     runSearch(query);
-  };
-
-  const openManual = () => {
-    setManualTitle(query.trim());
-    setManualAuthor("");
-    setManualOpen(true);
-  };
-
-  const addManual = () => {
-    const title = manualTitle.trim();
-    if (title.length === 0) {
-      return;
-    }
-    const author = manualAuthor.trim();
-    if (!add({ title, author: author.length > 0 ? author : undefined })) {
-      return;
-    }
-    setManualTitle("");
-    setManualAuthor("");
-    setManualOpen(false);
   };
 
   return (
@@ -114,26 +98,7 @@ export function BookSearch({ onAdd }: BookSearchProps) {
       {search.status === "results" && (
         <ul className={styles.results}>
           {search.results.map(({ key, draft }) => (
-            <li key={key}>
-              <button
-                type="button"
-                className={styles.result}
-                aria-label={resultLabel(draft)}
-                onClick={() => add(draft)}
-              >
-                <BookCover
-                  title={draft.title}
-                  coverUrl={draft.coverUrl}
-                  size="small"
-                />
-                <span className={styles.resultText}>
-                  <span className={styles.resultTitle}>{draft.title}</span>
-                  {draft.author && (
-                    <span className={styles.resultAuthor}>{draft.author}</span>
-                  )}
-                </span>
-              </button>
-            </li>
+            <SearchResult key={key} draft={draft} onAdd={() => add(draft)} />
           ))}
         </ul>
       )}
@@ -158,67 +123,127 @@ export function BookSearch({ onAdd }: BookSearchProps) {
       )}
 
       {manualOpen && (
-        <form
-          className={styles.manualForm}
-          onSubmit={(event) => {
-            event.preventDefault();
-            addManual();
-          }}
-        >
-          <div className={styles.manualField}>
-            <label className={styles.label} htmlFor="manual-title">
-              Título
-            </label>
-            <input
-              id="manual-title"
-              className={styles.input}
-              type="text"
-              value={manualTitle}
-              autoComplete="off"
-              onChange={(event) => setManualTitle(event.target.value)}
-            />
-          </div>
-          <div className={styles.manualField}>
-            <label className={styles.label} htmlFor="manual-author">
-              Autor (opcional)
-            </label>
-            <input
-              id="manual-author"
-              className={styles.input}
-              type="text"
-              value={manualAuthor}
-              autoComplete="off"
-              onChange={(event) => setManualAuthor(event.target.value)}
-            />
-          </div>
-          <div className={styles.manualActions}>
-            <button
-              type="submit"
-              className={styles.submit}
-              disabled={manualTitle.trim().length === 0}
-            >
-              Añadir libro
-            </button>
-            <button
-              type="button"
-              className={styles.cancel}
-              onClick={() => setManualOpen(false)}
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+        <ManualBookForm
+          initialTitle={query.trim()}
+          onAdd={addManual}
+          onCancel={() => setManualOpen(false)}
+        />
       )}
 
       {!manualOpen && (
         <button
           type="button"
           className={styles.manualToggle}
-          onClick={openManual}
+          onClick={() => setManualOpen(true)}
         >
           {manualToggleLabel(search.status)}
         </button>
       )}
+    </div>
+  );
+}
+
+function SearchResult({
+  draft,
+  onAdd,
+}: {
+  draft: BookDraft;
+  onAdd: () => void;
+}) {
+  return (
+    <li>
+      <button
+        type="button"
+        className={styles.result}
+        aria-label={resultLabel(draft)}
+        onClick={onAdd}
+      >
+        <BookCover book={draft} size="small" />
+        <span className={styles.resultText}>
+          <span className={styles.resultTitle}>{draft.title}</span>
+          {draft.author && (
+            <span className={styles.resultAuthor}>{draft.author}</span>
+          )}
+        </span>
+      </button>
+    </li>
+  );
+}
+
+function ManualBookForm({
+  initialTitle,
+  onAdd,
+  onCancel,
+}: {
+  initialTitle: string;
+  onAdd: (draft: BookDraft) => void;
+  onCancel: () => void;
+}) {
+  const [title, setTitle] = useState(initialTitle);
+  const [author, setAuthor] = useState("");
+
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (title.trim().length === 0) {
+      return;
+    }
+    onAdd({ title: title.trim(), author: author.trim() || undefined });
+  };
+
+  return (
+    <form className={styles.manualForm} onSubmit={submit}>
+      <ManualField
+        id="manual-title"
+        label="Título"
+        value={title}
+        onChange={setTitle}
+      />
+      <ManualField
+        id="manual-author"
+        label="Autor (opcional)"
+        value={author}
+        onChange={setAuthor}
+      />
+      <div className={styles.manualActions}>
+        <button
+          type="submit"
+          className={styles.submit}
+          disabled={title.trim().length === 0}
+        >
+          Añadir libro
+        </button>
+        <button type="button" className={styles.cancel} onClick={onCancel}>
+          Cancelar
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function ManualField({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className={styles.manualField}>
+      <label className={styles.label} htmlFor={id}>
+        {label}
+      </label>
+      <input
+        id={id}
+        className={styles.input}
+        type="text"
+        value={value}
+        autoComplete="off"
+        onChange={(event) => onChange(event.target.value)}
+      />
     </div>
   );
 }

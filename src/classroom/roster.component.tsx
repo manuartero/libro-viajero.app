@@ -31,11 +31,7 @@ export function Roster({ childList, selectedId, onSelect }: RosterProps) {
                 aria-pressed={child.id === selectedId}
                 onClick={() => onSelect(child.id)}
               >
-                <ChildAvatar
-                  emoji={child.emoji}
-                  color={child.color}
-                  size="small"
-                />
+                <ChildAvatar child={child} size="small" />
                 <span className={styles.tag}>{child.tag}</span>
               </button>
             </li>

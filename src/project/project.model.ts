@@ -17,9 +17,13 @@ export type Assignment = {
   returnedOn?: string;
 };
 
+export function sinceOf(assignment: Assignment) {
+  return assignment.since ?? assignment.weekStart;
+}
+
 export type AssignmentPairs = Record<string, string>;
 
-export function pairsFrom(assignments: readonly Assignment[]): AssignmentPairs {
+export function pairsFrom(assignments: readonly Assignment[]) {
   const pairs: AssignmentPairs = {};
   for (const { childId, bookId, returnedOn } of assignments) {
     if (!returnedOn) {
@@ -63,7 +67,7 @@ function closeLoans({
 }: {
   project: Project;
   ends: (assignment: Assignment) => boolean;
-}): Project {
+}) {
   const closing = project.currentAssignments.filter(ends);
   if (closing.length === 0) {
     return project;
@@ -81,7 +85,7 @@ export function addChild({
 }: {
   project: Project;
   draft: ChildDraft;
-}): Project {
+}) {
   return {
     ...project,
     children: [...project.children, { ...draft, id: newId() }],
@@ -94,7 +98,7 @@ export function saveChild({
 }: {
   project: Project;
   child: Child;
-}): Project {
+}) {
   return {
     ...project,
     children: project.children.map((c) => (c.id === child.id ? child : c)),
@@ -107,7 +111,7 @@ export function removeChild({
 }: {
   project: Project;
   childId: string;
-}): Project {
+}) {
   const pruned = closeLoans({ project, ends: (a) => a.childId === childId });
   return {
     ...pruned,
@@ -121,7 +125,7 @@ export function addBook({
 }: {
   project: Project;
   draft: BookDraft;
-}): Project {
+}) {
   return { ...project, books: [...project.books, { ...draft, id: newId() }] };
 }
 
@@ -133,7 +137,7 @@ export function markReturned({
   project: Project;
   childId: string;
   today?: Date;
-}): Project {
+}) {
   return {
     ...project,
     currentAssignments: project.currentAssignments.map((a) =>
@@ -148,7 +152,7 @@ export function undoReturn({
 }: {
   project: Project;
   childId: string;
-}): Project {
+}) {
   return {
     ...project,
     currentAssignments: project.currentAssignments.map((a) => {
@@ -169,7 +173,7 @@ export function distributeBooks({
   project: Project;
   pairs: AssignmentPairs;
   today?: Date;
-}): Project {
+}) {
   const existing = new Map(
     project.currentAssignments.map((a) => [`${a.childId}:${a.bookId}`, a]),
   );
@@ -205,7 +209,7 @@ export function setLoanWeeks({
 }: {
   project: Project;
   loanWeeks: LoanWeeks;
-}): Project {
+}) {
   return { ...project, loanWeeks };
 }
 
@@ -215,7 +219,7 @@ export function removeBook({
 }: {
   project: Project;
   bookId: string;
-}): Project {
+}) {
   const pruned = closeLoans({ project, ends: (a) => a.bookId === bookId });
   return {
     ...pruned,

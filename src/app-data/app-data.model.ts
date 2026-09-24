@@ -5,6 +5,10 @@ export type AppData = {
   activeProjectId: string | null;
 };
 
+export function activeProjectOf(appData: AppData) {
+  return appData.projects.find((p) => p.id === appData.activeProjectId);
+}
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
@@ -20,21 +24,24 @@ const isBook = (value: unknown) =>
 const isAssignment = (value: unknown) =>
   isRecord(value) && hasStrings(value, ["childId", "bookId", "weekStart"]);
 
+const PROJECT_LISTS = {
+  children: isChild,
+  books: isBook,
+  currentAssignments: isAssignment,
+  history: isAssignment,
+};
+
 const isProject = (value: unknown): value is Project =>
   isRecord(value) &&
   hasStrings(value, ["id", "name"]) &&
-  Array.isArray(value.children) &&
-  value.children.every(isChild) &&
-  Array.isArray(value.books) &&
-  value.books.every(isBook) &&
-  Array.isArray(value.currentAssignments) &&
-  value.currentAssignments.every(isAssignment) &&
-  Array.isArray(value.history) &&
-  value.history.every(isAssignment);
+  Object.entries(PROJECT_LISTS).every(([key, isItem]) => {
+    const list = value[key];
+    return Array.isArray(list) && list.every(isItem);
+  });
 
 // Deep enough that every screen can render what passes; optional fields are
 // left to their readers, which already cope with their absence.
-export function parseAppData(value: unknown): AppData | null {
+export function parseAppData(value: unknown) {
   if (!isRecord(value) || !Array.isArray(value.projects)) {
     return null;
   }
@@ -46,4 +53,12 @@ export function parseAppData(value: unknown): AppData | null {
     return null;
   }
   return { projects, activeProjectId };
+}
+
+export function parseAppDataJson(text: string) {
+  try {
+    return parseAppData(JSON.parse(text));
+  } catch {
+    return null;
+  }
 }

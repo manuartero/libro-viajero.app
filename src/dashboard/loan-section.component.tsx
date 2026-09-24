@@ -10,6 +10,15 @@ type LoanSectionProps = {
   onToggle: (childLoan: ChildLoan) => void;
 };
 
+const SECTION_TITLES: Record<LoanStatus, { one: string; many: string }> = {
+  overdue: {
+    one: "No volvió el viernes pasado",
+    many: "No volvieron el viernes pasado",
+  },
+  due: { one: "Vuelve este viernes", many: "Vuelven este viernes" },
+  reading: { one: "Sigue leyendo", many: "Siguen leyendo" },
+};
+
 function sectionTitle({
   status,
   count,
@@ -17,22 +26,11 @@ function sectionTitle({
   status: LoanStatus;
   count: number;
 }) {
-  if (status === "overdue" && count === 1) {
-    return "No volvió el viernes pasado";
-  }
-  if (status === "overdue") {
-    return "No volvieron el viernes pasado";
-  }
-  if (status === "due" && count === 1) {
-    return "Vuelve este viernes";
-  }
-  if (status === "due") {
-    return "Vuelven este viernes";
-  }
+  const { one, many } = SECTION_TITLES[status];
   if (count === 1) {
-    return "Sigue leyendo";
+    return one;
   }
-  return "Siguen leyendo";
+  return many;
 }
 
 function countLabel({
@@ -94,12 +92,7 @@ export function LoanSection({ status, loans, onToggle }: LoanSectionProps) {
       <ul className={styles.grid}>
         {loans.map((childLoan) => (
           <li key={childLoan.child.id}>
-            <ChildCard
-              child={childLoan.child}
-              book={childLoan.book}
-              loan={childLoan.loan}
-              onToggle={() => onToggle(childLoan)}
-            />
+            <ChildCard {...childLoan} onToggle={() => onToggle(childLoan)} />
           </li>
         ))}
       </ul>

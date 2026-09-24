@@ -42,11 +42,7 @@ export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
         <ul className={styles.list}>
           {bookList.map((book) => (
             <li key={book.id} className={styles.row}>
-              <BookCover
-                title={book.title}
-                coverUrl={book.coverUrl}
-                size="small"
-              />
+              <BookCover book={book} size="small" />
               <span className={styles.text}>
                 <span className={styles.bookTitle}>{book.title}</span>
                 {book.author && (

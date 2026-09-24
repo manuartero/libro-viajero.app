@@ -18,12 +18,10 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
   const [confirmingRemove, setConfirmingRemove] = useState<Book | null>(null);
 
   const readerOf = (bookId: string) => {
-    const assignment = project.currentAssignments.find(
+    const childId = project.currentAssignments.find(
       (a) => a.bookId === bookId,
-    );
-    return assignment
-      ? (project.children.find((c) => c.id === assignment.childId) ?? null)
-      : null;
+    )?.childId;
+    return project.children.find((c) => c.id === childId) ?? null;
   };
 
   const confirmingReader = confirmingRemove && readerOf(confirmingRemove.id);

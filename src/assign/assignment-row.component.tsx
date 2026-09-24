@@ -35,16 +35,12 @@ export function AssignmentRow({
         aria-label={rowLabel({ child, book })}
         onClick={onSelect}
       >
-        <ChildAvatar emoji={child.emoji} color={child.color} size="small" />
+        <ChildAvatar child={child} size="small" />
         <span className={styles.childTag}>{child.tag}</span>
 
         {book && (
           <span className={styles.childBook}>
-            <BookCover
-              title={book.title}
-              coverUrl={book.coverUrl}
-              size="small"
-            />
+            <BookCover book={book} size="small" />
             <span className={styles.childBookTitle}>{book.title}</span>
           </span>
         )}

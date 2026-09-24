@@ -18,7 +18,7 @@ export function BooklessList({ childList }: BooklessListProps) {
       <ul className={styles.booklessList}>
         {childList.map((child) => (
           <li key={child.id} className={styles.booklessRow}>
-            <ChildAvatar emoji={child.emoji} color={child.color} size="small" />
+            <ChildAvatar child={child} size="small" />
             <span className={styles.booklessTag}>{child.tag}</span>
           </li>
         ))}
