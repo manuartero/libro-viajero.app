@@ -46,6 +46,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 - Book search falls back to manual entry when Open Library has nothing.
 - A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/loan/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
 - The reparto opens **already filled in**, clockwise (`rotatePairs()` in `src/assign/rotation.model.ts`): books still out stay put, and each free book goes to the next child in Clase-list order without a book, starting after its last reader. Books nobody has read go to the first free children. The teacher only adjusts.
+- "Repartir libros" shows only when a reparto could hand something out: a child without a book **and** a free book (`canDistribute()` in `src/project/project.model.ts`). With every child reading there is no button; to swap a book mid-loan, check it in early first. With every book out, the bookless list says so instead.
 
 |   ID    |                                                Story                                                 | Status |
 | ------- | ---------------------------------------------------------------------------------------------------- | ------ |

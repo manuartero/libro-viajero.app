@@ -25,6 +25,7 @@ import {
 import { Masthead } from "src/masthead/masthead.component";
 import type { Tab } from "src/navigation/navigation.model";
 import {
+  canDistribute,
   markReturned,
   type Project,
   undoReturn,
@@ -109,6 +110,7 @@ export function DashboardScreen({
   const freedCount = LOAN_STATUSES.flatMap((status) => byStatus[status]).filter(
     ({ loan }) => loan.returnedOn,
   ).length;
+  const repartible = canDistribute(project);
 
   const returnBook = (childId: string) => {
     onUpdate(markReturned({ project, childId }));
@@ -143,7 +145,7 @@ export function DashboardScreen({
       />
 
       <main className={styles.main}>
-        {bookless.length > 0 && (
+        {bookless.length > 0 && repartible && (
           <RepartirBanner
             text={booklessText(bookless.length)}
             onRepartir={onRepartir}
@@ -173,7 +175,9 @@ export function DashboardScreen({
           </Fragment>
         ))}
 
-        {bookless.length > 0 && <BooklessList childList={bookless} />}
+        {bookless.length > 0 && (
+          <BooklessList childList={bookless} waiting={!repartible} />
+        )}
 
         <WeekSummary
           pending={pending}
@@ -186,16 +190,6 @@ export function DashboardScreen({
             text={returnedText(freedCount)}
             onRepartir={onRepartir}
           />
-        )}
-
-        {bookless.length === 0 && freedCount === 0 && (
-          <button
-            type="button"
-            className={styles.repartirAgain}
-            onClick={onRepartir}
-          >
-            Repartir libros
-          </button>
         )}
       </main>
     </div>

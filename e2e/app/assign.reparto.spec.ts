@@ -37,9 +37,10 @@ test.describe("assign: reparto", () => {
     await expect(
       dashboardPage.loanCard({ tag: "Rana", title: "Elmer" }),
     ).toBeVisible();
+    await expect.soft(dashboardPage.repartirButton).toBeHidden();
     await expect
-      .soft(dashboardPage.booklessBanner)
-      .toHaveText("1 peque sin libro");
+      .soft(dashboardPage.main.getByText(/Todos los libros están fuera/))
+      .toBeVisible();
     await expect.soft(dashboardPage.tabBar.root).toBeVisible();
   });
 

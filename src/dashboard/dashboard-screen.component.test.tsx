@@ -298,19 +298,33 @@ describe("<DashboardScreen />", () => {
     ).toHaveLength(1);
   });
 
-  it("still offers the reparto when every child has a book", () => {
-    const onRepartir = vi.fn();
+  it("offers no reparto while every child is reading their book", () => {
     renderDashboard({
       overrides: {
         children,
         books,
         currentAssignments: [due, reading, overdue],
       },
-      onRepartir,
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Repartir libros" }));
+    expect(
+      screen.queryByRole("button", { name: "Repartir libros" }),
+    ).toBeNull();
+  });
 
-    expect(onRepartir).toHaveBeenCalledTimes(1);
+  it("offers no reparto while every book is out, and says why", () => {
+    renderDashboard({
+      overrides: {
+        children,
+        books: [books[0]],
+        currentAssignments: [due],
+      },
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Repartir libros" }),
+    ).toBeNull();
+    expect(screen.queryByText("2 peques sin libro")).toBeNull();
+    expect(screen.getByText(/Todos los libros están fuera/)).toBeDefined();
   });
 });
