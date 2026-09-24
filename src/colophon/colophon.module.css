@@ -1,17 +1,27 @@
 .trigger {
   align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 2.75rem;
   min-height: 2.75rem;
   margin-top: auto;
-  padding: 0 0.75rem;
+  padding: 0.5rem 0.75rem 0;
   border: none;
   border-radius: 0;
   background: transparent;
   color: var(--ink-soft);
-  font-size: 0.75rem;
+  font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.9375rem;
   cursor: pointer;
+}
+
+.trigger::before {
+  content: "";
+  width: 2rem;
+  border-top: 2px solid currentColor;
 }
 
 .trigger:active {
@@ -45,29 +55,14 @@
   background: rgb(26 26 26 / 55%);
 }
 
-.heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--ink);
-}
-
-.title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.5rem;
-  line-height: 1.2;
-}
-
 .version {
   margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ink);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.25rem;
-  font-variant-numeric: tabular-nums;
+  font-size: 2.5rem;
+  line-height: 1;
 }
 
 .body {

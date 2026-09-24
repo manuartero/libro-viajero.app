@@ -6,7 +6,9 @@ import { version } from "../../package.json";
 // jsdom stubs <dialog>, so focus and Escape are checked in a real browser.
 const openColophon = () => {
   fireEvent.click(
-    screen.getByRole("button", { name: `libro-viajero · v${version}` }),
+    screen.getByRole("button", {
+      name: `Acerca de libro-viajero v${version}`,
+    }),
   );
 };
 
@@ -17,13 +19,12 @@ describe("<Colophon />", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("opens from the version line and shows the same version", () => {
+  it("opens from the version line, headed by the same version", () => {
     render(<Colophon />);
 
     openColophon();
 
-    const dialog = screen.getByRole("dialog", { name: "libro-viajero" });
-    expect(dialog.textContent).toContain(`v${version}`);
+    expect(screen.getByRole("dialog", { name: `v${version}` })).toBeDefined();
   });
 
   it("closes with the button", () => {
