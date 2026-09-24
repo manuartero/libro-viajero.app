@@ -18,14 +18,12 @@
   min-height: 2.75rem;
   padding: 0 0.75rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1rem;
   line-height: 1.15;
-  cursor: pointer;
 }
 .repartirCta:active {
   background: var(--ink-soft);

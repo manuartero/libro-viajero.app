@@ -1,7 +1,6 @@
 .panel {
   background: var(--paper);
   border: 2px solid var(--ink);
-  border-radius: 0;
   padding: 0.875rem 1rem;
   display: flex;
   flex-direction: column;

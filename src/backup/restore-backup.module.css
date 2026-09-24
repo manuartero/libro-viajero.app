@@ -20,14 +20,11 @@
   gap: 0.5rem;
   min-height: 2.75rem;
   border: none;
-  border-radius: 0;
   background: transparent;
-  color: var(--ink);
   font-size: 0.9375rem;
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 0.2em;
-  cursor: pointer;
 }
 
 .error {
@@ -83,13 +80,11 @@
   width: 100%;
   min-height: 3rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.125rem;
-  cursor: pointer;
 }
 
 .confirm:active {
@@ -99,10 +94,8 @@
 .cancel {
   min-height: 2.75rem;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--ink-soft);
   font-size: 0.9375rem;
   text-decoration: underline;
-  cursor: pointer;
 }

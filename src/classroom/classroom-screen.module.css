@@ -25,14 +25,10 @@
   justify-content: center;
   gap: 0.5rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
-  color: var(--ink);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.125rem;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .addTrigger:active {

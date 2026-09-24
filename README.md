@@ -2,9 +2,7 @@
 
 > The traveling book dashboard — making Friday handoffs effortless for classroom teachers.
 
-**libro-viajero** (Spanish: *traveling book*) is a dashboard for teachers managing the "traveling book" classroom initiative, where each child takes home a different book every week. Open it Friday afternoon, tap through the check-in, confirm next week's assignments.
-
-Mobile-first, built for the phone in the teacher's hand. All data lives in the browser — no server, no accounts.
+**libro-viajero** (Spanish: *traveling book*) is a dashboard for teachers managing the "traveling book" classroom initiative, where each child takes home a different book every week. Open it Friday afternoon, tap each book as it comes back, then hand out next week's. Mobile-first; all data lives in the browser — no server, no accounts.
 
 Live at **[libro-viajero.app](https://libro-viajero.app)**.
 
@@ -55,7 +53,7 @@ Deploying and releasing are two different things here. Every merge deploys; a re
 
 Merging to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): **blue ball** (`pnpm blue-ball` — lint + test + build) and the **e2e** suite run in parallel, and only if both pass does **deploy (production)** build with the Vercel CLI and promote to production at [libro-viajero.app](https://libro-viajero.app). A red check stops the chain: nothing ships.
 
-Vercel's own auto-deploy for `main` is switched off in [`vercel.json`](vercel.json) (`git.deploymentEnabled`) precisely so that the workflow is the only thing that can ship to production — otherwise Vercel would deploy on push, before the checks had a chance to run. Preview deploys for pull requests are unaffected.
+Vercel's own auto-deploy for `main` is off in [`vercel.json`](vercel.json) (`git.deploymentEnabled`), so the workflow is the only thing that ships to production. Preview deploys for pull requests are unaffected.
 
 ### Versioning
 
@@ -71,9 +69,7 @@ Three secrets under **Settings → Secrets and variables → Actions**, none of 
 
 ## Docs
 
-[VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (scope and product decisions) · [AGENTS.md](AGENTS.md) (conventions).
-
-There is no data-model doc: the types are the source of truth in their domain modules (`src/*/*.model.ts`), and the storage schema is `src/services/storage.service.ts`.
+[VISION.md](VISION.md) (why) · [SPEC.md](SPEC.md) (scope and product decisions) · [AGENTS.md](AGENTS.md) (conventions). Types in `src/*/*.model.ts` are the data model; `src/services/storage.service.ts` is the storage schema.
 
 ---
 

@@ -9,7 +9,7 @@ import {
 
 // "returned" covers a checked-in book whether or not the next reparto has
 // closed the loan yet; "unreturned" is a loan that ended with the book out.
-export type LoanRecordStatus = "reading" | "returned" | "unreturned";
+type LoanRecordStatus = "reading" | "returned" | "unreturned";
 
 export type LoanDates = {
   since: string;

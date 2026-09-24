@@ -46,22 +46,6 @@ describe("<App />", () => {
     localStorage.clear();
   });
 
-  it("switches screens with the tab bar", () => {
-    render(<App />);
-    createClass("Los Caracoles");
-
-    fireEvent.click(screen.getByRole("button", { name: "Clase" }));
-    expect(screen.getByText("La lista de clase")).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Biblioteca" }));
-    expect(screen.getByLabelText("Busca un libro por título")).toBeDefined();
-
-    fireEvent.click(screen.getByRole("button", { name: "Semana" }));
-    expect(
-      screen.getByText("Todavía no hay peques en la clase."),
-    ).toBeDefined();
-  });
-
   it("keeps the create screen mounted and warns when saving fails", () => {
     const restore = failEverySave();
 

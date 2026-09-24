@@ -46,7 +46,6 @@
   background: var(--paper);
   font-size: 1.625rem;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* The frame already rules the fifth column's right edge. */

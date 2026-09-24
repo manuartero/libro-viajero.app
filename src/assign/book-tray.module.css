@@ -33,10 +33,7 @@
   min-height: 2.75rem;
   padding: 0.375rem 0.25rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .trayBook:active {

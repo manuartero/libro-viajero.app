@@ -13,11 +13,8 @@
   min-height: 2.75rem;
   padding: 0.25rem 0.5rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
   text-align: left;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .childButton:active {
@@ -63,10 +60,8 @@
   display: grid;
   place-items: center;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
   font-size: 1.25rem;
-  cursor: pointer;
 }
 
 .unassign:active {

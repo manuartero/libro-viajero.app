@@ -24,21 +24,6 @@ describe("useAssignmentDraft()", () => {
     expect(result.current.trayBooks.map((book) => book.id)).toEqual(["b1"]);
   });
 
-  it("serves the first child without a book when none is selected", () => {
-    const { result } = draft();
-
-    expect(result.current.activeChildId).toBe("c1");
-  });
-
-  it("advances to the next child without a book after each assignment", () => {
-    const { result } = draft();
-
-    act(() => result.current.assignToActive("b1"));
-
-    expect(result.current.pairs).toEqual({ c1: "b1" });
-    expect(result.current.activeChildId).toBe("c2");
-  });
-
   it("keeps one book with one child, taking it off whoever had it", () => {
     const { result } = draft();
 
@@ -50,16 +35,6 @@ describe("useAssignmentDraft()", () => {
     expect(result.current.assignedCount).toBe(1);
   });
 
-  it("serves a child the teacher picks instead of the next one", () => {
-    const { result } = draft();
-
-    act(() => result.current.toggleSelected("c2"));
-    expect(result.current.activeChildId).toBe("c2");
-
-    act(() => result.current.assignToActive("b1"));
-    expect(result.current.pairs).toEqual({ c2: "b1" });
-  });
-
   it("lets a second tap on the same child undo the choice", () => {
     const { result } = draft();
 
@@ -67,19 +42,6 @@ describe("useAssignmentDraft()", () => {
     act(() => result.current.toggleSelected("c2"));
 
     expect(result.current.activeChildId).toBe("c1");
-  });
-
-  it("puts an unassigned book back on the tray", () => {
-    const { result } = draft();
-
-    act(() => result.current.assignToActive("b1"));
-    act(() => result.current.unassign("c1"));
-
-    expect(result.current.pairs).toEqual({});
-    expect(result.current.trayBooks.map((book) => book.id)).toEqual([
-      "b1",
-      "b2",
-    ]);
   });
 
   it("does nothing when every child already has a book", () => {

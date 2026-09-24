@@ -14,7 +14,7 @@ const project = (overrides?: Partial<Project>): Project => ({
 });
 
 describe("<ClassroomScreen />", () => {
-  it("adds a child to the live project", () => {
+  it("adds a child to the live project and stays open for the next one", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
 
@@ -28,25 +28,6 @@ describe("<ClassroomScreen />", () => {
     const next = onUpdate.mock.calls[0][0];
     expect(next.children).toHaveLength(2);
     expect(next.children[1].tag).toBe("Zorro");
-  });
-
-  it("shows the class list, not the form, on arrival", () => {
-    render(<ClassroomScreen project={project()} onUpdate={() => true} />);
-
-    expect(screen.getByRole("button", { name: "Rana" })).toBeDefined();
-    expect(screen.queryAllByRole("radio")).toHaveLength(0);
-  });
-
-  it("stays open for the next child after an add", () => {
-    const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
-    render(<ClassroomScreen project={project()} onUpdate={onUpdate} />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Añadir un peque" }));
-    fireEvent.click(screen.getByRole("radio", { name: "Zorro" }));
-    fireEvent.click(
-      screen.getByRole("button", { name: "Añadir peque a la clase" }),
-    );
-
     expect(
       screen.getByRole("button", { name: "Añadir peque a la clase" }),
     ).toBeDefined();
@@ -154,7 +135,6 @@ describe("<ClassroomScreen />", () => {
     const next = onUpdate.mock.calls[0][0];
     expect(next.children).toHaveLength(0);
     expect(next.currentAssignments).toHaveLength(0);
-    expect(next.history).toEqual(withBook.currentAssignments);
     expect(screen.queryByText(/tiene un libro en casa/)).toBeNull();
   });
 

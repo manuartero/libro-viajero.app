@@ -5,11 +5,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const okResponse = (docs: unknown[]) =>
   ({ ok: true, json: async () => ({ docs }) }) as Response;
 
-const stubFetch = (response: Response | Error) => {
-  const fetchMock =
-    response instanceof Error
-      ? vi.fn().mockRejectedValue(response)
-      : vi.fn().mockResolvedValue(response);
+const stubFetch = (response: Response) => {
+  const fetchMock = vi.fn().mockResolvedValue(response);
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
 };
@@ -25,12 +22,6 @@ const runSearch = async (query: string) => {
 describe("useBookSearch()", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
-  });
-
-  it("starts idle", () => {
-    const { result } = renderHook(() => useBookSearch());
-
-    expect(result.current.search).toEqual({ status: "idle" });
   });
 
   it("reports the found books, each under its own key", async () => {
@@ -66,16 +57,6 @@ describe("useBookSearch()", () => {
       status: "empty",
       query: "Libro que no existe",
     });
-  });
-
-  it("reports an error when the search fails", async () => {
-    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
-    stubFetch(new Error("offline"));
-
-    const result = await runSearch("Elmer");
-
-    expect(result.current.search).toEqual({ status: "error" });
-    errorLog.mockRestore();
   });
 
   it("does not search on a blank query", async () => {

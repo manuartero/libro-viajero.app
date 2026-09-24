@@ -11,7 +11,7 @@ const RESPONSES_DIR = fileURLToPath(
 const OPEN_LIBRARY_ORIGIN = "https://openlibrary.org";
 const COVERS_ORIGIN = "https://covers.openlibrary.org";
 
-export type SearchVariant = "ok" | "empty" | "error";
+type SearchVariant = "ok" | "empty" | "error";
 
 const CONTENT_TYPES: Record<string, string> = {
   ".json": "application/json",

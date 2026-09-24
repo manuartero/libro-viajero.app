@@ -3,6 +3,7 @@
   --paper-dark: #efe9dc;
   --ink: #23283a;
   --ink-soft: #5f6475;
+  --white: #fff;
   --returned: #1c7f46;
   --returned-dark: #155f35;
   --missing: #b8352a;
@@ -25,11 +26,24 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  /* Inherited, so this one declaration covers every tappable element. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS Safari rounds buttons and inputs unless told otherwise. */
+button,
+input {
+  border-radius: 0;
+  font: inherit;
+  color: inherit;
 }
 
 button {
-  font: inherit;
-  color: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
 }
 
 :focus-visible {

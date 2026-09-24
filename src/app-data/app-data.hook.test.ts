@@ -50,7 +50,7 @@ describe("useAppData()", () => {
     expect(stored.projects[0].name).toBe("Clase renombrada");
   });
 
-  it("keeps prior state and flags the failure when saving fails", () => {
+  it("keeps prior state on a failed save, and clears the flag once a later save lands", () => {
     const { result } = renderHook(() => useAppData());
     act(() => result.current.createProject(project("p1")));
 
@@ -72,28 +72,8 @@ describe("useAppData()", () => {
     expect(outcome).toBe(false);
     expect(result.current.saveFailed).toBe(true);
     expect(result.current.activeProject?.name).toBe("Clase p1");
-
-    setItem.mockRestore();
-    errorLog.mockRestore();
-  });
-
-  it("clears the failure flag once a later save lands", () => {
-    const { result } = renderHook(() => useAppData());
-    act(() => result.current.createProject(project("p1")));
-
-    const setItem = vi
-      .spyOn(Storage.prototype, "setItem")
-      .mockImplementation(() => {
-        throw new Error("QuotaExceededError");
-      });
-    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
-    act(() =>
-      result.current.updateProject({ ...project("p1"), name: "Perdida" }),
-    );
-    expect(result.current.saveFailed).toBe(true);
     setItem.mockRestore();
 
-    let outcome = false;
     act(() => {
       outcome = result.current.updateProject({
         ...project("p1"),

@@ -23,13 +23,11 @@
   flex: 1;
   min-height: 2.75rem;
   border: 2px solid var(--missing);
-  border-radius: 0;
   background: var(--missing);
-  color: #fff;
+  color: var(--white);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1rem;
-  cursor: pointer;
 }
 
 .confirmRemove:active {
@@ -41,12 +39,10 @@
   flex: 1;
   min-height: 2.75rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1rem;
-  cursor: pointer;
 }
 
 .confirmCancel:active {

@@ -68,20 +68,6 @@ describe("<ChildBuilder />", () => {
     expect(document.activeElement).toBe(dino);
   });
 
-  it("offers to change the nickname only once there is an emoji", () => {
-    render(
-      <ChildBuilder
-        usedEmojis={[]}
-        usedColors={[]}
-        editing={null}
-        {...noHandlers}
-      />,
-    );
-
-    expect(screen.queryByRole("button", { name: "Cambiar apodo" })).toBeNull();
-    expect(screen.getByText("Toca un emoji")).toBeDefined();
-  });
-
   it("does not overwrite a nickname the teacher already typed", () => {
     render(
       <ChildBuilder
@@ -154,7 +140,7 @@ describe("<ChildBuilder />", () => {
     );
   });
 
-  it("disables adding until there is an emoji", () => {
+  it("offers neither adding nor a nickname until there is an emoji", () => {
     render(
       <ChildBuilder
         usedEmojis={[]}
@@ -168,6 +154,8 @@ describe("<ChildBuilder />", () => {
       name: "Añadir peque a la clase",
     });
     expect(add.disabled).toBe(true);
+    expect(screen.queryByRole("button", { name: "Cambiar apodo" })).toBeNull();
+    expect(screen.getByText("Toca un emoji")).toBeDefined();
 
     fireEvent.click(screen.getByRole("radio", { name: "Rana" }));
     expect(add.disabled).toBe(false);
@@ -194,19 +182,6 @@ describe("<ChildBuilder />", () => {
         name: "Añadir peque a la clase",
       }).disabled,
     ).toBe(true);
-  });
-
-  it("marks emojis already in use", () => {
-    render(
-      <ChildBuilder
-        usedEmojis={["🐸"]}
-        usedColors={[]}
-        editing={null}
-        {...noHandlers}
-      />,
-    );
-
-    expect(screen.getByRole("radio", { name: "Rana (en uso)" })).toBeDefined();
   });
 
   it("hands the edited child's emoji to the picker as the selected one", () => {

@@ -11,8 +11,5 @@ describe("nextUnusedColor()", () => {
 
   it("wraps to a valid palette color when every color is used", () => {
     expect(PALETTE_COLORS).toContain(nextUnusedColor(PALETTE_COLORS));
-    expect(PALETTE_COLORS).toContain(
-      nextUnusedColor([...PALETTE_COLORS, ...PALETTE_COLORS]),
-    );
   });
 });

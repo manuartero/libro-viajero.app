@@ -16,13 +16,11 @@
 .emptyCta {
   min-height: 3.25rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.25rem;
-  cursor: pointer;
 }
 .emptyCta:active {
   background: var(--ink-soft);
