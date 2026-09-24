@@ -41,12 +41,10 @@ describe("<ReaderLog />", () => {
     ).toBeDefined();
   });
 
-  it("calls out the first trip", () => {
+  it("only names the reader on the first trip", () => {
     render(<ReaderLog book={elmer} records={records.slice(0, 1)} />);
 
-    expect(
-      screen.getByText("Su primer viaje: en casa de «Zorro»"),
-    ).toBeDefined();
+    expect(screen.getByText("En casa de «Zorro»")).toBeDefined();
   });
 
   it("says so when the book has not left the class yet", () => {

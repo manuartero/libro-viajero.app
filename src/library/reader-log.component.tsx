@@ -30,7 +30,7 @@ function summaryLabel(records: ReaderRecord[]) {
     return "Aún no ha salido de la clase";
   }
   if (reader && records.length === 1) {
-    return `Su primer viaje: en casa de «${reader.tag}»`;
+    return `En casa de «${reader.tag}»`;
   }
   if (reader) {
     return `${viajes(records.length)}, ahora en casa de «${reader.tag}»`;
