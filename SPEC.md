@@ -45,6 +45,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 - The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
 - A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/loan/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
+- The reparto opens **already filled in**, clockwise (`rotatePairs()` in `src/assign/rotation.model.ts`): books still out stay put, and each free book goes to the next child in Clase-list order without a book, starting after its last reader. Books nobody has read go to the first free children. The teacher only adjusts.
 
 |   ID    |                                                Story                                                 | Status |
 | ------- | ---------------------------------------------------------------------------------------------------- | ------ |
@@ -66,7 +67,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 | DASH-3  | As a teacher, I can tap again to undo a return mark                                            | ✅     |
 | DASH-4  | As a teacher, I can see a live count of how many books have been returned                      | ✅     |
 | DASH-5  | As a teacher, I can see a summary of which children did NOT return a book that was due, and when the rest are due | ✅     |
-| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in issue #5 |
+| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | ✅ the reparto opens with them filled in (clockwise rotation) |
 | DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
 | DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | dropped — a return saves itself (DASH-2); once a book is back, the dashboard's banner leads to the reparto (SETUP-6), which moves the books on |
 | DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | ✅ the reparto seeds only from books still out; a returned one waits on the tray |
