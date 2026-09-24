@@ -31,9 +31,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      # setup-node v5 caches the `packageManager` from package.json by default,
+      # and pnpm is not installed here: this job only runs `npm version`.
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
+          package-manager-cache: false
 
       - id: bump
         run: |
