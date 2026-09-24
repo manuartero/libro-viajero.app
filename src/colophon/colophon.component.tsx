@@ -50,7 +50,7 @@ export function Colophon() {
               rel="noopener noreferrer"
             >
               <ColophonIcon name="github" />
-              Open Source
+              Código abierto
             </a>
           </li>
           <li>
