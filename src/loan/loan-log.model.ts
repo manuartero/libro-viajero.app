@@ -1,4 +1,6 @@
 import { type Book, booksById } from "src/book/book.model";
+import type { Child } from "src/child/child.model";
+import { shortDateLabel } from "src/loan/loan.model";
 import {
   type Assignment,
   type Project,
@@ -9,12 +11,20 @@ import {
 // closed the loan yet; "unreturned" is a loan that ended with the book out.
 export type LoanRecordStatus = "reading" | "returned" | "unreturned";
 
-export type LoanRecord = {
-  // Missing when the book has since been removed from the library.
-  book: Book | undefined;
+export type LoanDates = {
   since: string;
   status: LoanRecordStatus;
   returnedOn?: string;
+};
+
+export type LoanRecord = LoanDates & {
+  // Missing when the book has since been removed from the library.
+  book: Book | undefined;
+};
+
+export type ReaderRecord = LoanDates & {
+  // Missing when the child has since been removed from the class.
+  child: Child | undefined;
 };
 
 function statusOf({
@@ -33,6 +43,38 @@ function statusOf({
   return "unreturned";
 }
 
+function loansWhere({
+  project,
+  belongs,
+}: {
+  project: Project;
+  belongs: (assignment: Assignment) => boolean;
+}) {
+  const entryOf = ({
+    assignment,
+    live,
+  }: {
+    assignment: Assignment;
+    live: boolean;
+  }) => ({
+    assignment,
+    dates: {
+      since: sinceOf(assignment),
+      status: statusOf({ assignment, live }),
+      ...(assignment.returnedOn && { returnedOn: assignment.returnedOn }),
+    } satisfies LoanDates,
+  });
+
+  const closed = project.history
+    .filter(belongs)
+    .map((assignment) => entryOf({ assignment, live: false }));
+  const live = project.currentAssignments
+    .filter(belongs)
+    .map((assignment) => entryOf({ assignment, live: true }));
+
+  return [...closed, ...live].reverse();
+}
+
 export function loanLogOf({
   project,
   childId,
@@ -41,24 +83,42 @@ export function loanLogOf({
   childId: string;
 }) {
   const bookById = booksById(project.books);
-  const recordOf = ({
-    assignment,
-    live,
-  }: {
-    assignment: Assignment;
-    live: boolean;
-  }): LoanRecord => ({
-    book: bookById.get(assignment.bookId),
-    since: sinceOf(assignment),
-    status: statusOf({ assignment, live }),
-    ...(assignment.returnedOn && { returnedOn: assignment.returnedOn }),
-  });
+  return loansWhere({
+    project,
+    belongs: (a) => a.childId === childId,
+  }).map(
+    ({ assignment, dates }): LoanRecord => ({
+      book: bookById.get(assignment.bookId),
+      ...dates,
+    }),
+  );
+}
 
-  const closed = project.history
-    .filter((a) => a.childId === childId)
-    .map((assignment) => recordOf({ assignment, live: false }));
-  const current = project.currentAssignments.find((a) => a.childId === childId);
-  const live = current ? [recordOf({ assignment: current, live: true })] : [];
+export function readerLogOf({
+  project,
+  bookId,
+}: {
+  project: Project;
+  bookId: string;
+}) {
+  const childById = new Map(project.children.map((c) => [c.id, c]));
+  return loansWhere({
+    project,
+    belongs: (a) => a.bookId === bookId,
+  }).map(
+    ({ assignment, dates }): ReaderRecord => ({
+      child: childById.get(assignment.childId),
+      ...dates,
+    }),
+  );
+}
 
-  return [...closed, ...live].reverse();
+export function loanDatesLabel({ since, status, returnedOn }: LoanDates) {
+  if (status === "returned" && returnedOn) {
+    return `del ${shortDateLabel(since)} al ${shortDateLabel(returnedOn)}`;
+  }
+  if (status === "reading") {
+    return `en casa desde el ${shortDateLabel(since)}`;
+  }
+  return `se lo llevó el ${shortDateLabel(since)} y no volvió`;
 }

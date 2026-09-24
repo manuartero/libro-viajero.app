@@ -52,3 +52,4 @@ What the code cannot tell you about why the app behaves as it does.
 
 - There is no weekly session: a loan is the unit. A return writes `returnedOn` on the live assignment, and the next reparto closes every returned or replaced assignment into `Project.history` (`distributeBooks()` in `src/project/project.model.ts`), as does removing a child or a book.
 - Tapping a child in the **Clase** list opens their loan card (`loanLogOf()` in `src/loan/loan-log.model.ts`): one dated line per book, from history plus the live assignment. Editing the child is the pencil on the card.
+- Tapping a book in the **Biblioteca** shelf unfolds its trips under the row (`readerLogOf()`, same module): one dated line per child who took it home, newest first, and who has it now. One book open at a time; removing it is still the bin on the row.

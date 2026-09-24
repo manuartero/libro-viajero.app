@@ -32,6 +32,37 @@ describe("<LibraryScreen />", () => {
     expect(next.books[1].title).toBe("El Grúfalo");
   });
 
+  it("opens a book's trips on tap and closes them on a second tap", () => {
+    render(
+      <LibraryScreen
+        project={project({
+          history: [
+            {
+              childId: "c1",
+              bookId: "b1",
+              weekStart: "2026-08-31",
+              since: "2026-09-04",
+              returnedOn: "2026-09-11",
+            },
+          ],
+        })}
+        onUpdate={() => true}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Elmer" }));
+
+    const trips = screen.getByRole("region", { name: "Viajes de Elmer" });
+    expect(trips.textContent).toContain("Rana");
+    expect(trips.textContent).toContain("del 4 sept al 11 sept");
+
+    fireEvent.click(screen.getByRole("button", { name: "Elmer" }));
+
+    expect(
+      screen.queryByRole("region", { name: "Viajes de Elmer" }),
+    ).toBeNull();
+  });
+
   it("removes an unassigned book without asking", () => {
     const onUpdate = vi.fn<(next: Project) => boolean>(() => true);
     render(<LibraryScreen project={project()} onUpdate={onUpdate} />);

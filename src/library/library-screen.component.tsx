@@ -3,6 +3,8 @@ import { type Book, pluralLibros } from "src/book/book.model";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BookSearch } from "src/library/book-search.component";
 import { Bookshelf } from "src/library/bookshelf.component";
+import { ReaderLog } from "src/library/reader-log.component";
+import { readerLogOf } from "src/loan/loan-log.model";
 import { Masthead } from "src/masthead/masthead.component";
 import type { Project } from "src/project/project.model";
 import { addBook, removeBook } from "src/project/project.model";
@@ -16,6 +18,14 @@ type LibraryScreenProps = {
 
 export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
   const [confirmingRemove, setConfirmingRemove] = useState<Book | null>(null);
+  const [openBookId, setOpenBookId] = useState<string | null>(null);
+
+  const openBook = project.books.find((b) => b.id === openBookId) ?? null;
+
+  const toggleLog = (bookId: string) => {
+    setConfirmingRemove(null);
+    setOpenBookId((prev) => (prev === bookId ? null : bookId));
+  };
 
   const readerOf = (bookId: string) => {
     const childId = project.currentAssignments.find(
@@ -63,7 +73,20 @@ export function LibraryScreen({ project, onUpdate }: LibraryScreenProps) {
 
         <BookSearch onAdd={(draft) => onUpdate(addBook({ project, draft }))} />
 
-        <Bookshelf bookList={project.books} onRemove={requestRemove} />
+        <Bookshelf
+          bookList={project.books}
+          openBookId={openBook?.id ?? null}
+          onToggle={toggleLog}
+          onRemove={requestRemove}
+        >
+          {openBook && (
+            <ReaderLog
+              key={openBook.id}
+              book={openBook}
+              records={readerLogOf({ project, bookId: openBook.id })}
+            />
+          )}
+        </Bookshelf>
       </main>
     </div>
   );

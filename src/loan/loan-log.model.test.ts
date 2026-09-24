@@ -1,4 +1,8 @@
-import { loanLogOf } from "src/loan/loan-log.model";
+import {
+  loanDatesLabel,
+  loanLogOf,
+  readerLogOf,
+} from "src/loan/loan-log.model";
 import type { Project } from "src/project/project.model";
 import { describe, expect, it } from "vitest";
 
@@ -119,5 +123,69 @@ describe("loanLogOf()", () => {
     });
 
     expect(log[0].since).toBe("2026-08-31");
+  });
+});
+
+describe("readerLogOf()", () => {
+  const zorro = { id: "c2", tag: "Zorro", emoji: "🦊", color: "#f3722c" };
+
+  it("lists every child who took the book home, newest first", () => {
+    const log = readerLogOf({
+      project: project({
+        children: [...project().children, zorro],
+        history: [
+          { ...elmerLoan, returnedOn: "2026-09-11" },
+          monstruoLoan,
+          { ...elmerLoan, childId: "c2", weekStart: "2026-09-14" },
+        ],
+        currentAssignments: [
+          { childId: "c1", bookId: "b1", weekStart: "2026-09-28" },
+        ],
+      }),
+      bookId: "b1",
+    });
+
+    expect(log.map((record) => [record.child?.tag, record.status])).toEqual([
+      ["Rana", "reading"],
+      ["Zorro", "unreturned"],
+      ["Rana", "returned"],
+    ]);
+  });
+
+  it("keeps the line when the child has since left the class", () => {
+    const log = readerLogOf({
+      project: project({
+        children: [],
+        history: [{ ...elmerLoan, returnedOn: "2026-09-11" }],
+      }),
+      bookId: "b1",
+    });
+
+    expect(log).toEqual([
+      {
+        child: undefined,
+        since: "2026-09-04",
+        status: "returned",
+        returnedOn: "2026-09-11",
+      },
+    ]);
+  });
+});
+
+describe("loanDatesLabel()", () => {
+  it("reads each ending in plain words", () => {
+    expect(
+      loanDatesLabel({
+        since: "2026-09-04",
+        status: "returned",
+        returnedOn: "2026-09-11",
+      }),
+    ).toBe("del 4 sept al 11 sept");
+    expect(loanDatesLabel({ since: "2026-09-04", status: "reading" })).toBe(
+      "en casa desde el 4 sept",
+    );
+    expect(loanDatesLabel({ since: "2026-09-04", status: "unreturned" })).toBe(
+      "se lo llevó el 4 sept y no volvió",
+    );
   });
 });
