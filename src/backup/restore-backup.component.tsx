@@ -6,6 +6,7 @@ import {
   backupSummary,
   readBackup,
 } from "src/backup/backup.model";
+import { UploadIcon } from "src/backup/backup-icon.component";
 import styles from "./restore-backup.module.css";
 
 type RestoreBackupProps = {
@@ -70,6 +71,7 @@ export function RestoreBackup({
             className={styles.trigger}
             onClick={openPicker}
           >
+            <UploadIcon size={18} />
             Recuperar una copia
           </button>
           {unreadable && (

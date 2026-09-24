@@ -5,9 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 // The focus contract (trap, Escape, return to trigger) is the platform's and
 // jsdom stubs <dialog>, so it is checked in a real browser, not here.
 const openNote = () => {
-  fireEvent.click(
-    screen.getByRole("button", { name: "Tus datos y privacidad" }),
-  );
+  fireEvent.click(screen.getByRole("button", { name: "Tus datos" }));
 };
 
 describe("<PrivacyNote />", () => {
@@ -36,7 +34,7 @@ describe("<PrivacyNote />", () => {
 
     expect(screen.getByRole("dialog", { name: "Tus datos" })).toBeDefined();
     expect(
-      screen.getByText("Ningún dato sale de tu teléfono sin que tú lo sepas."),
+      screen.getByText("Tu clase vive solo en este teléfono."),
     ).toBeDefined();
   });
 
@@ -52,7 +50,7 @@ describe("<PrivacyNote />", () => {
 
     openNote();
     fireEvent.click(
-      screen.getByRole("button", { name: "Descargar mis datos" }),
+      screen.getByRole("button", { name: "Descargar una copia" }),
     );
 
     expect(onDownloadData).toHaveBeenCalledTimes(1);
@@ -83,7 +81,7 @@ describe("<PrivacyNote />", () => {
     );
 
     expect(
-      screen.queryByRole("button", { name: "Descargar mis datos" }),
+      screen.queryByRole("button", { name: "Descargar una copia" }),
     ).toBeNull();
   });
 });
