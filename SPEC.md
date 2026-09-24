@@ -34,6 +34,7 @@ A downloaded copy restores from wherever the teacher is: the first screen on a n
 | PRIV-2 | As a teacher, I can read in plain words, from the dashboard, what leaves my phone (nothing I don't know about) | ✅     |
 | PRIV-3 | As a teacher, I can download a copy of all my data as a file, whenever I want                         | ✅     |
 | PRIV-4 | As a teacher, I can restore a downloaded copy on this phone, seeing what is in it before it replaces what I have | ✅     |
+| PRIV-5 | As a teacher, I can see which version of the app I have, and from there reach its code, its license and a place to report a fault | ✅     |
 
 ### Project Setup — ✅ shipped
 

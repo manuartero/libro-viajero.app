@@ -57,7 +57,7 @@ Vercel's own auto-deploy for `main` is switched off in [`vercel.json`](vercel.js
 
 ### Versioning
 
-The `version` in `package.json` is bumped by hand, in the PR that earns it. No tooling reads it; it is a label for humans.
+The `version` in `package.json` is bumped by hand, in the PR that earns it. No tooling reads it; the app does, printing it at the foot of the dashboard (`src/colophon/`), so a teacher reporting a fault can say which build they have.
 
 ### One-time setup
 
