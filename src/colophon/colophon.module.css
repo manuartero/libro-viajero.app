@@ -1,0 +1,105 @@
+.trigger {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  margin-top: auto;
+  padding: 0.5rem 0.75rem 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.trigger::before {
+  content: "";
+  width: 2rem;
+  border-top: 2px solid currentColor;
+}
+
+.trigger:active {
+  color: var(--ink);
+}
+
+/* `auto auto 0` pins the UA-centred dialog to the bottom edge. */
+.panel {
+  margin: auto auto 0;
+  width: 100%;
+  max-width: 28rem;
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
+  background: var(--paper);
+  color: var(--ink);
+  border: none;
+  border-top: 3px solid var(--ink);
+  border-radius: 0;
+}
+
+/* Scoped to [open] on purpose: a bare `display` here would out-specify the
+   UA's `dialog:not([open]) { display: none }` and leave the sheet on screen. */
+.panel[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.panel::backdrop {
+  background: rgb(26 26 26 / 55%);
+}
+
+.version {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+.body {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links li + li {
+  border-top: 1px solid var(--paper-dark);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.close {
+  min-height: 2.75rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  cursor: pointer;
+}

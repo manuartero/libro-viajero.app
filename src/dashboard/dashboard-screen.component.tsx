@@ -2,6 +2,7 @@ import { Fragment, type ReactNode, useState } from "react";
 import type { AppData } from "src/app-data/app-data.model";
 import { booksById, librosDevueltos } from "src/book/book.model";
 import { type Child, pluralPeques } from "src/child/child.model";
+import { Colophon } from "src/colophon/colophon.component";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BooklessList } from "src/dashboard/bookless-list.component";
 import { EmptyCard, emptyStateFor } from "src/dashboard/empty-card.component";
@@ -169,7 +170,10 @@ function Screen({
   return (
     <div className={styles.screen}>
       <Masthead name={name} after={privacyNote} />
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main}>
+        {children}
+        <Colophon />
+      </main>
     </div>
   );
 }
