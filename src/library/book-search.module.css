@@ -28,9 +28,7 @@
   min-height: 2.75rem;
   padding: 0 0.625rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
-  background: #fff;
-  font: inherit;
+  background: var(--white);
   font-size: 1rem;
 }
 
@@ -38,18 +36,15 @@
   min-height: 2.75rem;
   padding: 0 1rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--ink);
   color: var(--paper);
   font-weight: 700;
-  cursor: pointer;
 }
 
 .submit:disabled {
   background: var(--paper-dark);
   border-color: var(--ink-soft);
   color: var(--ink-soft);
-  cursor: default;
 }
 
 .status {
@@ -83,11 +78,8 @@
   min-height: 2.75rem;
   padding: 0.375rem 0.5rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
   text-align: left;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .result:active {
@@ -126,10 +118,8 @@
   min-height: 2.75rem;
   padding: 0 1rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
   font-weight: 700;
-  cursor: pointer;
 }
 
 .manualToggle {
@@ -141,7 +131,6 @@
   color: var(--ink-soft);
   font-size: 0.875rem;
   text-decoration: underline;
-  cursor: pointer;
 }
 
 .manualForm {
@@ -167,7 +156,5 @@
   min-height: 2.75rem;
   padding: 0 1rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
-  cursor: pointer;
 }

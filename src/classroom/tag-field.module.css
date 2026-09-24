@@ -25,10 +25,7 @@
   min-height: 2.75rem;
   padding: 0.25rem 0.625rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body);
   font-size: 1.125rem;
 }
 
@@ -63,10 +60,8 @@
   min-height: 2.75rem;
   padding: 0;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--ink-soft);
   font-size: 0.9375rem;
   text-decoration: underline;
-  cursor: pointer;
 }

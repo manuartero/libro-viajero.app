@@ -4,7 +4,7 @@ import { newId } from "src/lib/id";
 import { searchBooks } from "src/services/open-library.service";
 
 // Drafts have no id yet and Open Library can return duplicate titles.
-export type SearchResult = { key: string; draft: BookDraft };
+type SearchResult = { key: string; draft: BookDraft };
 
 export type SearchState =
   | { status: "idle" }

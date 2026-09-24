@@ -6,10 +6,7 @@
   height: 2.75rem;
   padding: 0;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: transparent;
-  color: var(--ink);
-  cursor: pointer;
 }
 
 .trigger:active {
@@ -29,7 +26,6 @@
   color: var(--ink);
   border: none;
   border-top: 3px solid var(--ink);
-  border-radius: 0;
 }
 
 /* Scoped to [open] on purpose: a bare `display` here would out-specify the
@@ -41,7 +37,7 @@
 }
 
 .panel::backdrop {
-  background: rgb(35 40 58 / 55%);
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
 }
 
 .title {
@@ -75,13 +71,11 @@
   width: 100%;
   min-height: 3rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.125rem;
-  cursor: pointer;
 }
 
 .download:active {
@@ -91,10 +85,8 @@
 .close {
   min-height: 2.75rem;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--ink-soft);
   font-size: 0.9375rem;
   text-decoration: underline;
-  cursor: pointer;
 }

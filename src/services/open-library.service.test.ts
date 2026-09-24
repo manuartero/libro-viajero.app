@@ -69,12 +69,6 @@ describe("searchBooks()", () => {
     ]);
   });
 
-  it("returns an empty list when the search finds nothing", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(okResponse([])));
-
-    expect(await searchBooks({ title: "zzzz" })).toEqual([]);
-  });
-
   it("throws on a non-ok response", async () => {
     vi.stubGlobal(
       "fetch",

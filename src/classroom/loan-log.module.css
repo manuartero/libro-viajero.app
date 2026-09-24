@@ -1,8 +1,6 @@
 .card {
   border: 2px solid var(--ink);
   background: var(--paper);
-  /* Clears the sticky header (~64px) when scrollIntoView parks this at the top. */
-  scroll-margin-top: 4.75rem;
 }
 
 .masthead {
@@ -41,11 +39,7 @@
   display: grid;
   place-items: center;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
-  color: var(--ink);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .edit:active {
@@ -109,7 +103,7 @@
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  background: #fff;
+  background: var(--white);
   color: var(--returned);
   border: 2px solid var(--ink);
   border-radius: 50%;

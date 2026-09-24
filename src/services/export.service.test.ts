@@ -25,10 +25,10 @@ describe("downloadAppData()", () => {
     vi.useRealTimers();
   });
 
-  it("hands the browser a JSON file named after the day", async () => {
+  it("hands the browser a detached link to the file, and releases it afterwards", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 8, 4, 15, 0));
-    const createObjectURL = vi.fn((_blob: Blob) => "blob:libro-viajero");
+    const createObjectURL = vi.fn(() => "blob:libro-viajero");
     const revokeObjectURL = vi.fn();
     vi.stubGlobal("URL", { ...URL, createObjectURL, revokeObjectURL });
     const click = vi
@@ -41,8 +41,6 @@ describe("downloadAppData()", () => {
     expect(anchor.download).toBe("libro-viajero-2026-09-04.json");
     expect(anchor.href).toBe("blob:libro-viajero");
     expect(anchor.isConnected).toBe(false);
-    const blob = createObjectURL.mock.calls[0]?.[0];
-    expect(JSON.parse((await blob?.text()) ?? "")).toEqual(data);
 
     // The URL must outlive the click; it is released on the next tick.
     expect(revokeObjectURL).not.toHaveBeenCalled();

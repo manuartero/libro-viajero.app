@@ -4,11 +4,13 @@
   flex-direction: column;
 }
 
-/* The scrollport: sticky headers stick to this, not to the viewport. */
+/* The scrollport: sticky headers stick to this, not to the viewport.
+   scroll-padding keeps scrollIntoView targets clear of that ~64px header. */
 .content {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  scroll-padding-top: 4.75rem;
   display: flex;
   flex-direction: column;
 }
@@ -28,7 +30,7 @@
   margin: 0;
   padding: 0.75rem 1rem;
   background: var(--missing);
-  color: #fff;
+  color: var(--white);
   font-weight: 700;
   font-size: 0.9375rem;
   text-align: center;

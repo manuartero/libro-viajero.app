@@ -1,7 +1,5 @@
 .log {
   border-top: 2px solid var(--ink);
-  /* Clears the sticky header (~64px) when scrollIntoView parks this at the top. */
-  scroll-margin-top: 4.75rem;
   scroll-margin-bottom: 1rem;
 }
 
@@ -71,7 +69,7 @@
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  background: #fff;
+  background: var(--white);
   color: var(--returned);
   border: 2px solid var(--ink);
   border-radius: 50%;

@@ -1,6 +1,6 @@
 import palette from "./palette.json";
 
-export type PaletteColor = {
+type PaletteColor = {
   color: string;
   name: string;
 };

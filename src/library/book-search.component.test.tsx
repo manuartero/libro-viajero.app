@@ -26,7 +26,7 @@ describe("<BookSearch />", () => {
     ).toBe(true);
   });
 
-  it("searches on submit and adds a tapped result", async () => {
+  it("adds a tapped result, closes the results and confirms where it went", async () => {
     vi.stubGlobal(
       "fetch",
       vi
@@ -41,7 +41,6 @@ describe("<BookSearch />", () => {
     render(<BookSearch onAdd={onAdd} />);
 
     submitSearch("elmer");
-
     fireEvent.click(
       await screen.findByRole("button", { name: "Elmer, David McKee" }),
     );
@@ -52,24 +51,6 @@ describe("<BookSearch />", () => {
       coverUrl: "https://covers.openlibrary.org/b/id/42-M.jpg?default=false",
       isbn: undefined,
     });
-  });
-
-  it("closes the results and confirms where the book went", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi
-        .fn()
-        .mockResolvedValue(
-          okResponse([{ title: "Elmer", author_name: ["David McKee"] }]),
-        ),
-    );
-    render(<BookSearch onAdd={() => true} />);
-
-    submitSearch("elmer");
-    fireEvent.click(
-      await screen.findByRole("button", { name: "Elmer, David McKee" }),
-    );
-
     expect(
       screen.queryByRole("button", { name: "Elmer, David McKee" }),
     ).toBeNull();

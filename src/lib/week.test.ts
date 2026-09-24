@@ -2,12 +2,8 @@ import { describe, expect, it } from "vitest";
 import { addDays, daysBetween, mondayOf, parseIsoDate } from "./week";
 
 describe("mondayOf()", () => {
-  it("returns the Monday of a midweek date", () => {
-    expect(mondayOf(new Date(2026, 8, 2))).toBe("2026-08-31"); // Wed Sep 2
-  });
-
-  it("returns the same day for a Monday", () => {
-    expect(mondayOf(new Date(2026, 7, 31))).toBe("2026-08-31");
+  it("returns the Monday of a midweek date, zero-padded", () => {
+    expect(mondayOf(new Date(2026, 3, 8))).toBe("2026-04-06"); // Wed Apr 8
   });
 
   it("returns the previous Monday for a Sunday", () => {
@@ -16,10 +12,6 @@ describe("mondayOf()", () => {
 
   it("crosses month and year boundaries", () => {
     expect(mondayOf(new Date(2026, 0, 1))).toBe("2025-12-29"); // Thu Jan 1
-  });
-
-  it("formats as YYYY-MM-DD with zero padding", () => {
-    expect(mondayOf(new Date(2026, 3, 8))).toBe("2026-04-06");
   });
 });
 

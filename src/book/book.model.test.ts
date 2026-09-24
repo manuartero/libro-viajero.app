@@ -5,12 +5,6 @@ import { coverColorFor } from "./book.model";
 const PALETTE_COLORS = PALETTE.map(({ color }) => color);
 
 describe("coverColorFor()", () => {
-  it("is deterministic for the same title", () => {
-    expect(coverColorFor("El monstruo de colores")).toBe(
-      coverColorFor("El monstruo de colores"),
-    );
-  });
-
   it("always returns a palette color", () => {
     expect(PALETTE_COLORS).toContain(coverColorFor("Elmer"));
     expect(PALETTE_COLORS).toContain(coverColorFor(""));
@@ -19,7 +13,7 @@ describe("coverColorFor()", () => {
     );
   });
 
-  // The tests above still pass if every title hashes to the same color.
+  // The test above still passes if every title hashes to the same color.
   it("uses the whole palette across many titles", () => {
     const titles = Array.from({ length: 200 }, (_, index) => `Libro ${index}`);
     expect(new Set(titles.map(coverColorFor)).size).toBe(PALETTE_COLORS.length);

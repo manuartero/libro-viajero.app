@@ -9,13 +9,11 @@
   margin-top: auto;
   padding: 0.5rem 0.75rem 0;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--ink-soft);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.9375rem;
-  cursor: pointer;
 }
 
 .trigger::before {
@@ -40,7 +38,6 @@
   color: var(--ink);
   border: none;
   border-top: 3px solid var(--ink);
-  border-radius: 0;
 }
 
 /* Scoped to [open] on purpose: a bare `display` here would out-specify the
@@ -96,10 +93,8 @@
 .close {
   min-height: 2.75rem;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--ink-soft);
   font-size: 0.9375rem;
   text-decoration: underline;
-  cursor: pointer;
 }

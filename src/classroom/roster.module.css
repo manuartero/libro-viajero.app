@@ -36,10 +36,7 @@
   min-height: 2.75rem;
   padding: 0.25rem 0.75rem 0.25rem 0.25rem;
   border: 2px solid var(--ink);
-  border-radius: 0;
   background: var(--paper);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
   animation: stamp-in 180ms ease-out;
 }
 
