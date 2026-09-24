@@ -73,7 +73,7 @@ export function AssignScreen({
 
         <section className={styles.assignments} aria-labelledby={titleId}>
           <h2 id={titleId} className={styles.sectionTitle}>
-            ¿Quién se lleva cada libro?
+            Reparto propuesto
           </h2>
           <ul className={styles.childList}>
             {childList.map((child) => (
