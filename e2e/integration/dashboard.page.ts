@@ -27,7 +27,7 @@ export function createDashboardPage(page: Page) {
         pressed,
       }),
     privacyNote: {
-      trigger: page.getByRole("button", { name: "Tus datos y privacidad" }),
+      trigger: page.getByRole("button", { name: "Tus datos" }),
       dialog: page.getByRole("dialog", { name: "Tus datos" }),
       restore: restoreBackup(page),
     },

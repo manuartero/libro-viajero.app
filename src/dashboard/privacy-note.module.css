@@ -1,19 +1,21 @@
 .trigger {
   flex-shrink: 0;
+  display: grid;
+  place-items: center;
   width: 2.75rem;
   height: 2.75rem;
+  margin-left: auto;
+  padding: 0;
   border: 2px solid var(--ink);
-  border-radius: 50%;
+  border-radius: 0;
   background: transparent;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.25rem;
-  line-height: 1;
+  color: var(--ink);
   cursor: pointer;
 }
 
 .trigger:active {
-  background: var(--paper-dark);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 /* `auto auto 0` pins the UA-centred dialog to the bottom edge. */

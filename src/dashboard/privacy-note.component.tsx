@@ -3,6 +3,23 @@ import type { AppData } from "src/app-data/app-data.model";
 import { RestoreBackup } from "src/backup/restore-backup.component";
 import styles from "./privacy-note.module.css";
 
+const downloadIcon = (
+  <svg
+    aria-hidden="true"
+    width="22"
+    height="22"
+    viewBox="0 0 22 22"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.25"
+    strokeLinecap="square"
+  >
+    <path d="M11 3v10" />
+    <path d="M6.5 9l4.5 4.5L15.5 9" />
+    <path d="M3.5 15v3.5h15V15" />
+  </svg>
+);
+
 type PrivacyNoteProps = {
   projectName: string;
   onDownloadData: () => void;
@@ -37,10 +54,10 @@ export function PrivacyNote({
       <button
         type="button"
         className={styles.trigger}
-        aria-label="Tus datos y privacidad"
+        aria-label="Tus datos"
         onClick={open}
       >
-        ?
+        {downloadIcon}
       </button>
 
       <dialog
@@ -52,16 +69,10 @@ export function PrivacyNote({
         <h2 id={titleId} className={styles.title}>
           Tus datos
         </h2>
-        <p className={styles.lead}>
-          Ningún dato sale de tu teléfono sin que tú lo sepas.
-        </p>
+        <p className={styles.lead}>Tu clase vive solo en este teléfono.</p>
         <p className={styles.body}>
-          No hay servidor ni cuentas. La clase se guarda en este navegador, en
-          este teléfono. Nadie más puede verla.
-        </p>
-        <p className={styles.body}>
-          Lo único que viaja: al buscar un libro, el título que escribes se
-          envía a Open Library para encontrar la portada. Nada más.
+          Sin cuentas ni servidor. Solo el título que buscas sale a Open
+          Library, para traer la portada.
         </p>
         <p className={styles.body}>
           Si borras los datos del navegador, se borra la clase. Descarga una
@@ -72,7 +83,7 @@ export function PrivacyNote({
           className={styles.download}
           onClick={onDownloadData}
         >
-          Descargar mis datos
+          Descargar una copia
         </button>
         <RestoreBackup replacing={projectName} onRestore={restoreAndClose} />
         <button
