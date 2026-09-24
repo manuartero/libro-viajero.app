@@ -7,6 +7,7 @@ import { useAssignmentDraft } from "./assignment-draft.hook";
 import { AssignmentRow } from "./assignment-row.component";
 import { BookTray } from "./book-tray.component";
 import { LoanWeeksPicker } from "./loan-weeks-picker.component";
+import { rotatePairs } from "./rotation.model";
 
 export type Reparto = {
   pairs: AssignmentPairs;
@@ -40,7 +41,7 @@ export function AssignScreen({
   } = useAssignmentDraft({
     children: childList,
     books: project.books,
-    currentAssignments: project.currentAssignments,
+    initialPairs: rotatePairs(project),
   });
 
   return (
@@ -72,7 +73,7 @@ export function AssignScreen({
 
         <section className={styles.assignments} aria-labelledby={titleId}>
           <h2 id={titleId} className={styles.sectionTitle}>
-            ¿Quién se lleva cada libro?
+            Reparto propuesto
           </h2>
           <ul className={styles.childList}>
             {childList.map((child) => (

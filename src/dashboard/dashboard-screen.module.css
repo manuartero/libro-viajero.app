@@ -7,13 +7,6 @@
   margin-inline: auto;
 }
 
-.headerTools {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
 .main {
   flex: 1;
   display: flex;

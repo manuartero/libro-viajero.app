@@ -1,5 +1,9 @@
 import type { AppData } from "src/app-data/app-data.model";
-import { getAppData, saveAppData } from "src/services/storage.service";
+import {
+  backUpAppData,
+  getAppData,
+  saveAppData,
+} from "src/services/storage.service";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const sampleData: AppData = {
@@ -62,6 +66,32 @@ describe("getAppData()", () => {
     saveAppData(sampleData);
 
     expect(getAppData()).toEqual(sampleData);
+  });
+});
+
+describe("backUpAppData()", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("copies the live entry under a dated key and leaves the live one alone", () => {
+    saveAppData(sampleData);
+
+    backUpAppData();
+
+    const backupKey = Object.keys(localStorage).find((key) =>
+      key.startsWith("libro-viajero:backup-"),
+    );
+    expect(localStorage.getItem(backupKey ?? "")).toBe(
+      JSON.stringify(sampleData),
+    );
+    expect(getAppData()).toEqual(sampleData);
+  });
+
+  it("writes nothing when there is nothing to back up", () => {
+    backUpAppData();
+
+    expect(Object.keys(localStorage)).toEqual([]);
   });
 });
 

@@ -1,0 +1,258 @@
+{
+  "projects": [
+    {
+      "id": "project-buhos-2026-27",
+      "name": "Los Búhos 2026/27",
+      "children": [
+        {
+          "id": "child-dino",
+          "tag": "Dino",
+          "emoji": "🦕",
+          "color": "#52a675"
+        },
+        {
+          "id": "child-delfin",
+          "tag": "Delfín",
+          "emoji": "🐬",
+          "color": "#1982c4"
+        },
+        {
+          "id": "child-mariposa",
+          "tag": "Mariposa",
+          "emoji": "🦋",
+          "color": "#f49cbb"
+        },
+        {
+          "id": "child-caracol",
+          "tag": "Caracol",
+          "emoji": "🐌",
+          "color": "#8ac926"
+        },
+        {
+          "id": "child-estrella",
+          "tag": "Estrella",
+          "emoji": "⭐",
+          "color": "#ffca3a"
+        },
+        {
+          "id": "child-volcan",
+          "tag": "Volcán",
+          "emoji": "🌋",
+          "color": "#ff595e"
+        },
+        {
+          "id": "child-globo",
+          "tag": "Globo",
+          "emoji": "🎈",
+          "color": "#f3722c"
+        },
+        {
+          "id": "child-barco",
+          "tag": "Barco",
+          "emoji": "⛵",
+          "color": "#4267ac"
+        }
+      ],
+      "books": [
+        {
+          "id": "book-el-cazo-de-lorenzo",
+          "title": "El cazo de Lorenzo",
+          "author": "Isabelle Carrier",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7281028-M.jpg?default=false",
+          "isbn": "9788426137814"
+        },
+        {
+          "id": "book-por-cuatro-esquinitas-de-nada",
+          "title": "Por cuatro esquinitas de nada",
+          "author": "Jérôme Ruillier",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7305142-M.jpg?default=false",
+          "isbn": "9788426134479"
+        },
+        {
+          "id": "book-la-ovejita-que-vino-a-cenar",
+          "title": "La ovejita que vino a cenar",
+          "author": "Steve Smallman",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7272641-M.jpg?default=false",
+          "isbn": "9788448824549"
+        },
+        {
+          "id": "book-orejas-de-mariposa",
+          "title": "Orejas de mariposa",
+          "author": "Luisa Aguilar"
+        },
+        {
+          "id": "book-vamos-a-cazar-un-oso",
+          "title": "Vamos a cazar un oso",
+          "author": "Michael Rosen"
+        },
+        {
+          "id": "book-elmer",
+          "title": "Elmer",
+          "author": "David McKee",
+          "coverUrl": "https://covers.openlibrary.org/b/id/430501-M.jpg?default=false",
+          "isbn": "9780099697206"
+        },
+        {
+          "id": "book-el-monstruo-de-colores",
+          "title": "El monstruo de colores",
+          "author": "Anna Llenas",
+          "coverUrl": "https://covers.openlibrary.org/b/id/14567182-M.jpg?default=false",
+          "isbn": "9788419401601"
+        },
+        {
+          "id": "book-el-grufalo",
+          "title": "El grúfalo",
+          "author": "Julia Donaldson",
+          "coverUrl": "https://covers.openlibrary.org/b/id/13109392-M.jpg?default=false",
+          "isbn": "9788469667729"
+        },
+        {
+          "id": "book-nadarin",
+          "title": "Nadarín",
+          "author": "Leo Lionni",
+          "coverUrl": "https://covers.openlibrary.org/b/id/14499833-M.jpg?default=false",
+          "isbn": "9781417682461"
+        },
+        {
+          "id": "book-frederick",
+          "title": "Frederick",
+          "author": "Leo Lionni",
+          "coverUrl": "https://covers.openlibrary.org/b/id/254689-M.jpg?default=false",
+          "isbn": "9782211069144"
+        },
+        {
+          "id": "book-un-bicho-extrano",
+          "title": "Un bicho extraño",
+          "author": "Mon Daporta",
+          "coverUrl": "https://covers.openlibrary.org/b/id/7281663-M.jpg?default=false",
+          "isbn": "9788496957671"
+        },
+        {
+          "id": "book-cocorico",
+          "title": "Cocorico",
+          "author": "Marisa Núñez",
+          "coverUrl": "https://covers.openlibrary.org/b/id/3334861-M.jpg?default=false",
+          "isbn": "9788496573246"
+        }
+      ],
+      "currentAssignments": [
+        {
+          "childId": "child-dino",
+          "bookId": "book-el-monstruo-de-colores",
+          "weekStart": "2026-08-24",
+          "since": "2026-08-28"
+        },
+        {
+          "childId": "child-delfin",
+          "bookId": "book-el-grufalo",
+          "weekStart": "2026-08-24",
+          "since": "2026-08-28"
+        },
+        {
+          "childId": "child-mariposa",
+          "bookId": "book-nadarin",
+          "weekStart": "2026-08-24",
+          "since": "2026-08-28",
+          "returnedOn": "2026-09-07"
+        },
+        {
+          "childId": "child-caracol",
+          "bookId": "book-el-cazo-de-lorenzo",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-estrella",
+          "bookId": "book-por-cuatro-esquinitas-de-nada",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04",
+          "returnedOn": "2026-09-08"
+        },
+        {
+          "childId": "child-volcan",
+          "bookId": "book-la-ovejita-que-vino-a-cenar",
+          "weekStart": "2026-08-31",
+          "since": "2026-09-04"
+        },
+        {
+          "childId": "child-globo",
+          "bookId": "book-vamos-a-cazar-un-oso",
+          "weekStart": "2026-09-07",
+          "since": "2026-09-07"
+        },
+        {
+          "childId": "child-barco",
+          "bookId": "book-elmer",
+          "weekStart": "2026-09-07",
+          "since": "2026-09-07"
+        }
+      ],
+      "history": [
+        {
+          "childId": "child-dino",
+          "bookId": "book-el-cazo-de-lorenzo",
+          "weekStart": "2026-08-17",
+          "since": "2026-08-21",
+          "returnedOn": "2026-08-28"
+        },
+        {
+          "childId": "child-delfin",
+          "bookId": "book-por-cuatro-esquinitas-de-nada",
+          "weekStart": "2026-08-17",
+          "since": "2026-08-21",
+          "returnedOn": "2026-08-28"
+        },
+        {
+          "childId": "child-mariposa",
+          "bookId": "book-la-ovejita-que-vino-a-cenar",
+          "weekStart": "2026-08-17",
+          "since": "2026-08-21",
+          "returnedOn": "2026-08-28"
+        },
+        {
+          "childId": "child-caracol",
+          "bookId": "book-orejas-de-mariposa",
+          "weekStart": "2026-08-17",
+          "since": "2026-08-21",
+          "returnedOn": "2026-08-28"
+        },
+        {
+          "childId": "child-estrella",
+          "bookId": "book-vamos-a-cazar-un-oso",
+          "weekStart": "2026-08-17",
+          "since": "2026-08-21",
+          "returnedOn": "2026-08-28"
+        },
+        {
+          "childId": "child-volcan",
+          "bookId": "book-elmer",
+          "weekStart": "2026-08-17",
+          "since": "2026-08-21"
+        },
+        {
+          "childId": "child-caracol",
+          "bookId": "book-frederick",
+          "weekStart": "2026-08-24",
+          "since": "2026-08-28",
+          "returnedOn": "2026-09-04"
+        },
+        {
+          "childId": "child-estrella",
+          "bookId": "book-un-bicho-extrano",
+          "weekStart": "2026-08-24",
+          "since": "2026-08-28",
+          "returnedOn": "2026-09-04"
+        },
+        {
+          "childId": "child-volcan",
+          "bookId": "book-cocorico",
+          "weekStart": "2026-08-24",
+          "since": "2026-08-28",
+          "returnedOn": "2026-09-04"
+        }
+      ],
+      "loanWeeks": 1
+    }
+  ],
+  "activeProjectId": "project-buhos-2026-27"
+}

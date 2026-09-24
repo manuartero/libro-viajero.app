@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { coverColorFor } from "src/book/book.model";
+import { type Book, coverColorFor } from "src/book/book.model";
 import styles from "./book-cover.module.css";
 
 type BookCoverProps = {
-  title: string;
-  coverUrl?: string;
+  book: Pick<Book, "title" | "coverUrl">;
   size?: "small" | "medium";
 };
 
 // Decorative: the visible title next to it is the accessible name.
 export function BookCover({
-  title,
-  coverUrl,
+  book: { title, coverUrl },
   size = "medium",
 }: BookCoverProps) {
   const [failed, setFailed] = useState(false);

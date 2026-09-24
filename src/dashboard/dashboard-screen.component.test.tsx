@@ -50,6 +50,7 @@ const renderDashboard = ({
       onNavigate={onNavigate}
       onRepartir={onRepartir}
       onDownloadData={() => {}}
+      onRestoreData={() => true}
     />,
   );
 
@@ -57,6 +58,11 @@ const savedAssignments = (onUpdate: ReturnType<typeof vi.fn>) => {
   const [saved] = onUpdate.mock.lastCall as [Project];
   return saved.currentAssignments;
 };
+
+const sectionHeadings = () =>
+  screen
+    .getAllByRole("heading", { level: 2 })
+    .map((heading) => heading.textContent);
 
 describe("<DashboardScreen />", () => {
   beforeEach(() => {
@@ -101,7 +107,6 @@ describe("<DashboardScreen />", () => {
       onRepartir,
     });
 
-    expect(screen.getByRole("status").textContent).toContain("0/1");
     expect(screen.getByRole("button", { name: "Rana — Elmer" })).toBeDefined();
     expect(screen.queryByRole("button", { name: /Zorro/ })).toBeNull();
     expect(screen.getByText("Sin libro esta semana")).toBeDefined();
@@ -121,16 +126,11 @@ describe("<DashboardScreen />", () => {
       },
     });
 
-    const headings = screen
-      .getAllByRole("heading", { level: 2 })
-      .map((heading) => heading.textContent);
-    expect(headings.slice(0, 3)).toEqual([
-      "No volvió el viernes pasado1 libro",
-      "Vuelve este viernes1 libro",
+    expect(sectionHeadings().slice(0, 3)).toEqual([
+      "No volvió el viernes pasadosin devolver",
+      "Vuelve este viernessin devolver",
       "Sigue leyendo1 libro",
     ]);
-
-    expect(screen.getByRole("status").textContent).toContain("0/2");
     expect(screen.getByText("Faltan 2 de 2")).toBeDefined();
     expect(
       screen.getByText("1 peque vuelve el viernes 18 de septiembre"),
@@ -199,7 +199,7 @@ describe("<DashboardScreen />", () => {
         .getByRole("button", { name: "Zorro — El Grúfalo" })
         .getAttribute("aria-pressed"),
     ).toBe("true");
-    expect(screen.getByRole("status").textContent).toContain("0/1");
+    expect(sectionHeadings()).toContain("Vuelve este viernessin devolver");
   });
 
   it("undoes a return with a second tap, whatever the section", () => {
@@ -238,11 +238,25 @@ describe("<DashboardScreen />", () => {
       },
     });
 
-    expect(screen.queryByRole("status")).toBeNull();
     expect(screen.getByText("No toca devolver ningún libro.")).toBeDefined();
     expect(
       screen.getByText("3 peques vuelven el viernes 18 de septiembre"),
     ).toBeDefined();
+  });
+
+  it("counts the returns inside the section they belong to", () => {
+    renderDashboard({
+      overrides: {
+        children,
+        books,
+        currentAssignments: [
+          { ...due, returnedOn: "2026-09-11" },
+          { childId: "c2", bookId: "b2", weekStart: "2026-08-31" },
+        ],
+      },
+    });
+
+    expect(sectionHeadings()).toContain("Vuelven este viernes1 de 2 devueltos");
   });
 
   it("celebrates once everything expected is back", () => {
@@ -257,7 +271,10 @@ describe("<DashboardScreen />", () => {
       },
     });
 
-    expect(screen.getByRole("status").textContent).toContain("2/2");
+    expect(sectionHeadings().slice(0, 2)).toEqual([
+      "No volvió el viernes pasadodevuelto",
+      "Vuelve este viernesdevuelto",
+    ]);
     expect(screen.getByText("¡Todos los libros han vuelto! 🎉")).toBeDefined();
   });
 

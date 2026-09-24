@@ -15,7 +15,6 @@
 - Offline-first / PWA / installable app
 - More than one active project at a time
 - Book lending tracking beyond the current week; book ratings; ISBN scanning
-- Importing a downloaded `libro-viajero-*.json` (new phone, next year's teacher) — future work
 
 ---
 
@@ -27,11 +26,15 @@ Status: ✅ shipped · 🚧 placeholder · ❌ not built.
 
 One phone = one teacher = one localStorage key (`src/services/storage.service.ts`). The only network traffic is the Open Library search and its cover images, enforced by a Content-Security-Policy injected at build time (`src/lib/csp.ts`).
 
+A downloaded copy restores from wherever the teacher is: the first screen on a new phone, or the "Tus datos" sheet on a phone that already holds a class. Either way the copy is previewed (class, date, headcount) and confirmed before anything is written, and the class it replaces is kept under a `libro-viajero:backup-*` key rather than deleted (`src/backup/`).
+
 |   ID   |                                                 Story                                                  | Status |
 | ------ | ------------------------------------------------------------------------------------------------------ | ------ |
 | PRIV-1 | As a teacher, I can open the app and pick up where I left off, with no account and no sign-in          | ✅     |
 | PRIV-2 | As a teacher, I can read in plain words, from the dashboard, what leaves my phone (nothing I don't know about) | ✅     |
 | PRIV-3 | As a teacher, I can download a copy of all my data as a file, whenever I want                         | ✅     |
+| PRIV-4 | As a teacher, I can restore a downloaded copy on this phone, seeing what is in it before it replaces what I have | ✅     |
+| PRIV-5 | As a teacher, I can see which version of the app I have, and from there reach its code, its license and a place to report a fault | ✅     |
 
 ### Project Setup — ✅ shipped
 
@@ -43,6 +46,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 - The avatar catalog carries **no human faces** — an avatar must never resemble a real child.
 - Book search falls back to manual entry when Open Library has nothing.
 - A book stays out **one or two weeks** (`Project.loanWeeks`, read through `loanWeeksOf()` in `src/loan/loan.model.ts`), for the whole class alike. The teacher sets it in the reparto, where it is spelled out as a return date, and it saves with the reparto.
+- The reparto opens **already filled in**, clockwise (`rotatePairs()` in `src/assign/rotation.model.ts`): books still out stay put, and each free book goes to the next child in Clase-list order without a book, starting after its last reader. Books nobody has read go to the first free children. The teacher only adjusts.
 
 |   ID    |                                                Story                                                 | Status |
 | ------- | ---------------------------------------------------------------------------------------------------- | ------ |
@@ -64,7 +68,7 @@ Decisions worth knowing, since they are not obvious from the stories:
 | DASH-3  | As a teacher, I can tap again to undo a return mark                                            | ✅     |
 | DASH-4  | As a teacher, I can see a live count of how many books have been returned                      | ✅     |
 | DASH-5  | As a teacher, I can see a summary of which children did NOT return a book that was due, and when the rest are due | ✅     |
-| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | 🚧 index-shift placeholder; real algorithm specced in issue #5 |
+| DASH-7  | As a teacher, I can see the suggested assignments for next week (books that came back only)    | ✅ the reparto opens with them filled in (clockwise rotation) |
 | DASH-8  | As a teacher, I can swap two children's suggested assignments before confirming                | ❌     |
 | DASH-9  | As a teacher, I can confirm the check-in to save the session and update current assignments    | dropped — a return saves itself (DASH-2); once a book is back, the dashboard's banner leads to the reparto (SETUP-6), which moves the books on |
 | DASH-10 | As a teacher, a book that was NOT returned does not get assigned to a new child next week      | ✅ the reparto seeds only from books still out; a returned one waits on the tray |

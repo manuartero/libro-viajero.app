@@ -31,11 +31,7 @@ export function BookTray({ books, onAssign }: BookTrayProps) {
                 aria-label={`${book.title}, asignar`}
                 onClick={() => onAssign(book.id)}
               >
-                <BookCover
-                  title={book.title}
-                  coverUrl={book.coverUrl}
-                  size="medium"
-                />
+                <BookCover book={book} size="medium" />
                 <span className={styles.trayTitle}>{book.title}</span>
               </button>
             </li>

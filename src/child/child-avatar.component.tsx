@@ -1,18 +1,14 @@
-import type { ReactNode } from "react";
+import type { Child } from "src/child/child.model";
 import styles from "./child-avatar.module.css";
 
 type ChildAvatarProps = {
-  emoji: string;
-  color: string;
+  child: Pick<Child, "emoji" | "color">;
   size?: "tiny" | "small" | "medium" | "large";
-  children?: ReactNode; // overlays, e.g. the returned stamp
 };
 
 export function ChildAvatar({
-  emoji,
-  color,
+  child: { emoji, color },
   size = "medium",
-  children,
 }: ChildAvatarProps) {
   return (
     <span
@@ -21,7 +17,6 @@ export function ChildAvatar({
       aria-hidden="true"
     >
       {emoji}
-      {children}
     </span>
   );
 }

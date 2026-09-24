@@ -10,6 +10,15 @@ type LoanSectionProps = {
   onToggle: (childLoan: ChildLoan) => void;
 };
 
+const SECTION_TITLES: Record<LoanStatus, { one: string; many: string }> = {
+  overdue: {
+    one: "No volvió el viernes pasado",
+    many: "No volvieron el viernes pasado",
+  },
+  due: { one: "Vuelve este viernes", many: "Vuelven este viernes" },
+  reading: { one: "Sigue leyendo", many: "Siguen leyendo" },
+};
+
 function sectionTitle({
   status,
   count,
@@ -17,22 +26,45 @@ function sectionTitle({
   status: LoanStatus;
   count: number;
 }) {
-  if (status === "overdue" && count === 1) {
-    return "No volvió el viernes pasado";
-  }
-  if (status === "overdue") {
-    return "No volvieron el viernes pasado";
-  }
-  if (status === "due" && count === 1) {
-    return "Vuelve este viernes";
-  }
-  if (status === "due") {
-    return "Vuelven este viernes";
-  }
+  const { one, many } = SECTION_TITLES[status];
   if (count === 1) {
-    return "Sigue leyendo";
+    return one;
   }
-  return "Siguen leyendo";
+  return many;
+}
+
+function countLabel({
+  status,
+  loans,
+}: {
+  status: LoanStatus;
+  loans: ChildLoan[];
+}) {
+  const returned = loans.filter(({ loan }) => loan.returnedOn).length;
+  if (status === "reading") {
+    return pluralLibros(loans.length);
+  }
+  if (loans.length === 1 && returned === 1) {
+    return "devuelto";
+  }
+  if (loans.length === 1) {
+    return "sin devolver";
+  }
+  return `${returned} de ${loans.length} devueltos`;
+}
+
+function countClass({
+  status,
+  loans,
+}: {
+  status: LoanStatus;
+  loans: ChildLoan[];
+}) {
+  const allBack = loans.every(({ loan }) => loan.returnedOn);
+  if (status !== "reading" && allBack) {
+    return `${styles.count} ${styles.done}`;
+  }
+  return styles.count;
 }
 
 function titleClass(status: LoanStatus) {
@@ -53,17 +85,14 @@ export function LoanSection({ status, loans, onToggle }: LoanSectionProps) {
     <section aria-labelledby={titleId}>
       <h2 id={titleId} className={titleClass(status)}>
         {sectionTitle({ status, count: loans.length })}
-        <span className={styles.count}>{pluralLibros(loans.length)}</span>
+        <span className={countClass({ status, loans })}>
+          {countLabel({ status, loans })}
+        </span>
       </h2>
       <ul className={styles.grid}>
         {loans.map((childLoan) => (
           <li key={childLoan.child.id}>
-            <ChildCard
-              child={childLoan.child}
-              book={childLoan.book}
-              loan={childLoan.loan}
-              onToggle={() => onToggle(childLoan)}
-            />
+            <ChildCard {...childLoan} onToggle={() => onToggle(childLoan)} />
           </li>
         ))}
       </ul>

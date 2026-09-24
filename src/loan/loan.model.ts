@@ -7,14 +7,18 @@ import {
   mondayOf,
   parseIsoDate,
 } from "src/lib/week";
-import type { Assignment, Project } from "src/project/project.model";
+import {
+  type Assignment,
+  type Project,
+  sinceOf,
+} from "src/project/project.model";
 
 export type LoanWeeks = 1 | 2;
 
 export const LOAN_WEEKS_OPTIONS: readonly LoanWeeks[] = [1, 2];
 
 // Projects saved before the setting existed ran one week per book.
-export function loanWeeksOf(project: Pick<Project, "loanWeeks">): LoanWeeks {
+export function loanWeeksOf(project: Pick<Project, "loanWeeks">) {
   return project.loanWeeks ?? 1;
 }
 
@@ -64,10 +68,7 @@ export function loanOf({
     dueFriday: addDays({ iso: dueWeekStart, days: 4 }),
     daysAtHome: Math.max(
       0,
-      daysBetween({
-        from: assignment.since ?? assignment.weekStart,
-        to: isoDate(judgedOn),
-      }),
+      daysBetween({ from: sinceOf(assignment), to: isoDate(judgedOn) }),
     ),
     returnedOn: assignment.returnedOn,
   };
@@ -80,7 +81,7 @@ function loanStatusOf({
 }: {
   dueWeekStart: string;
   thisWeekStart: string;
-}): LoanStatus {
+}) {
   if (thisWeekStart > dueWeekStart) {
     return "overdue";
   }

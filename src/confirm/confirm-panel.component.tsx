@@ -1,4 +1,4 @@
-import { type KeyboardEvent, type ReactNode, useCallback, useId } from "react";
+import { type KeyboardEvent, type ReactNode, useId } from "react";
 import styles from "./confirm-panel.module.css";
 
 type ConfirmPanelProps = {
@@ -10,7 +10,18 @@ type ConfirmPanelProps = {
   onCancel: () => void;
 };
 
-// Needs React 19: the focus return rides on ref-callback cleanup.
+// Needs React 19: the focus return rides on ref-callback cleanup. Module scope
+// keeps it stable, or React would re-run it and yank focus back on every render.
+const holdFocus = (node: HTMLDivElement | null) => {
+  const trigger = document.activeElement;
+  node?.focus();
+  return () => {
+    if (trigger instanceof HTMLElement) {
+      trigger.focus();
+    }
+  };
+};
+
 export function ConfirmPanel({
   label,
   children,
@@ -20,18 +31,6 @@ export function ConfirmPanel({
   onCancel,
 }: ConfirmPanelProps) {
   const textId = useId();
-
-  // Stable identity matters: React re-attaches a ref whose callback changed,
-  // so an inline arrow would yank focus back here on every host render.
-  const holdFocus = useCallback((node: HTMLDivElement | null) => {
-    const trigger = document.activeElement;
-    node?.focus();
-    return () => {
-      if (trigger instanceof HTMLElement) {
-        trigger.focus();
-      }
-    };
-  }, []);
 
   const cancelOnEscape = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {

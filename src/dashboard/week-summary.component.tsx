@@ -57,21 +57,8 @@ export function WeekSummary({
             Faltan {pending.length} de {expectedCount}
           </p>
           <ul className={styles.list}>
-            {pending.map(({ child, book, loan }) => (
-              <li key={child.id} className={styles.row}>
-                <ChildAvatar
-                  emoji={child.emoji}
-                  color={child.color}
-                  size="tiny"
-                />
-                <span className={styles.who}>
-                  {child.tag}
-                  <span className={styles.bookTitle}>{book.title}</span>
-                </span>
-                <span className={metaClass(loan.status)}>
-                  {daysAtHomeLabel(loan.daysAtHome)}
-                </span>
-              </li>
+            {pending.map((childLoan) => (
+              <PendingRow key={childLoan.child.id} childLoan={childLoan} />
             ))}
           </ul>
         </>
@@ -87,5 +74,24 @@ export function WeekSummary({
         </ul>
       )}
     </section>
+  );
+}
+
+function PendingRow({
+  childLoan: { child, book, loan },
+}: {
+  childLoan: ChildLoan;
+}) {
+  return (
+    <li className={styles.row}>
+      <ChildAvatar child={child} size="tiny" />
+      <span className={styles.who}>
+        {child.tag}
+        <span className={styles.bookTitle}>{book.title}</span>
+      </span>
+      <span className={metaClass(loan.status)}>
+        {daysAtHomeLabel(loan.daysAtHome)}
+      </span>
+    </li>
   );
 }

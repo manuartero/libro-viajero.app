@@ -1,6 +1,6 @@
 // YYYY-MM-DD in the teacher's own calendar. Formatted via local getters:
 // toISOString() is UTC, which shifts the date before 01:00/02:00 in Spain.
-export function isoDate(date: Date): string {
+export function isoDate(date: Date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const dayOfMonth = String(date.getDate()).padStart(2, "0");
   return `${date.getFullYear()}-${month}-${dayOfMonth}`;
@@ -9,12 +9,12 @@ export function isoDate(date: Date): string {
 // The inverse of isoDate(): local midnight of that calendar day. `new
 // Date("2026-08-31")` would parse as UTC midnight, which is the previous
 // evening west of Greenwich and a different calendar day.
-export function parseIsoDate(iso: string): Date {
+export function parseIsoDate(iso: string) {
   const [year, month, day] = iso.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
 
-export function addDays({ iso, days }: { iso: string; days: number }): string {
+export function addDays({ iso, days }: { iso: string; days: number }) {
   const date = parseIsoDate(iso);
   date.setDate(date.getDate() + days);
   return isoDate(date);
@@ -27,7 +27,7 @@ export function daysBetween({ from, to }: { from: string; to: string }) {
   return Math.round(ms / 86_400_000);
 }
 
-export function mondayOf(date = new Date()): string {
+export function mondayOf(date = new Date()) {
   const monday = new Date(date);
   const day = monday.getDay(); // 0 = Sunday → previous Monday
   monday.setDate(monday.getDate() - (day === 0 ? 6 : day - 1));

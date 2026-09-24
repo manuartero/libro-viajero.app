@@ -23,6 +23,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+.done {
+  font-weight: 700;
+  color: var(--returned);
+}
+
 .grid {
   list-style: none;
   margin: 0;

@@ -8,7 +8,7 @@ describe("<CreateClassroom />", () => {
   });
 
   it("disables creation until the class has a name", () => {
-    render(<CreateClassroom onCreate={() => {}} />);
+    render(<CreateClassroom onCreate={() => {}} onRestore={() => true} />);
 
     const create = screen.getByRole("button", { name: "Crear la clase" });
     expect(create.hasAttribute("disabled")).toBe(true);
@@ -24,7 +24,7 @@ describe("<CreateClassroom />", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-01T10:00:00"));
     const onCreate = vi.fn();
-    render(<CreateClassroom onCreate={onCreate} />);
+    render(<CreateClassroom onCreate={onCreate} onRestore={() => true} />);
 
     expect(screen.getByText("Curso 2026/2027")).toBeTruthy();
 

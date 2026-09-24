@@ -30,11 +30,10 @@ test.describe("dashboard: check-in", () => {
     const card = dashboardPage.loanCard({ tag: "Rana", title: "Elmer" });
     await expect(card).toBeVisible();
     await expect
-      .soft(dashboardPage.loanSection(/No volvió el viernes pasado/))
+      .soft(
+        dashboardPage.loanSection(/No volvió el viernes pasado\s*sin devolver/),
+      )
       .toBeVisible();
-    await expect
-      .soft(dashboardPage.returnCounter)
-      .toHaveAccessibleName("0 de 1 libros devueltos");
 
     await card.click();
     await expect
@@ -43,8 +42,8 @@ test.describe("dashboard: check-in", () => {
       )
       .toBeVisible();
     await expect
-      .soft(dashboardPage.returnCounter)
-      .toHaveAccessibleName("1 de 1 libros devueltos");
+      .soft(dashboardPage.loanSection(/No volvió el viernes pasado\s*devuelto/))
+      .toBeVisible();
 
     await page.reload();
     await expect(
@@ -63,7 +62,9 @@ test.describe("dashboard: check-in", () => {
       )
       .toBeVisible();
     await expect
-      .soft(dashboardPage.returnCounter)
-      .toHaveAccessibleName("0 de 1 libros devueltos");
+      .soft(
+        dashboardPage.loanSection(/No volvió el viernes pasado\s*sin devolver/),
+      )
+      .toBeVisible();
   });
 });

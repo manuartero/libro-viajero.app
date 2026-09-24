@@ -1,4 +1,4 @@
-import { useCallback, useId, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import type { CuratedEmoji } from "src/child/avatar-catalog.data";
 import type { Child, ChildDraft } from "src/child/child.model";
 import { nextUnusedColor } from "src/child/child.model";
@@ -32,6 +32,12 @@ function leaveLabel(editing: Child | null) {
   return "Listo";
 }
 
+// Module scope keeps the ref callback stable: React re-runs one that changed,
+// so an inline arrow would re-scroll on every render.
+const scrollIn = (node: HTMLElement | null) => {
+  node?.scrollIntoView({ block: "start" });
+};
+
 export function ChildBuilder({
   usedEmojis,
   usedColors,
@@ -49,14 +55,7 @@ export function ChildBuilder({
   );
   const titleId = useId();
 
-  // Stable identity matters: React re-attaches a ref whose callback changed,
-  // so an inline arrow would re-scroll on every render.
-  const scrollIn = useCallback((node: HTMLElement | null) => {
-    node?.scrollIntoView({ block: "start" });
-  }, []);
-
   const color = pickedColor ?? nextUnusedColor(usedColors);
-
   const canSubmit = emoji !== null && tag.trim().length > 0;
 
   const editTag = (next: string) => {
@@ -71,7 +70,8 @@ export function ChildBuilder({
     }
   };
 
-  const submit = () => {
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (emoji === null || !canSubmit) {
       return;
     }
@@ -90,15 +90,9 @@ export function ChildBuilder({
         {builderTitle(editing)}
       </h2>
 
-      <form
-        className={styles.builder}
-        onSubmit={(event) => {
-          event.preventDefault();
-          submit();
-        }}
-      >
+      <form className={styles.builder} onSubmit={submit}>
         <div className={styles.previewRow}>
-          {emoji && <ChildAvatar emoji={emoji} color={color} size="large" />}
+          {emoji && <ChildAvatar child={{ emoji, color }} size="large" />}
 
           {!emoji && (
             <span className={styles.previewEmpty} aria-hidden="true">
