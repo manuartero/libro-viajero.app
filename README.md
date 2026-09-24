@@ -51,17 +51,21 @@ The date stays at the end of each name because the restore preview reads "Copia 
 
 ## Releasing
 
-Merging to `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml): **blue ball** (`pnpm blue-ball` — lint + test + build) and the **e2e** suite run in parallel, and only if both pass does **deploy (production)** build with the Vercel CLI and promote to production at [libro-viajero.app](https://libro-viajero.app). A red check stops the chain: nothing ships.
+Deploying and releasing are two different things here. Every merge deploys; a release is the deliberate act of naming the build that went to teachers.
+
+Merging to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): **blue ball** (`pnpm blue-ball` — lint + test + build) and the **e2e** suite run in parallel, and only if both pass does **deploy (production)** build with the Vercel CLI and promote to production at [libro-viajero.app](https://libro-viajero.app). A red check stops the chain: nothing ships.
 
 Vercel's own auto-deploy for `main` is switched off in [`vercel.json`](vercel.json) (`git.deploymentEnabled`) precisely so that the workflow is the only thing that can ship to production — otherwise Vercel would deploy on push, before the checks had a chance to run. Preview deploys for pull requests are unaffected.
 
 ### Versioning
 
-The `version` in `package.json` is bumped by hand, in the PR that earns it. No tooling reads it; the app does, printing it at the foot of the dashboard (`src/colophon/`), so a teacher reporting a fault can say which build they have.
+When a build is about to go to teachers, run **Actions → Release → Run workflow** ([`.github/workflows/release.yml`](.github/workflows/release.yml)) and pick `minor`, `patch` or `major`. It bumps `version` in `package.json`, prepends to [`CHANGELOG.md`](CHANGELOG.md) every commit since the last tag, grouped by type (`.github/scripts/changelog.sh`, which runs locally too), and opens a `chore(release): vX.Y.Z` PR. Merging it deploys as usual, and the **tag (release)** job at the end of `deploy.yml` then tags that commit `vX.Y.Z` and publishes a GitHub Release with the same notes. Merges that don't bump the version skip the tag.
+
+The app prints the version at the foot of the dashboard (`src/colophon/`), so a teacher reporting a fault can say which build they have, and the colophon links to the changelog ("Novedades").
 
 ### One-time setup
 
-Three secrets under **Settings → Secrets and variables → Actions**, none of which can be committed: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. The two IDs come from `.vercel/project.json` after a local `vercel link`.
+Three secrets under **Settings → Secrets and variables → Actions**, none of which can be committed: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. The two IDs come from `.vercel/project.json` after a local `vercel link`. For the release PR, **Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests** must be on.
 
 ---
 
