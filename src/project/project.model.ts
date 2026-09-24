@@ -33,6 +33,15 @@ export function pairsFrom(assignments: readonly Assignment[]) {
   return pairs;
 }
 
+export function canDistribute(project: Project) {
+  const pairs = pairsFrom(project.currentAssignments);
+  const heldBookIds = new Set(Object.values(pairs));
+  return (
+    project.children.some((child) => !pairs[child.id]) &&
+    project.books.some((book) => !heldBookIds.has(book.id))
+  );
+}
+
 export type Project = {
   id: string;
   name: string; // classroom name + short school year, e.g. "Clase Caracoles 2026/27"

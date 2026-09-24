@@ -5,9 +5,10 @@ import styles from "./bookless-list.module.css";
 
 type BooklessListProps = {
   childList: Child[];
+  waiting: boolean;
 };
 
-export function BooklessList({ childList }: BooklessListProps) {
+export function BooklessList({ childList, waiting }: BooklessListProps) {
   const titleId = useId();
 
   return (
@@ -23,6 +24,11 @@ export function BooklessList({ childList }: BooklessListProps) {
           </li>
         ))}
       </ul>
+      {waiting && (
+        <p className={styles.booklessNote}>
+          Todos los libros están fuera. En cuanto vuelva uno, podrás repartirlo.
+        </p>
+      )}
     </section>
   );
 }
