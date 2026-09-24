@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import type { AppData } from "src/app-data/app-data.model";
 import type { Child } from "src/child/child.model";
+import { Colophon } from "src/colophon/colophon.component";
 import { ConfirmPanel } from "src/confirm/confirm-panel.component";
 import { BooklessList } from "src/dashboard/bookless-list.component";
 import { EmptyCard, emptyStateFor } from "src/dashboard/empty-card.component";
@@ -94,6 +95,7 @@ export function DashboardScreen({
             cta={emptyState.cta}
             onCta={emptyState.onCta}
           />
+          <Colophon />
         </main>
       </div>
     );
@@ -185,6 +187,8 @@ export function DashboardScreen({
             Repartir libros
           </button>
         )}
+
+        <Colophon />
       </main>
     </div>
   );
