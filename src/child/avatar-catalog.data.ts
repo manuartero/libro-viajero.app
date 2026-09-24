@@ -1,6 +1,6 @@
 import catalog from "./avatar-catalog.json";
 
-// No human faces (SPEC F3): an avatar must never resemble a real child.
+// No human faces: an avatar must never resemble a real child.
 
 export type CuratedEmoji = {
   emoji: string;
