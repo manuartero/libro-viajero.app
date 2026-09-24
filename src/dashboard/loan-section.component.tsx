@@ -35,6 +35,40 @@ function sectionTitle({
   return "Siguen leyendo";
 }
 
+function countLabel({
+  status,
+  loans,
+}: {
+  status: LoanStatus;
+  loans: ChildLoan[];
+}) {
+  const returned = loans.filter(({ loan }) => loan.returnedOn).length;
+  if (status === "reading") {
+    return pluralLibros(loans.length);
+  }
+  if (loans.length === 1 && returned === 1) {
+    return "devuelto";
+  }
+  if (loans.length === 1) {
+    return "sin devolver";
+  }
+  return `${returned} de ${loans.length} devueltos`;
+}
+
+function countClass({
+  status,
+  loans,
+}: {
+  status: LoanStatus;
+  loans: ChildLoan[];
+}) {
+  const allBack = loans.every(({ loan }) => loan.returnedOn);
+  if (status !== "reading" && allBack) {
+    return `${styles.count} ${styles.done}`;
+  }
+  return styles.count;
+}
+
 function titleClass(status: LoanStatus) {
   if (status === "overdue") {
     return `${styles.title} ${styles.alarm}`;
@@ -53,7 +87,9 @@ export function LoanSection({ status, loans, onToggle }: LoanSectionProps) {
     <section aria-labelledby={titleId}>
       <h2 id={titleId} className={titleClass(status)}>
         {sectionTitle({ status, count: loans.length })}
-        <span className={styles.count}>{pluralLibros(loans.length)}</span>
+        <span className={countClass({ status, loans })}>
+          {countLabel({ status, loans })}
+        </span>
       </h2>
       <ul className={styles.grid}>
         {loans.map((childLoan) => (

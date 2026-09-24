@@ -11,7 +11,6 @@ import {
   RepartirBanner,
   returnedText,
 } from "src/dashboard/repartir-banner.component";
-import { ReturnCounter } from "src/dashboard/return-counter.component";
 import { WeekSummary } from "src/dashboard/week-summary.component";
 import {
   type ChildLoan,
@@ -104,7 +103,6 @@ export function DashboardScreen({
 
   const expected = [...byStatus.overdue, ...byStatus.due];
   const pending = expected.filter(({ loan }) => !loan.returnedOn);
-  const returnedCount = expected.length - pending.length;
   const upcoming = upcomingFridays(byStatus.reading);
   const freedCount = LOAN_STATUSES.flatMap((status) => byStatus[status]).filter(
     ({ loan }) => loan.returnedOn,
@@ -130,17 +128,7 @@ export function DashboardScreen({
 
   return (
     <div className={styles.screen}>
-      <Masthead
-        name={project.name}
-        after={
-          <div className={styles.headerTools}>
-            {expected.length > 0 && (
-              <ReturnCounter returned={returnedCount} total={expected.length} />
-            )}
-            {privacyNote}
-          </div>
-        }
-      />
+      <Masthead name={project.name} after={privacyNote} />
 
       <main className={styles.main}>
         {bookless.length > 0 && (
