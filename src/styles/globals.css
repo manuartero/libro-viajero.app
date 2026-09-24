@@ -1,11 +1,11 @@
 :root {
-  --paper: #f5f1e6;
-  --paper-dark: #e9e4d5;
-  --ink: #1a1a1a;
-  --ink-soft: #6b6659;
-  --returned: #27ae60;
-  --returned-dark: #1e8449;
-  --missing: #c0392b;
+  --paper: #fbf8f1;
+  --paper-dark: #efe9dc;
+  --ink: #23283a;
+  --ink-soft: #5f6475;
+  --returned: #1c7f46;
+  --returned-dark: #155f35;
+  --missing: #b8352a;
   --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-display: "Besley", Georgia, serif;
 }
