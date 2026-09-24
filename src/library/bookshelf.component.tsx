@@ -3,6 +3,24 @@ import type { Book } from "src/book/book.model";
 import { BookCover } from "src/book/book-cover.component";
 import styles from "./bookshelf.module.css";
 
+const trash = (
+  <svg
+    aria-hidden="true"
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.75"
+    strokeLinecap="square"
+  >
+    <path d="M2.5 4.5h13" />
+    <path d="M6.5 4.5v-2h5v2" />
+    <path d="M4 4.5l.75 11h8.5l.75-11" />
+    <path d="M7.5 7.5v5M10.5 7.5v5" />
+  </svg>
+);
+
 type BookshelfProps = {
   bookList: Book[];
   onRemove: (bookId: string) => void;
@@ -41,7 +59,7 @@ export function Bookshelf({ bookList, onRemove }: BookshelfProps) {
                 aria-label={`${book.title}, quitar`}
                 onClick={() => onRemove(book.id)}
               >
-                ×
+                {trash}
               </button>
             </li>
           ))}
