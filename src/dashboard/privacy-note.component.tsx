@@ -1,24 +1,8 @@
 import { useId, useRef } from "react";
 import type { AppData } from "src/app-data/app-data.model";
+import { DownloadIcon } from "src/backup/backup-icon.component";
 import { RestoreBackup } from "src/backup/restore-backup.component";
 import styles from "./privacy-note.module.css";
-
-const downloadIcon = (
-  <svg
-    aria-hidden="true"
-    width="22"
-    height="22"
-    viewBox="0 0 22 22"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.25"
-    strokeLinecap="square"
-  >
-    <path d="M11 3v10" />
-    <path d="M6.5 9l4.5 4.5L15.5 9" />
-    <path d="M3.5 15v3.5h15V15" />
-  </svg>
-);
 
 type PrivacyNoteProps = {
   projectName: string;
@@ -57,7 +41,7 @@ export function PrivacyNote({
         aria-label="Tus datos"
         onClick={open}
       >
-        {downloadIcon}
+        <DownloadIcon />
       </button>
 
       <dialog
@@ -83,6 +67,7 @@ export function PrivacyNote({
           className={styles.download}
           onClick={onDownloadData}
         >
+          <DownloadIcon size={20} />
           Descargar una copia
         </button>
         <RestoreBackup replacing={projectName} onRestore={restoreAndClose} />
